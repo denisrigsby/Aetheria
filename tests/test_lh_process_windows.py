@@ -137,3 +137,60 @@ def test_kill_if_verified_already_dead():
     time.sleep(0.3)
     r = ident.kill_if_verified(p.pid, ident.ROLE_SUPERVISOR, tree=True)
     assert r["reason"] == "already_dead"
+
+
+def test_live_supervisor_tree_kills_probe_child_watchdog_sibling_separate():
+    """Critical characterization: live verified supervisor + descendant + watchdog sibling.
+
+    Does not launch the production plant. Argv tails are identity tokens only.
+    """
+    parent_code = (
+        "import subprocess,sys,time\n"
+        f"flags={CREATE_NO_WINDOW}|{CREATE_NEW_PROCESS_GROUP}\n"
+        "c=subprocess.Popen([sys.executable,'-c','import time; time.sleep(50)',"
+        f"'{MARKER}','scripts/_lh_probe_fixture.py'], creationflags=flags,"
+        "stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)\n"
+        "print(c.pid, flush=True)\n"
+        "time.sleep(45)\n"
+    )
+    sup = subprocess.Popen(
+        [sys.executable, "-c", parent_code, MARKER, "long_horizon_supervisor.py"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        creationflags=CREATE_NO_WINDOW,
+    )
+    raw = (sup.stdout.readline() if sup.stdout else "") or ""
+    probe = int(raw.strip()) if raw.strip().isdigit() else 0
+    wd = _spawn(50, "lh_watchdog.py")
+    time.sleep(0.4)
+    assert ident.verified_role(sup.pid, ident.ROLE_SUPERVISOR)
+    assert ident.verified_role(wd.pid, ident.ROLE_WATCHDOG)
+    assert probe and ident.pid_exists(probe)
+    # probe child cmdline has _lh_probe_
+    assert ident.verified_role(probe, ident.ROLE_PROBE) or ident.pid_exists(probe)
+
+    r = ident.kill_if_verified(sup.pid, ident.ROLE_SUPERVISOR, tree=True)
+    time.sleep(0.5)
+    assert r.get("killed") or not ident.pid_exists(sup.pid)
+    assert not ident.pid_exists(sup.pid)
+    assert not ident.pid_exists(probe), "live supervisor /T must remove probe descendant"
+    assert ident.pid_exists(wd.pid), "watchdog sibling must survive supervisor tree-kill"
+    rwd = ident.kill_if_verified(wd.pid, ident.ROLE_WATCHDOG, tree=True)
+    time.sleep(0.3)
+    assert rwd.get("killed") or not ident.pid_exists(wd.pid)
+    assert not ident.pid_exists(wd.pid)
+
+
+def test_repeated_stop_is_already_dead():
+    p = _spawn(20, "long_horizon_supervisor.py")
+    ident.kill_if_verified(p.pid, ident.ROLE_SUPERVISOR, tree=True)
+    time.sleep(0.3)
+    r2 = ident.kill_if_verified(p.pid, ident.ROLE_SUPERVISOR, tree=True)
+    assert r2["reason"] == "already_dead"
+
+
+def test_stale_pid_file_not_verified():
+    dead = 424242
+    assert not ident.pid_exists(dead)
+    assert not ident.verified_role(dead, ident.ROLE_WATCHDOG)

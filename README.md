@@ -7,6 +7,10 @@
 
 **Detached ticks. Identity-checked stop. Manual-start after crash. Restart-safe progress. Cloud optional.**
 
+Standalone product boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · readiness: [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md)
+
+Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose`
+
 Local multi-cycle agent **control plane** — process supervision and on-disk continuity so long-running agent work does not die with the chat window that started it.
 
 > Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not another multi-agent framework and not a chat UI.
