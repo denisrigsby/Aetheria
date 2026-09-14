@@ -20,6 +20,7 @@ All notable changes to the **public control plane** are documented here.
 - Communication-edge-only topology search (`research/topology.py`); no auto-promotion; model_calls=0
 - `revision_after_critique` / `held_out_revision`: requires critic feedback edge; same roles, different wires, different scores
 - VS04 real revision loop: first pass accepts a false claim, critic recomputes, feedback edge triggers a second pass; independent verify recomputes 2+2. Genome remains hold.
+- Named research baseline `planner_executor_critic_feedback.json`; stock PEC kept; hold packet not promoted
 
 ### Added
 

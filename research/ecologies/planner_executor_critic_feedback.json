@@ -1,0 +1,28 @@
+{
+  "schema": "aetheria_genome_v1",
+  "name": "planner_executor_critic_feedback",
+  "roles": ["planner", "executor", "critic"],
+  "role_prompts": {
+    "planner": "Emit a short plan as a JSON list of steps.",
+    "executor": "Execute the plan steps locally.",
+    "critic": "Check contradictions; return JSON {ok, issues}."
+  },
+  "model_assignments": {
+    "planner": "local_deterministic",
+    "executor": "local_deterministic",
+    "critic": "local_deterministic"
+  },
+  "communication_topology": [
+    ["planner", "executor"],
+    ["executor", "critic"],
+    ["critic", "planner"]
+  ],
+  "routing_policy": "pipeline_with_critic_feedback",
+  "memory_policy": "none",
+  "tool_policy": "none",
+  "spawn_policy": "fixed",
+  "stopping_policy": "critic_ok_or_budget",
+  "resource_budget": { "max_active_workers": 3, "max_depth": 3, "max_seconds": 30, "max_model_calls": 0 },
+  "network_access": false,
+  "promotion": "research"
+}
