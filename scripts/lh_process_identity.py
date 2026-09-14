@@ -97,19 +97,24 @@ def cmdline_for_pid(pid: Any) -> Optional[str]:
         return None
     if sys.platform != "win32":
         return None
-    r = subprocess.run(
-        [
-            "powershell",
-            "-NoProfile",
-            "-Command",
-            f"(Get-CimInstance Win32_Process -Filter 'ProcessId={p}').CommandLine",
-        ],
-        capture_output=True,
-        text=True,
-        timeout=15,
-    )
-    t = (r.stdout or "").strip()
-    return t or None
+    cmd = [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        f"(Get-CimInstance Win32_Process -Filter 'ProcessId={p}').CommandLine",
+    ]
+    last = None
+    for timeout in (15, 30):
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+            t = (r.stdout or "").strip()
+            return t or None
+        except subprocess.TimeoutExpired as e:
+            last = e
+            continue
+        except Exception:
+            return None
+    return None
 
 
 def verified_role(pid: Any, claimed: str) -> bool:
