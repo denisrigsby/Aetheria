@@ -70,6 +70,8 @@ def _policy():
     import importlib.util
 
     p = ROOT / "scripts" / "lh_run_policy.py"
+    if not p.is_file():
+        return None
     spec = importlib.util.spec_from_file_location("lh_run_policy", p)
     if not spec or not spec.loader:
         return None
@@ -401,6 +403,11 @@ def cmd_stop(*, reason: str = "operator_stop") -> int:
             time.sleep(1)
         if pid_alive(wd.get("pid")):
             _kill_pid(wd.get("pid"), "watchdog", ROLE_WATCHDOG)
+    for row in list_allowlisted():
+        role = row.get("role")
+        pid = row.get("pid")
+        if role in (ROLE_SUPERVISOR, ROLE_WATCHDOG, ROLE_PROBE) and pid:
+            _kill_pid(pid, f"survivor-{role}", role)
     st = read_json(STATE_PATH)
     if st:
         st["status"] = "stopped_by_file"
@@ -413,9 +420,41 @@ def cmd_stop(*, reason: str = "operator_stop") -> int:
         print("INCOMPLETE stop: allowlisted descendants remain. Manual /start or resume after they are gone.")
         cmd_status(as_json=False)
         return 1
+    _reconcile_stale_pid_files()
     print("OK stopped (no allowlisted survivors). Manual /start or resume required when power is stable.")
     cmd_status(as_json=False)
     return 0
+
+
+def _reconcile_stale_pid_files() -> None:
+    """After verified stop: unlink PID files whose recorded PID is not a live matching role.
+
+    Policy: retain PID files while a process with that identity is alive; remove after
+    reconciliation so status does not display a stale number. Numbers remain in STOP
+    file comments and state JSON history / manual_start extra if needed.
+    """
+    pairs = (
+        (LH_PID, ROLE_SUPERVISOR, "supervisor"),
+        (WD_PID, ROLE_WATCHDOG, "watchdog"),
+    )
+    for path, role, label in pairs:
+        pid = read_pid(path)
+        if pid is None:
+            if path.exists():
+                try:
+                    path.unlink()
+                    print(f"  reconciled empty/unreadable {path.name}")
+                except Exception as e:
+                    print(f"  reconcile {path.name} note: {e}")
+            continue
+        if verified_role(pid, role):
+            print(f"  keep {path.name}: pid={pid} still verified {label}")
+            continue
+        try:
+            path.unlink()
+            print(f"  reconciled stale {path.name} (pid={pid} not verified {label})")
+        except Exception as e:
+            print(f"  reconcile {path.name} note: {e}")
 
 
 def resume(
