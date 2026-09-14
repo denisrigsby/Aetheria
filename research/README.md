@@ -5,6 +5,7 @@ Isolated from the stable control plane. Experiments **must not** start the produ
 ```text
 research/
   README.md                 this contract
+  architecture/             capability contract, matrix, portfolio, promotion gates
   schemas/                  JSON schemas (genome, candidate, lineage, result)
   ecologies/                fixed baseline genomes (Phase 2)
   benchmarks/               local, credential-free task suite + held-out set
@@ -13,6 +14,8 @@ research/
   evaluate.py               deterministic local scoring (no models required)
   runs/                     created by init; one subdirectory per experiment
 ```
+
+Future work must map to an approved capability id (see architecture/RESEARCH_INTAKE.md).
 
 Rules:
 
