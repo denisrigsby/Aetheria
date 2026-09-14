@@ -1,0 +1,21 @@
+{
+  "schema": "aetheria_research_profile_v1",
+  "platform": "windows-local",
+  "created_at": "2026-09-14T21:18:46.516652+00:00",
+  "max_active_workers": 8,
+  "max_logical_tasks": 64,
+  "max_model_calls": 0,
+  "max_task_depth": 4,
+  "max_task_lifetime_s": 30,
+  "max_experiment_lifetime_s": 120,
+  "max_memory_mb": 689,
+  "max_cpu": null,
+  "notes": "model-call limit separate from OS worker concurrency; local_deterministic uses 0 model calls",
+  "measured_ns": [
+    1,
+    2,
+    4,
+    8,
+    16
+  ]
+}

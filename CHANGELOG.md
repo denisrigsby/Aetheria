@@ -10,7 +10,9 @@ All notable changes to the **public control plane** are documented here.
 - Arbitrary-path install: [docs/INSTALL.md](docs/INSTALL.md), `python -u scripts/aetheria.py init`, `requirements-dev.lock`
 - Support/rollback/backup: [docs/SUPPORT.md](docs/SUPPORT.md)
 - Frontier evolution instructions and research substrate (`research/`: schemas, five fixed ecologies, local benchmark, bounded population controller)
-- Tests: `test_arbitrary_path`, `test_failure_recovery`, `test_research_substrate`
+- Tests: `test_arbitrary_path`, `test_failure_recovery`, `test_research_substrate`, `test_elastic`
+- `research/elastic.py` bounded elastic population; `research/config/windows-local.json` measured ceilings (workers vs model-calls separate)
+- `scripts/research_measure.py` local worker-scaling measurement (no plant, no network)
 
 ### Added
 

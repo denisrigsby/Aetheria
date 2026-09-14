@@ -36,9 +36,10 @@ def main(argv: list[str] | None = None) -> int:
     rest = argv[1:]
     _banner()
     if cmd == "init":
+        # Creates empty state dirs only. Does not start the plant, watchdog, or probes.
         (ROOT / "measurements").mkdir(parents=True, exist_ok=True)
         (ROOT / "research" / "runs").mkdir(parents=True, exist_ok=True)
-        print("initialized measurements/ and research/runs/")
+        print("initialized measurements/ and research/runs/ (no processes started)")
         return 0
     import plant_control as pc
 

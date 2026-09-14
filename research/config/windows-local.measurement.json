@@ -1,0 +1,214 @@
+{
+  "schema": "aetheria_measurement_v1",
+  "created_at": "2026-09-14T21:18:46.517652+00:00",
+  "blocks": [
+    {
+      "n": 1,
+      "runs": [
+        {
+          "repeat": 0,
+          "os_workers": 1,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.03,
+          "peak_ws_mb": 11.76,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.5814,
+          "cleanup_s": 0.001,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 1
+        },
+        {
+          "repeat": 1,
+          "os_workers": 1,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.03,
+          "peak_ws_mb": 11.65,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.6379,
+          "cleanup_s": 0.001,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 1
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "runs": [
+        {
+          "repeat": 0,
+          "os_workers": 2,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.06,
+          "peak_ws_mb": 23.41,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.5633,
+          "cleanup_s": 0.001,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 2
+        },
+        {
+          "repeat": 1,
+          "os_workers": 2,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.05,
+          "peak_ws_mb": 23.33,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.5579,
+          "cleanup_s": 0.001,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 2
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "runs": [
+        {
+          "repeat": 0,
+          "os_workers": 4,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.12,
+          "peak_ws_mb": 46.65,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.582,
+          "cleanup_s": 0.001,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 4
+        },
+        {
+          "repeat": 1,
+          "os_workers": 4,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.08,
+          "peak_ws_mb": 46.93,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.577,
+          "cleanup_s": 0.001,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 4
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "runs": [
+        {
+          "repeat": 0,
+          "os_workers": 8,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.28,
+          "peak_ws_mb": 93.48,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.6041,
+          "cleanup_s": 0.002,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 5
+        },
+        {
+          "repeat": 1,
+          "os_workers": 8,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.27,
+          "peak_ws_mb": 93.35,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.5962,
+          "cleanup_s": 0.002,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 5
+        }
+      ]
+    },
+    {
+      "n": 16,
+      "runs": [
+        {
+          "repeat": 0,
+          "os_workers": 16,
+          "logical_tasks": 40,
+          "model_calls": 0,
+          "cpu_s": 0.58,
+          "peak_ws_mb": 187.07,
+          "residual_ws_mb": null,
+          "bench_s": 0.001,
+          "elastic_s": 0.6626,
+          "cleanup_s": 0.003,
+          "timeouts": 0,
+          "failed_tasks": 0,
+          "quality_ok": 40,
+          "survivors": 0,
+          "elastic_stopped": "plateau",
+          "elastic_spawned": 5
+        }
+      ]
+    }
+  ],
+  "profile": {
+    "schema": "aetheria_research_profile_v1",
+    "platform": "windows-local",
+    "created_at": "2026-09-14T21:18:46.516652+00:00",
+    "max_active_workers": 8,
+    "max_logical_tasks": 64,
+    "max_model_calls": 0,
+    "max_task_depth": 4,
+    "max_task_lifetime_s": 30,
+    "max_experiment_lifetime_s": 120,
+    "max_memory_mb": 689,
+    "max_cpu": null,
+    "notes": "model-call limit separate from OS worker concurrency; local_deterministic uses 0 model calls",
+    "measured_ns": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ]
+  }
+}
