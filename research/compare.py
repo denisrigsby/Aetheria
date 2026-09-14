@@ -49,6 +49,9 @@ def run_comparison(repo: Path, profile: Dict[str, Any]) -> Path:
                 "n_tasks": eco["n"],
                 "roles": len(genome.get("roles") or []),
                 "max_active": eco["max_active"],
+                "mean_workers": eco.get("mean_workers"),
+                "duplication": eco.get("duplication"),
+                "composite": eco.get("composite"),
                 "shared_wall_s": elapsed,
             },
             "failures": [r["task"] for r in eco["results"] if not r.get("ok")],
@@ -63,8 +66,18 @@ def run_comparison(repo: Path, profile: Dict[str, Any]) -> Path:
         "created_at": utc(),
         "elapsed_s": elapsed,
         "profile": profile,
-        "ecologies": {k: {"ok": v["ok"], "n": v["n"], "max_active": v["max_active"], "roles": v["roles"]} for k, v in table["ecologies"].items()},
-        "note": "All ecologies share the same wall clock for this harness pass; per-ecology ok counts are quality, not extra compute.",
+        "ecologies": {
+            k: {
+                "ok": v["ok"],
+                "n": v["n"],
+                "max_active": v["max_active"],
+                "roles": v["roles"],
+                "mean_workers": v.get("mean_workers"),
+                "composite": v.get("composite"),
+            }
+            for k, v in table["ecologies"].items()
+        },
+        "note": "Quality ok is correctness, not extra compute. composite penalizes duplication and mean workers. Same task set for all genomes.",
         "candidates": artifacts,
     }
     (run / "comparison.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
