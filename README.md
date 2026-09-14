@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria-sovereign-agent)](https://github.com/denisrigsby/Aetheria-sovereign-agent/releases)
 
-**Detached ticks. Watchdog recovery. Restart-safe progress. Cloud optional.**
+**Detached ticks. Identity-checked stop. Manual-start after crash. Restart-safe progress. Cloud optional.**
 
 Local multi-cycle agent **control plane** — process supervision and on-disk continuity so long-running agent work does not die with the chat window that started it.
 
@@ -13,7 +13,16 @@ Local multi-cycle agent **control plane** — process supervision and on-disk co
 
 ### The pain this targets
 
-Long-running local agents **hang**, **get stuck**, lose work when the session dies, and often can’t **resume overnight**. “Local” stacks sometimes still surprise you with cloud calls. Frameworks optimize orchestration; few productize a simple **plant clock** under the worker.
+| Common AI complaint | Control plane answer |
+|---------------------|----------------------|
+| Dies when chat/IDE closes | Detached supervisor + on-disk state |
+| Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
+| “Is it still working?” | `status_report` + measurements JSON |
+| Overnight babysitting | Rolling ticks / segments + watchdog |
+| Thrash restart after power flap | Manual-start policy; resume when stable |
+| Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
+
+See [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md).
 
 ### Job #1 — local campaign runner
 
@@ -22,9 +31,22 @@ Long-running local agents **hang**, **get stuck**, lose work when the session di
 | 1 | `python -u scripts/demo_local_smoke.py` — control plane layout + compile (no private sauce) |
 | 2 | (Full operator root) launch supervisor + watchdog — detached ticks |
 | 3 | `status_report` / measurements — still alive? |
-| 4 | Write `measurements/long_horizon_STOP` — hard stop works |
+| 4 | `python -u scripts/plant_control.py stop` — STOP files + identity-checked tree kill; survivors reported |
 
 **Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
+
+### Recovery (full operator root)
+
+Prefer the **detached Python launcher** (avoids Windows Store `python` alias hangs):
+
+```powershell
+python -u scripts/launch_lh_detached.py --continue-tick --max-ticks 48
+# or:
+python -u scripts/plant_control.py resume --with-watchdog
+python -u scripts/status_report.py
+```
+
+Segment end (`completed_max_ticks`) is **normal** — a new PID continues the campaign; mom / durable logs can carry across processes.
 
 ## Why this exists
 
@@ -33,7 +55,7 @@ Long-running local AI work often dies with the interactive session that started 
 Aetheria’s published control plane answers that with:
 
 1. A **detached plant clock** (long-horizon supervisor)  
-2. A **watchdog** that relaunches on death or stall  
+2. A **watchdog** that **latches manual start** after unexpected death (opt-in AUTORUN to thrash-relaunch)  
 3. A **cycle runner contract** (structured summary, env-based cycle count, hard timeouts)  
 4. **Rolling process segments** (default 48 ticks — multi-PID campaigns are normal)  
 5. **Restart-resilient green-tick logs** for optional change-control gates  
@@ -54,8 +76,9 @@ Private runtime pieces (orchestrator, living memory, asset registry) stay on the
 | **Supervised tick loop** | Scheduled multi-cycle work with on-disk checkpoints |
 | **Cycle runner contract** | `lh_probe_summary_v1` JSON; env `AETHERIA_NUM_CYCLES`; dual-read fallback |
 | **Bounded finalize** | After contract success, short grace then terminate hang-prone tails |
-| **Watchdog recovery** | Relaunch on death, stall, or segment completion |
-| **PID-truth relaunch** | Success = live supervisor PID (poll), not only a fast launcher return |
+| **Watchdog recovery** | Default: manual-start latch after crash/segment; AUTORUN file to relaunch |
+| **PID-truth + identity** | Alive = PID exists **and** cmdline is the claimed role; PID-only matches rejected |
+| **Stop** | Signals supervisor **and** watchdog STOP files; kills supervisor tree while still alive (`taskkill /PID /F /T` on Windows); kills recorded probe by identity; reports remaining allowlisted descendants; exit 1 if any remain |
 | **Rolling segments** | Default **48 ticks** per process — not single-PID heroics |
 | **Durable green ticks** | Gate progress survives process restart |
 | **Measured entry path** | `aetheria_hope_path` for health + short runs |

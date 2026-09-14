@@ -33,16 +33,52 @@ from typing import Any, Dict, Optional, Tuple
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+from lh_process_identity import ROLE_SUPERVISOR, kill_if_verified, verified_role  # noqa: E402
 
 MEAS = ROOT / "measurements"
 STATE_PATH = MEAS / "long_horizon_state.json"
 PID_PATH = MEAS / "long_horizon.pid"
 LH_STOP = MEAS / "long_horizon_STOP"
+LH_STANDBY = MEAS / "long_horizon_STANDBY.json"
+RH_RELAUNCH_REQ = MEAS / "red_helix_relaunch_request.json"
 WD_STOP = MEAS / "watchdog_STOP"
 WD_PID = MEAS / "watchdog.pid"
 WD_STATUS = MEAS / "watchdog_status.json"
 NOTIFY = MEAS / "NOTIFY_USER.md"
 WD_LOG = ROOT / "logs" / f"lh_watchdog_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+
+
+def standby_active() -> bool:
+    """Durable operator pause — survives reboot; blocks relaunch until plant_control resume."""
+    if not LH_STANDBY.exists():
+        return False
+    try:
+        s = json.loads(LH_STANDBY.read_text(encoding="utf-8"))
+        return bool(s.get("active", True))
+    except Exception:
+        # Unreadable standby file: fail closed (do not relaunch)
+        return True
+
+
+def _run_policy():
+    import importlib.util
+
+    p = ROOT / "scripts" / "lh_run_policy.py"
+    spec = importlib.util.spec_from_file_location("lh_run_policy", p)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def manual_start_required() -> bool:
+    mod = _run_policy()
+    if mod is None:
+        return standby_active()
+    return bool(mod.manual_start_required())
+
 
 # Thresholds (minutes)
 HEARTBEAT_STALE_MIN = 5.0          # idle should heartbeat ~30s
@@ -180,59 +216,45 @@ def relaunch_lh(cycles: int = 2, interval_min: float = 30.0, max_ticks: int = 0)
 
     Default max_ticks=48 rolling segment (P2), not single-PID 200 heroics.
     """
+    if standby_active():
+        return False, "standby_active_not_relaunching"
+    if manual_start_required():
+        return False, "manual_start_required_not_relaunching"
     if LH_STOP.exists():
         return False, "lh_stop_file_present_not_relaunching"
-    launch = ROOT / "scripts" / "launch_long_horizon.ps1"
-    # P2: rolling segment default
+    # P2: rolling segment default — direct detached Python (no PS 180s hang)
     mt = max_ticks if max_ticks > 0 else 48
-    args = [
-        "powershell",
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        str(launch),
-        "-Cycles",
-        str(cycles),
-        "-IntervalMin",
-        str(interval_min),
-        "-MaxTicks",
-        str(mt),
-    ]
-    out = ""
-    timed_out = False
     try:
-        # P1: allow slow launch; do not treat timeout alone as failure
-        r = subprocess.run(args, cwd=str(ROOT), capture_output=True, text=True, timeout=180)
-        out = (r.stdout or "") + (r.stderr or "")
-        log(f"relaunch rc={r.returncode} out={out[:400]}")
-    except subprocess.TimeoutExpired as e:
-        timed_out = True
-        out = f"timeout_180s partial={(e.stdout or b'')[:200]!r}"
-        log(f"relaunch powershell timed out (will poll pid): {out[:200]}")
-    except Exception as e:
-        out = str(e)[:400]
-        log(f"relaunch exception: {out}")
+        import importlib.util
 
-    # P1: poll pid file — success if supervisor is alive
-    detail_parts = [out[:300] if out else ""]
-    if timed_out:
-        detail_parts.append("powershell_timeout_ignored_if_pid_alive")
-    for i in range(40):  # up to ~120s
-        pid = read_pid_file()
-        if pid is not None and pid_alive(pid):
-            msg = f"ok pid={pid} poll={i} max_ticks={mt} " + " ".join(detail_parts)
-            log(f"relaunch success: {msg[:300]}")
-            return True, msg[:500]
-        time.sleep(3)
-    pid = read_pid_file()
-    return False, f"pid_not_alive after launch pid={pid} mt={mt} " + " ".join(detail_parts)[:300]
+        lp = ROOT / "scripts" / "launch_lh_detached.py"
+        spec = importlib.util.spec_from_file_location("launch_lh_detached", lp)
+        mod = importlib.util.module_from_spec(spec)
+        assert spec.loader
+        spec.loader.exec_module(mod)
+        ok, detail, pid = mod.launch_lh_detached(
+            cycles=int(cycles),
+            interval_min=float(interval_min),
+            max_ticks=int(mt),
+            continue_tick=True,
+            clear_latches=False,
+            stop_old=True,
+            poll_s=90.0,
+        )
+        log(f"relaunch detached ok={ok} detail={detail[:400]}")
+        if ok:
+            return True, detail[:500]
+        return False, detail[:500]
+    except Exception as e:
+        out = f"{type(e).__name__}: {e}"
+        log(f"relaunch exception: {out}")
+        return False, out[:400]
 
 
 def diagnose() -> Dict[str, Any]:
     state = read_state()
     pid = state.get("pid") or read_pid_file()
-    alive = pid_alive(pid) if pid else False
+    alive = bool(pid) and verified_role(pid, ROLE_SUPERVISOR)
     status = state.get("status")
     hb_age = age_min(state.get("heartbeat_at") or state.get("updated_at"))
     tick_age = age_min(state.get("last_tick_finished"))
@@ -240,30 +262,90 @@ def diagnose() -> Dict[str, Any]:
     action = "none"
     reason = "healthy"
 
-    if LH_STOP.exists():
+    # Power-flap safe default: no auto-relaunch unless AUTORUN opt-in
+    pol = _run_policy()
+
+    if standby_active():
+        action = "none"
+        reason = "user_standby"
+    elif manual_start_required():
+        action = "none"
+        reason = "manual_start_required"
+    elif LH_STOP.exists():
         action = "none"
         reason = "user_stop_file"
+    elif RH_RELAUNCH_REQ.exists() and alive and not manual_start_required():
+        # C2 actuator only while intentionally running (not during manual latch)
+        action = "kill_relaunch"
+        reason = "red_helix_coherence_debt"
     elif not alive:
-        if status in ("completed_max_ticks", "completed_once", "stopped_by_file"):
-            if status == "stopped_by_file" or LH_STOP.exists():
-                action = "none"
-                reason = f"exited_{status}"
-            else:
-                action = "relaunch"
-                reason = f"exited_{status}"
-        elif status in ("degraded",) and last_ok is False:
-            action = "relaunch"
-            reason = "dead_after_degraded"
+        # Unexpected death (crash / power loss): latch manual start; do not thrash relaunch
+        if status in ("completed_max_ticks", "completed_once"):
+            action = "none"
+            reason = f"exited_{status}"
+            if pol is not None:
+                try:
+                    pol.require_manual_start(
+                        reason=f"segment_ended:{status}",
+                        source="watchdog",
+                    )
+                except Exception:
+                    pass
+        elif status in ("stopped_by_file", "standby") or LH_STOP.exists() or standby_active():
+            action = "none"
+            reason = f"exited_{status}"
         else:
-            action = "relaunch"
-            reason = "pid_dead"
+            action = "none"
+            reason = "pid_dead_manual_start"
+            if pol is not None:
+                try:
+                    pol.require_manual_start(
+                        reason="unexpected_process_death_crash_or_power",
+                        source="watchdog",
+                        extra={
+                            "last_status": status,
+                            "last_ok": last_ok,
+                            "tick": state.get("tick"),
+                        },
+                    )
+                except Exception:
+                    pass
+            try:
+                notify(
+                    "Plant stopped — manual start required",
+                    f"LH process not alive (status={status}).\n\n"
+                    "Auto-relaunch is **off** (power-flap safe).\n"
+                    "When power is stable: `python scripts/plant_control.py resume --with-watchdog`\n"
+                    "or companion chat: `/start`\n\n"
+                    "Opt-in thrash relaunch: measurements/long_horizon_AUTORUN.enable",
+                    level="warn",
+                )
+            except Exception:
+                pass
     elif status == "running_tick" and hb_age is not None and hb_age > RUNNING_STUCK_MIN:
-        # updated_at set at tick start; if stuck >25m in running_tick → kill+relaunch
-        action = "kill_relaunch"
-        reason = f"running_tick_stuck_{hb_age:.1f}m"
+        # Machine is up but tick stuck — still no relaunch if manual latch; else recover
+        if manual_start_required():
+            action = "none"
+            reason = "stuck_but_manual_latch"
+        else:
+            action = "kill_relaunch"
+            reason = f"running_tick_stuck_{hb_age:.1f}m"
     elif status == "idle_between_ticks" and hb_age is not None and hb_age > HEARTBEAT_STALE_MIN:
-        action = "kill_relaunch"
-        reason = f"heartbeat_stale_{hb_age:.1f}m"
+        if manual_start_required():
+            action = "none"
+            reason = "stale_but_manual_latch"
+        else:
+            # Stale heartbeat while "alive" may be false positive after power blip — prefer manual
+            action = "none"
+            reason = "heartbeat_stale_manual_preferred"
+            if pol is not None:
+                try:
+                    pol.require_manual_start(
+                        reason=f"heartbeat_stale_{hb_age:.1f}m",
+                        source="watchdog",
+                    )
+                except Exception:
+                    pass
     elif last_ok is False and status == "degraded":
         action = "notify_only"
         reason = "last_tick_failed_alive"
@@ -286,16 +368,14 @@ def diagnose() -> Dict[str, Any]:
         "interval_min": state.get("interval_min"),
         "max_ticks": state.get("max_ticks"),
         "lh_stop": LH_STOP.exists(),
+        "standby": standby_active(),
+        "manual_start": manual_start_required(),
     }
 
 
 def kill_pid(pid: Any) -> None:
-    try:
-        p = int(pid)
-        subprocess.run(["taskkill", "/PID", str(p), "/F"], capture_output=True, timeout=30)
-        log(f"killed pid={p}")
-    except Exception as e:
-        log(f"kill note: {e}")
+    r = kill_if_verified(pid, ROLE_SUPERVISOR, tree=True)
+    log(f"kill supervisor pid={pid} {r.get('reason')}")
 
 
 def apply_action(diag: Dict[str, Any]) -> Dict[str, Any]:
@@ -322,6 +402,15 @@ def apply_action(diag: Dict[str, Any]) -> Dict[str, Any]:
         ok, detail = relaunch_lh()
         result["ok"] = ok
         result["detail"] = detail
+        # clear RH actuator request after attempt (success or fail — avoid loop spam)
+        if diag.get("reason") == "red_helix_coherence_debt" and RH_RELAUNCH_REQ.exists():
+            try:
+                # archive then clear
+                arch = MEAS / "red_helix_relaunch_request_last.json"
+                arch.write_text(RH_RELAUNCH_REQ.read_text(encoding="utf-8"), encoding="utf-8")
+                RH_RELAUNCH_REQ.unlink()
+            except Exception as e:
+                log(f"rh request clear note: {e}")
         if ok:
             notify(
                 "Long-horizon relaunched",

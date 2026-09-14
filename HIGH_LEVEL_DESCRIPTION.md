@@ -10,7 +10,7 @@ Private deployment state — living memory, asset registries, host configuration
 
 ## One sentence
 
-Process supervision for long-horizon local AI work: start a loop, persist progress, recover from crashes, and treat process restarts as normal segments rather than campaign failure.
+Process supervision for long-horizon local AI work: start a loop, persist progress, recover from crashes, treat process restarts as normal segments, and make **stop** mean identity-checked termination of the supervisor tree, recorded probe, and watchdog — with survivors reported. Private runtime (companion, living dumps, model adapters) is **not** in this repository.
 
 ## Keywords
 

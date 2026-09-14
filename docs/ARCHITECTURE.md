@@ -17,6 +17,7 @@ flowchart TB
   subgraph control [Control plane - this repository]
     SUP[long_horizon_supervisor]
     WD[lh_watchdog]
+    PC[plant_control]
     HOPE[aetheria_hope_path]
     LAUNCH[launch_*.ps1]
     GATE[eval_residual_gate_v2]
@@ -99,7 +100,13 @@ Separate process. Monitors:
 - Stuck `running_tick` beyond a threshold  
 - Clean exit after max ticks (optional relaunch)  
 
-Relaunches through the launch script. **Relaunch success** is defined by a live supervisor PID (with polling), not solely by a fast PowerShell return code. Writes `measurements/watchdog_status.json` and may write an optional operator notify file.
+Default after unexpected death or segment end: **manual-start latch** (no thrash relaunch) unless `long_horizon_AUTORUN.enable` is present. Kill/relaunch of a supervisor PID requires **command-line identity** (`long_horizon_supervisor.py`), not PID-only. Writes `measurements/watchdog_status.json`.
+
+### `plant_control`
+
+Operator stop/standby/halt/resume. Ordinary **stop** writes supervisor and watchdog STOP files, tree-kills a **still-alive** verified supervisor (`taskkill /PID /F /T` on Windows), kills a recorded probe only if identity is probe, and lists remaining allowlisted processes. Success = none remain (exit 0). `/T` after the parent is already dead does not reap children — that is why the probe PID is killed separately.
+
+Tree-kill is **Windows-specific**. Identity matching is portable.
 
 ### `aetheria_hope_path`
 

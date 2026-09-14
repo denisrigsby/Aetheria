@@ -43,16 +43,25 @@ powershell -File scripts/launch_long_horizon.ps1 -Cycles 2 -IntervalMin 30 -MaxT
 powershell -File scripts/launch_lh_watchdog.ps1
 ```
 
-A segment ending (`completed_max_ticks`) is normal. The watchdog can relaunch a new segment. Process identity is a **worker**, not the whole campaign.
+A segment ending (`completed_max_ticks`) is normal. The watchdog **latches manual start** (does not thrash-relaunch) unless `measurements/long_horizon_AUTORUN.enable` exists. Process identity is a **worker**, not the whole campaign.
 
 ### Stop
 
+Preferred (Windows):
+
 ```powershell
-Set-Content measurements/long_horizon_STOP "stop"
-Set-Content measurements/watchdog_STOP "stop"
+python -u scripts/plant_control.py stop --reason "operator_stop"
 ```
 
-The supervisor honors the stop file between ticks; the watchdog honors its stop file on the next poll.
+Contract:
+
+- Writes `long_horizon_STOP` and `watchdog_STOP`.
+- If the supervisor PID is still alive **and** its command line contains `long_horizon_supervisor.py`, kills that process **tree** (`taskkill /PID /F /T`). `/T` on an already-dead parent does **not** kill children — the recorded probe PID is killed separately when identity is probe.
+- Ordinary **stop also signals and stops the watchdog**.
+- Success = no remaining processes whose command line matches supervisor, watchdog, `grok_supervised_12_probe`, or `_lh_probe_`. Exit code 1 lists survivors.
+- STOP files alone are a graceful request; they are not a process-tree guarantee.
+
+Portable (non-Windows): STOP files plus SIGTERM of a **verified** PID; tree-kill is Windows-specific.
 
 ## After host restart
 
@@ -61,6 +70,25 @@ The supervisor honors the stop file between ticks; the watchdog honors its stop 
 3. If `sovereign_asset_registry.json` is missing, restore the newest copy under `backups/` before heavy work.  
 4. Prefer **restore-and-continue** over configuration experiments while recovering.  
 5. Expect the **tick counter** to restart on a new process; momentum and durable green-tick logs can continue.
+
+### Reliable relaunch (preferred)
+
+Windows Store `python` shims and some PowerShell `Start-Process` paths can hang. Use the detached launcher:
+
+```powershell
+# Continue tick counter when prior state exists
+python -u scripts/launch_lh_detached.py --continue-tick --max-ticks 48 --poll-s 45
+# Operator wrapper (uses the same detached path):
+python -u scripts/plant_control.py resume --with-watchdog
+# Watchdog:
+powershell -File scripts/launch_lh_watchdog.ps1
+```
+
+Optional: set `AETHERIA_PYTHON` to an absolute interpreter (e.g. `C:\Program Files\Python310\python.exe`).
+
+### Segment complete is not failure
+
+`status=completed_max_ticks` means the **process segment** finished (default 48 ticks). Campaign progress (mom, durable gate logs) can continue on the next PID. Do not treat multi-PID life as a wiped campaign.
 
 ## Status, lag, and orphans
 
