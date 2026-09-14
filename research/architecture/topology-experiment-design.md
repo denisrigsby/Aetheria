@@ -1,6 +1,8 @@
-# Future topology experiment (NOT IMPLEMENTED, NOT EXECUTED, NOT APPROVED)
+# Topology experiment (edges only)
 
-This note prepares a later human decision. It does **not** enable topology mutation.
+**Approved scope:** communication-edge add/remove among existing roles. Implemented in `research/topology.py` and `research/topology_experiment.py`.
+
+**Not approved / not implemented:** prompt mutation, role invention, model-weight change, production promotion, extra model calls.
 
 If approved later, an experiment may:
 

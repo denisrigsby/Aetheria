@@ -63,22 +63,54 @@ def sanitize_genome(genome: Dict[str, Any], profile: Optional[Dict[str, Any]] = 
     return g
 
 
+def topology_edges(genome: Dict[str, Any]) -> Set[tuple]:
+    raw = genome.get("communication_topology") or []
+    out: Set[tuple] = set()
+    for item in raw:
+        if isinstance(item, (list, tuple)) and len(item) == 2:
+            a, b = str(item[0]), str(item[1])
+            if a and b and a != b:
+                out.add((a, b))
+    return out
+
+
+def _indegree(edges: Set[tuple], node: str) -> int:
+    return sum(1 for a, b in edges if b == node)
+
+
 def capabilities(genome: Dict[str, Any]) -> Dict[str, Any]:
     roles: Set[str] = set(genome.get("roles") or [])
     routing = str(genome.get("routing_policy") or "")
     budget = genome.get("resource_budget") or {}
+    edges = topology_edges(genome)
+    critic_role = "critic" in roles
+    if edges:
+        critic_live = critic_role and _indegree(edges, "critic") > 0
+        planner_exec = ("planner" in roles and "executor" in roles and ("planner", "executor") in edges)
+        spec_join = any(b == "synthesizer" and a.startswith("specialist") for a, b in edges)
+        hier = ("coordinator" in roles and ("coordinator", "worker") in edges)
+        parallel = any(_indegree(edges, n) >= 2 for n in roles)
+    else:
+        critic_live = critic_role
+        planner_exec = "planner" in roles and "executor" in roles
+        spec_join = any(str(r).startswith("specialist") for r in roles) and "synthesizer" in roles
+        hier = "coordinator" in roles or routing == "hierarchy"
+        parallel = routing in ("fan_in", "parallel_then_merge")
     return {
-        "critic": "critic" in roles,
+        "critic": critic_live,
         "planner": "planner" in roles or "coordinator" in roles,
         "executor": "executor" in roles or "worker" in roles or "generalist" in roles,
         "specialists": any(str(r).startswith("specialist") for r in roles),
         "synthesizer": "synthesizer" in roles,
-        "hierarchy": "coordinator" in roles or routing == "hierarchy",
-        "parallel": routing in ("fan_in", "parallel_then_merge"),
+        "hierarchy": hier,
+        "parallel": parallel,
+        "planner_exec_edge": planner_exec if edges else planner_exec,
+        "spec_join_edge": spec_join,
         "roles": roles,
         "n_roles": len(roles),
         "max_active": int(budget.get("max_active_workers") or 1),
         "max_depth": int(budget.get("max_depth") or 1),
+        "edges": edges,
     }
 
 
@@ -144,9 +176,12 @@ def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any], profile: O
 
     if name in ("multi_doc_synthesis", "held_out_multi_doc"):
         expect = spec.get("expect") or {}
-        can_join = cap["specialists"] and cap["synthesizer"]
-        can_join = can_join or (cap["planner"] and cap["executor"])
-        can_join = can_join or cap["hierarchy"]
+        if cap.get("edges"):
+            can_join = bool(cap.get("spec_join_edge") or cap.get("planner_exec_edge") or cap["hierarchy"])
+        else:
+            can_join = cap["specialists"] and cap["synthesizer"]
+            can_join = can_join or (cap["planner"] and cap["executor"])
+            can_join = can_join or cap["hierarchy"]
         out["ok"] = bool(can_join) and bool(expect)
         out["quality"] = int(out["ok"])
         out["joined"] = bool(can_join)
@@ -242,6 +277,36 @@ def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any], profile: O
     return out
 
 
+def score_genome(repo: Path, name: str, genome: Dict[str, Any], include_held_out: bool) -> Dict[str, Any]:
+    suite = load_suite(repo)
+    profile = load_profile(repo)
+    genome = sanitize_genome(genome, profile)
+    tasks = list(suite["visible_tasks"])
+    held = list(suite.get("held_out_tasks") or [])
+    if include_held_out:
+        tasks.extend(held)
+    results = []
+    for t in tasks:
+        spec = (suite.get("tasks") or {}).get(t) or {}
+        results.append(run_task(t, spec, genome, profile))
+    n_ok = sum(1 for r in results if r.get("ok"))
+    dup = sum(float(r.get("duplication") or 0) for r in results)
+    workers = sum(int(r.get("workers_used") or 0) for r in results)
+    n = max(1, len(results))
+    composite = n_ok - 0.15 * dup - 0.02 * (workers / n)
+    return {
+        "ok": n_ok,
+        "n": len(results),
+        "results": results,
+        "roles": genome.get("roles"),
+        "max_active": (genome.get("resource_budget") or {}).get("max_active_workers"),
+        "duplication": dup,
+        "mean_workers": round(workers / n, 3),
+        "composite": round(composite, 4),
+        "name": name,
+    }
+
+
 def compare_ecologies(repo: Path, ecology_names: List[str], include_held_out: bool) -> Dict[str, Any]:
     suite = load_suite(repo)
     profile = load_profile(repo)
@@ -262,26 +327,8 @@ def compare_ecologies(repo: Path, ecology_names: List[str], include_held_out: bo
     }
     for name in ecology_names:
         gpath = repo / "research" / "ecologies" / f"{name}.json"
-        genome = sanitize_genome(json.loads(gpath.read_text(encoding="utf-8")), profile)
-        results = []
-        for t in tasks:
-            spec = (suite.get("tasks") or {}).get(t) or {}
-            results.append(run_task(t, spec, genome, profile))
-        n_ok = sum(1 for r in results if r.get("ok"))
-        dup = sum(float(r.get("duplication") or 0) for r in results)
-        workers = sum(int(r.get("workers_used") or 0) for r in results)
-        n = max(1, len(results))
-        composite = n_ok - 0.15 * dup - 0.02 * (workers / n)
-        table["ecologies"][name] = {
-            "ok": n_ok,
-            "n": len(results),
-            "results": results,
-            "roles": genome.get("roles"),
-            "max_active": (genome.get("resource_budget") or {}).get("max_active_workers"),
-            "duplication": dup,
-            "mean_workers": round(workers / n, 3),
-            "composite": round(composite, 4),
-        }
+        genome = json.loads(gpath.read_text(encoding="utf-8"))
+        table["ecologies"][name] = score_genome(repo, name, genome, include_held_out)
     table["explanation"] = explain_comparison(table)
     return table
 
