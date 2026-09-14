@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aetheria-genome-v1",
+  "type": "object",
+  "required": ["schema", "name", "roles", "resource_budget", "network_access", "promotion"],
+  "properties": {
+    "schema": { "const": "aetheria_genome_v1" },
+    "name": { "type": "string" },
+    "roles": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "role_prompts": { "type": "object" },
+    "model_assignments": { "type": "object" },
+    "communication_topology": { "type": "array" },
+    "routing_policy": { "type": "string" },
+    "memory_policy": { "type": "string" },
+    "tool_policy": { "type": "string" },
+    "spawn_policy": { "type": "string" },
+    "stopping_policy": { "type": "string" },
+    "resource_budget": {
+      "type": "object",
+      "required": ["max_active_workers", "max_depth", "max_seconds", "max_model_calls"],
+      "properties": {
+        "max_active_workers": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "max_depth": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "max_seconds": { "type": "number", "minimum": 1 },
+        "max_model_calls": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "network_access": { "type": "boolean" },
+    "promotion": { "type": "string", "enum": ["research", "hold", "rejected"] }
+  }
+}

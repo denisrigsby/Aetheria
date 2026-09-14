@@ -33,6 +33,8 @@ $env:AETHERIA_META_RECON = "0"
 
 Optional: `AETHERIA_BIN_ROOT`, `AETHERIA_LIVING_PATH`.
 
+Full install steps: [docs/INSTALL.md](docs/INSTALL.md). Support/rollback: [docs/SUPPORT.md](docs/SUPPORT.md). Research: [docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md](docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md).
+
 ## Smoke tests
 
 ```powershell

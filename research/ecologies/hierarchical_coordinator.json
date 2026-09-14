@@ -1,0 +1,19 @@
+{
+  "schema": "aetheria_genome_v1",
+  "name": "hierarchical_coordinator",
+  "roles": ["coordinator", "worker"],
+  "role_prompts": {
+    "coordinator": "Assign subtasks to workers; stop when budget is exhausted.",
+    "worker": "Complete one subtask and return."
+  },
+  "model_assignments": { "coordinator": "local_deterministic", "worker": "local_deterministic" },
+  "communication_topology": [["coordinator", "worker"]],
+  "routing_policy": "hierarchy",
+  "memory_policy": "none",
+  "tool_policy": "none",
+  "spawn_policy": "coordinator_bounded",
+  "stopping_policy": "budget_or_done",
+  "resource_budget": { "max_active_workers": 4, "max_depth": 3, "max_seconds": 30, "max_model_calls": 0 },
+  "network_access": false,
+  "promotion": "research"
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "aetheria_genome_v1",
+  "name": "parallel_specialists_synthesizer",
+  "roles": ["specialist_a", "specialist_b", "synthesizer"],
+  "role_prompts": {
+    "specialist_a": "Extract claims.",
+    "specialist_b": "Extract numbers.",
+    "synthesizer": "Merge specialist outputs into one JSON answer."
+  },
+  "model_assignments": {
+    "specialist_a": "local_deterministic",
+    "specialist_b": "local_deterministic",
+    "synthesizer": "local_deterministic"
+  },
+  "communication_topology": [["specialist_a", "synthesizer"], ["specialist_b", "synthesizer"]],
+  "routing_policy": "fan_in",
+  "memory_policy": "none",
+  "tool_policy": "none",
+  "spawn_policy": "parallel_then_merge",
+  "stopping_policy": "synthesizer_done",
+  "resource_budget": { "max_active_workers": 3, "max_depth": 2, "max_seconds": 30, "max_model_calls": 0 },
+  "network_access": false,
+  "promotion": "research"
+}
