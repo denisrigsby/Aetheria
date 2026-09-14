@@ -76,8 +76,11 @@ def classify(goal: Optional[str], request: Optional[Dict[str, Any]] = None) -> D
             "question": None,
             "alternative": "Stay on local_deterministic_v2 / vertical-slice missions.",
         }
-    if ("label" in gl and "alpha" in gl and "beta" in gl) or (
-        "mode" in gl and "strict" in gl and "lenient" in gl
+    if (
+        ("label" in gl and "alpha" in gl and "beta" in gl)
+        or ("mode" in gl and "strict" in gl and "lenient" in gl)
+        or ("repair" in gl and "add" in gl)
+        or ("defect" in gl and "add" in gl)
     ):
         if "ambiguous" not in gl and "maybe" not in gl:
             return {

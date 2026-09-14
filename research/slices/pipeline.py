@@ -83,19 +83,27 @@ def _artifact_stats(run: Path) -> Dict[str, Any]:
     return {"artifact_count": len(files), "artifact_bytes": total, "artifact_paths": sorted(files)}
 
 
+def _implemented(src: str, request: Dict[str, Any], applied: Optional[str] = None) -> bool:
+    want, old = request["to"], request["from"]
+    if request.get("kind") == "repair":
+        return want in src and old not in src
+    key = request.get("assign", "LABEL")
+    return f'{key} = "{want}"' in src and f'{key} = "{old}"' not in src
+
+
 def independent_verify(fixture: Path, request: Dict[str, Any], test_rc: Optional[int]) -> Dict[str, Any]:
     src = _read(fixture, request["file"])
-    want, old = request["to"], request["from"]
-    key = request.get("assign", "LABEL")
-    implemented = f'{key} = "{want}"' in src and f'{key} = "{old}"' not in src
+    want = request["to"]
+    implemented = _implemented(src, request)
     marker = request.get("unrelated_marker") or "def ping"
     unrelated_ok = marker in src or any(
         marker in p.read_text(encoding="utf-8")
         for p in fixture.glob("*.py")
-        if p.name != request["generate_test"]
+        if p.name != request.get("generate_test")
     )
     gen = fixture / request["generate_test"]
-    gen_ok = gen.is_file() and want in gen.read_text(encoding="utf-8")
+    needle = str((request.get("failing_assertion") or {}).get("expect", want))
+    gen_ok = gen.is_file() and needle in gen.read_text(encoding="utf-8")
     tests_ok = test_rc == 0
     return {
         "independent": True,
@@ -319,7 +327,10 @@ def run_mission(
     key = request.get("assign", "LABEL")
     new_val = wrong_value if wrong_value is not None else request["to"]
     src = _read(fixture, target_file)
-    new_src = src.replace(f'{key} = "{request["from"]}"', f'{key} = "{new_val}"')
+    if request.get("kind") == "repair":
+        new_src = src.replace(request["from"], new_val)
+    else:
+        new_src = src.replace(f'{key} = "{request["from"]}"', f'{key} = "{new_val}"')
     _write(fixture, target_file, new_src)
     evidence["modified"] = True
     evidence["modified_paths"] = [target_file]
@@ -331,10 +342,18 @@ def run_mission(
 
     if not omit_test:
         tname = request["generate_test"]
-        body = (
-            "import unittest\nimport {mod}\n\nclass T(unittest.TestCase):\n"
-            "    def test_val(self):\n        self.assertEqual({mod}.{key}, {val!r})\n"
-        ).format(mod=Path(target_file).stem, key=key, val=new_val)
+        fail = request.get("failing_assertion") or {}
+        if fail:
+            body = (
+                "import unittest\nimport {mod}\n\nclass T(unittest.TestCase):\n"
+                "    def test_regression_from_failing_assertion(self):\n"
+                "        self.assertEqual({expr}, {expect!r})\n"
+            ).format(mod=Path(request["file"]).stem, expr=fail["expr"], expect=fail["expect"])
+        else:
+            body = (
+                "import unittest\nimport {mod}\n\nclass T(unittest.TestCase):\n"
+                "    def test_val(self):\n        self.assertEqual({mod}.{key}, {val!r})\n"
+            ).format(mod=Path(target_file).stem, key=key, val=new_val)
         _write(fixture, tname, body)
         evidence["generated_tests"] = [tname]
         evidence["test_generated"] = True
