@@ -94,7 +94,7 @@ jobs:
       - name: Portable process-identity tests
         run: |
           python -m pip install --quiet pytest
-          python -m pytest tests/test_lh_process_identity.py tests/test_arbitrary_path.py tests/test_failure_recovery.py tests/test_research_substrate.py tests/test_elastic.py -q --tb=short
+          python -m pytest tests/test_lh_process_identity.py tests/test_arbitrary_path.py tests/test_failure_recovery.py tests/test_research_substrate.py tests/test_elastic.py tests/test_evaluator_independence.py -q --tb=short
 
   windows-control-plane:
     name: Windows launcher and process tests
@@ -111,7 +111,7 @@ jobs:
       - name: Portable + Windows identity tests
         run: |
           python -m pip install --quiet pytest
-          python -m pytest tests/test_lh_process_identity.py tests/test_lh_process_windows.py tests/test_arbitrary_path.py tests/test_failure_recovery.py tests/test_research_substrate.py tests/test_elastic.py -q --tb=short
+          python -m pytest tests/test_lh_process_identity.py tests/test_lh_process_windows.py tests/test_arbitrary_path.py tests/test_failure_recovery.py tests/test_research_substrate.py tests/test_elastic.py tests/test_evaluator_independence.py -q --tb=short
       - name: PowerShell launcher parse
         shell: pwsh
         run: |
