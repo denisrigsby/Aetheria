@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aetheria-candidate-v1",
+  "type": "object",
+  "required": [
+    "schema", "candidate_id", "parent_ids", "generation", "creation_time",
+    "genome", "task_set", "resource_limits", "promotion_status"
+  ],
+  "properties": {
+    "schema": { "const": "aetheria_candidate_v1" },
+    "candidate_id": { "type": "string" },
+    "parent_ids": { "type": "array", "items": { "type": "string" } },
+    "generation": { "type": "integer", "minimum": 0 },
+    "creation_time": { "type": "string" },
+    "genome": { "type": "object" },
+    "task_set": { "type": "array", "items": { "type": "string" } },
+    "resource_limits": { "type": "object" },
+    "results": { "type": "object" },
+    "scores": { "type": "object" },
+    "failures": { "type": "array" },
+    "regressions": { "type": "array" },
+    "artifacts": { "type": "array" },
+    "promotion_status": { "type": "string", "enum": ["research", "hold", "rejected", "promoted_test"] }
+  }
+}

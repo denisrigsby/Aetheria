@@ -1,0 +1,52 @@
+{
+  "schema": "aetheria_benchmark_v1",
+  "name": "local_deterministic_v1",
+  "network_access": false,
+  "visible_tasks": [
+    "document_analysis",
+    "structured_synthesis",
+    "contradiction_detection",
+    "multi_step_planning",
+    "resource_budget_compliance",
+    "clean_shutdown"
+  ],
+  "held_out_tasks": [
+    "recovery_after_interruption",
+    "held_out_contradiction"
+  ],
+  "tasks": {
+    "document_analysis": {
+      "input": "Alpha is 2. Beta is 3. Alpha plus Beta is claimed to be 4.",
+      "expect_contains": ["4", "wrong", "5"]
+    },
+    "structured_synthesis": {
+      "input": "items: red, blue",
+      "expect_keys": ["count", "items"]
+    },
+    "contradiction_detection": {
+      "input": "The door is open. The door is closed.",
+      "expect_contradiction": true
+    },
+    "multi_step_planning": {
+      "input": "Make tea: boil water, add leaves, pour.",
+      "expect_min_steps": 3
+    },
+    "resource_budget_compliance": {
+      "input": "spawn-many",
+      "expect_max_workers": true
+    },
+    "clean_shutdown": {
+      "input": "start then cancel",
+      "expect_survivors": 0
+    },
+    "recovery_after_interruption": {
+      "input": "interrupt mid-run",
+      "held_out": true
+    },
+    "held_out_contradiction": {
+      "input": "All cats are mammals. This cat is not a mammal.",
+      "held_out": true,
+      "expect_contradiction": true
+    }
+  }
+}

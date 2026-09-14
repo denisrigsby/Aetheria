@@ -7,6 +7,14 @@ All notable changes to the **public control plane** are documented here.
 
 ### Added
 
+- Arbitrary-path install: [docs/INSTALL.md](docs/INSTALL.md), `python -u scripts/aetheria.py init`, `requirements-dev.lock`
+- Support/rollback/backup: [docs/SUPPORT.md](docs/SUPPORT.md)
+- Frontier evolution instructions and research substrate (`research/`: schemas, five fixed ecologies, local benchmark, bounded population controller)
+- Tests: `test_arbitrary_path`, `test_failure_recovery`, `test_research_substrate`
+
+### Added
+
+
 - `scripts/lh_process_identity.py` — portable role matching; Windows PID-column liveness and identity-checked tree kill
 - `scripts/plant_control.py` — operator stop/standby/halt/resume (stop now signals watchdog and reports survivors)
 - `tests/test_lh_process_identity.py` (portable) and `tests/test_lh_process_windows.py` (Windows process fixtures)

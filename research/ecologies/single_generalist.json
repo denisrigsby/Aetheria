@@ -1,0 +1,16 @@
+{
+  "schema": "aetheria_genome_v1",
+  "name": "single_generalist",
+  "roles": ["generalist"],
+  "role_prompts": { "generalist": "Solve the task in one pass. Return JSON {answer, notes}." },
+  "model_assignments": { "generalist": "local_deterministic" },
+  "communication_topology": [],
+  "routing_policy": "direct",
+  "memory_policy": "none",
+  "tool_policy": "none",
+  "spawn_policy": "none",
+  "stopping_policy": "single_result",
+  "resource_budget": { "max_active_workers": 1, "max_depth": 1, "max_seconds": 30, "max_model_calls": 0 },
+  "network_access": false,
+  "promotion": "research"
+}

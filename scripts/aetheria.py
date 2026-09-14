@@ -30,11 +30,16 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(ROOT / "scripts"))
     if not argv or argv[0] in ("-h", "--help", "help"):
         _banner()
-        print("commands: status | stop | start | resume | recover | diagnose")
+        print("commands: init | status | stop | start | resume | recover | diagnose")
         return 0
     cmd = argv[0]
     rest = argv[1:]
     _banner()
+    if cmd == "init":
+        (ROOT / "measurements").mkdir(parents=True, exist_ok=True)
+        (ROOT / "research" / "runs").mkdir(parents=True, exist_ok=True)
+        print("initialized measurements/ and research/runs/")
+        return 0
     import plant_control as pc
 
     if cmd == "status":

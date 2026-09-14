@@ -1,0 +1,19 @@
+{
+  "schema": "aetheria_genome_v1",
+  "name": "planner_executor",
+  "roles": ["planner", "executor"],
+  "role_prompts": {
+    "planner": "Emit a short plan as a JSON list of steps.",
+    "executor": "Execute the plan steps locally and return JSON {answer, steps_done}."
+  },
+  "model_assignments": { "planner": "local_deterministic", "executor": "local_deterministic" },
+  "communication_topology": [["planner", "executor"]],
+  "routing_policy": "pipeline",
+  "memory_policy": "none",
+  "tool_policy": "none",
+  "spawn_policy": "fixed",
+  "stopping_policy": "pipeline_complete",
+  "resource_budget": { "max_active_workers": 2, "max_depth": 2, "max_seconds": 30, "max_model_calls": 0 },
+  "network_access": false,
+  "promotion": "research"
+}
