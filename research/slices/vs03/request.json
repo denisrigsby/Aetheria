@@ -1,0 +1,13 @@
+{
+  "schema": "aetheria_vs03_request_v1",
+  "kind": "repair",
+  "goal": "Repair the add defect: it subtracts instead of adding. Keep mul.",
+  "file": "mathy.py",
+  "from": "return a - b",
+  "to": "return a + b",
+  "generate_test": "test_add_regression.py",
+  "failing_assertion": {"expr": "mathy.add(2, 3)", "expect": 5},
+  "unrelated_marker": "def mul",
+  "model_calls": 0,
+  "network_access": false
+}
