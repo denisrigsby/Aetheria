@@ -78,6 +78,9 @@ def test_benchmark_discriminates_organizations():
     # Repeatable
     table2 = compare_ecologies(REPO, ECOLOGIES, include_held_out=True)
     assert {k: table2["ecologies"][k]["ok"] for k in ECOLOGIES} == oks
+    # Forward-only critic pipeline cannot revise; needs critic→planner or critic→executor
+    assert _task("revision_after_critique", "planner_executor_critic")["ok"] is False
+    assert _task("held_out_revision", "planner_executor_critic")["ok"] is False
 
 
 def test_lineage_record(tmp_path: Path):
