@@ -1,0 +1,12 @@
+{
+  "schema": "aetheria_vs02_request_v1",
+  "goal": "Change config.MODE from strict to lenient. Keep MAX and parse.",
+  "file": "config.py",
+  "assign": "MODE",
+  "from": "strict",
+  "to": "lenient",
+  "generate_test": "test_mode.py",
+  "unrelated_marker": "MAX = 3",
+  "model_calls": 0,
+  "network_access": false
+}
