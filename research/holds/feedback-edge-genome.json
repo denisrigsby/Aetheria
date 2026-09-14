@@ -1,0 +1,12 @@
+{
+  "schema": "aetheria_hold_v1",
+  "hold_id": "pec_critic_to_planner",
+  "promotion_status": "hold",
+  "human_review_required": true,
+  "auto_promote": false,
+  "parent": "planner_executor_critic",
+  "edge_added": ["critic", "planner"],
+  "roles_unchanged": ["planner", "executor", "critic"],
+  "max_model_calls": 0,
+  "notes": "Structural v2 win plus real revision-loop mission (vs04). Not production."
+}

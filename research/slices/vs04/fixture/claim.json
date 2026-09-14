@@ -1,0 +1,8 @@
+{
+  "schema": "aetheria_claim_v1",
+  "expr": "2+2",
+  "left": 2,
+  "op": "+",
+  "right": 2,
+  "claimed": 5
+}
