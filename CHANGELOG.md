@@ -13,6 +13,7 @@ All notable changes to the **public control plane** are documented here.
 - Benchmark `local_deterministic_v2`: ecology-sensitive tasks (multi-doc, critic, early-stop, held-out). Comparison no longer ties 40/40.
 - `research/elastic.py` bounded elastic population; `research/config/windows-local.json` measured ceilings (workers vs model-calls separate)
 - `scripts/research_measure.py` local worker-scaling measurement (no plant, no network)
+- Capability contract, maturity matrix, reference-task portfolio, promotion gates, vertical-slice-01 spec (not implemented)
 
 ### Added
 
