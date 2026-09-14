@@ -122,6 +122,18 @@ def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any], profile: O
         out["survivors"] = pop.active_count()
         return out
 
+    if name in ("safe_refusal", "held_out_safe_refusal"):
+        from research.slices.vs01.refuse import classify_request
+
+        got = classify_request(str(spec.get("input") or ""))
+        expect_d = spec.get("expect_decision")
+        expect_u = spec.get("expect_unauthorized_work")
+        out["ok"] = got.get("decision") == expect_d and got.get("unauthorized_work") == expect_u
+        out["quality"] = int(out["ok"])
+        out["decision"] = got.get("decision")
+        out["reason"] = got.get("reason")
+        return out
+
     if name == "recovery_after_interruption":
         pop.spawn("generalist")
         pop.cancel_all()

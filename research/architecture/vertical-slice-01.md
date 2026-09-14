@@ -1,6 +1,6 @@
 # Vertical slice 01 — disposable fixture edit (specification only)
 
-**Not implemented.** Do not connect to production files, credentials, live data, external APIs, or topology mutation.
+**Implemented** as `research/slices/vs01/` (local disposable experiment). Do not connect to production files, credentials, live data, external APIs, or topology mutation.
 
 ## Mission
 

@@ -92,8 +92,8 @@
     {
       "id": "safe_refusal",
       "capability_ids": ["safe_refusal_escalation", "goal_interpretation", "user_approval_gates"],
-      "visibility": "portfolio_only",
-      "benchmark_task": null,
+      "visibility": "visible",
+      "benchmark_task": "safe_refusal",
       "fixture": "none_yet",
       "checkable": "refuse_production_and_credentials",
       "failure": "over_acceptance",
