@@ -90,12 +90,14 @@ def capabilities(genome: Dict[str, Any]) -> Dict[str, Any]:
         spec_join = any(b == "synthesizer" and a.startswith("specialist") for a, b in edges)
         hier = ("coordinator" in roles and ("coordinator", "worker") in edges)
         parallel = any(_indegree(edges, n) >= 2 for n in roles)
+        feedback = ("critic", "planner") in edges or ("critic", "executor") in edges
     else:
         critic_live = critic_role
         planner_exec = "planner" in roles and "executor" in roles
         spec_join = any(str(r).startswith("specialist") for r in roles) and "synthesizer" in roles
         hier = "coordinator" in roles or routing == "hierarchy"
         parallel = routing in ("fan_in", "parallel_then_merge")
+        feedback = False
     return {
         "critic": critic_live,
         "planner": "planner" in roles or "coordinator" in roles,
@@ -106,6 +108,7 @@ def capabilities(genome: Dict[str, Any]) -> Dict[str, Any]:
         "parallel": parallel,
         "planner_exec_edge": planner_exec if edges else planner_exec,
         "spec_join_edge": spec_join,
+        "critic_feedback": bool(feedback),
         "roles": roles,
         "n_roles": len(roles),
         "max_active": int(budget.get("max_active_workers") or 1),
@@ -234,6 +237,15 @@ def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any], profile: O
         out["ok"] = ran
         out["quality"] = int(out["ok"])
         out["ran"] = ran
+        return out
+
+    if name in ("revision_after_critique", "held_out_revision"):
+        # First pass can detect an error; revision requires a feedback edge
+        # critic → planner or critic → executor. Forward-only pipelines cannot revise.
+        revised = bool(cap["critic"] and cap.get("critic_feedback"))
+        out["ok"] = revised
+        out["quality"] = int(out["ok"])
+        out["revised"] = revised
         return out
 
     if name in ("deliberate_error", "held_out_deliberate_error"):

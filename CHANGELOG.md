@@ -18,6 +18,7 @@ All notable changes to the **public control plane** are documented here.
 - Shared slice pipeline: clarification/refusal artifacts, vs02 MODE mission, capability-discovery harness, topology design note (not implemented)
 - VS03: repair localized `add()` defect and generate a regression test from a failing assertion
 - Communication-edge-only topology search (`research/topology.py`); no auto-promotion; model_calls=0
+- `revision_after_critique` / `held_out_revision`: requires critic feedback edge; same roles, different wires, different scores
 
 ### Added
 

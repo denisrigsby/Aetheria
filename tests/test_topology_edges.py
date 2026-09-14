@@ -66,11 +66,28 @@ def test_neighborhood_bounded_and_legal():
             assert a in roles and b in roles and a != b
 
 
+def test_feedback_edge_enables_revision_without_extra_roles():
+    p = _pec()
+    parent = score_genome(REPO, "pec", p, True)
+    child = mutate_edges(p, "add", ("critic", "planner"))
+    improved = score_genome(REPO, "feedback", child, True)
+    assert child["roles"] == p["roles"]
+    def _ok(row, task):
+        return next(r for r in row["results"] if r["task"] == task)["ok"]
+    assert _ok(parent, "revision_after_critique") is False
+    assert _ok(improved, "revision_after_critique") is True
+    assert _ok(improved, "held_out_revision") is True
+    assert improved["mean_workers"] == parent["mean_workers"]
+    assert improved["ok"] > parent["ok"]
+
+
 def test_edge_search_no_auto_promote_and_cleanup():
     summary = run_edge_search(REPO)
     assert summary["survivors"] == 0
     assert summary["model_calls"] == 0
     assert summary["promotion"] == "none_automatic"
     assert summary["n_candidates"] > 0
-    # Worker-normalized held-out beat of PEC is not required to exist on this suite.
-    assert "any_beat_pec_held_without_extra_workers" in summary
+    # Adding critic→planner is in the neighborhood and should beat PEC held-out
+    # without extra workers (same 3 roles).
+    assert summary["any_beat_pec_held_without_extra_workers"] is True
+    assert summary["best_ok"] > summary["pec_ok"]
