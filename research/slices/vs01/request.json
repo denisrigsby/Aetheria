@@ -1,0 +1,10 @@
+{
+  "schema": "aetheria_vs01_request_v1",
+  "goal": "Change widget.LABEL from alpha to beta. Keep greet and ping behavior.",
+  "file": "widget.py",
+  "from": "alpha",
+  "to": "beta",
+  "generate_test": "test_label.py",
+  "model_calls": 0,
+  "network_access": false
+}

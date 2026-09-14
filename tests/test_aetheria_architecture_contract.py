@@ -133,7 +133,7 @@ def test_every_production_facing_claim_has_a_gate():
 
 def test_vertical_slice_has_no_cloud_or_production_dependency():
     vs = (ARCH / "vertical-slice-01.md").read_text(encoding="utf-8").lower()
-    assert "not implemented" in vs
+    assert "not implemented" in vs or "research/slices/vs01" in vs
     assert "credential" in vs
     for needle in ("api key", "openai", "anthropic", "ollama serve"):
         assert needle not in vs
