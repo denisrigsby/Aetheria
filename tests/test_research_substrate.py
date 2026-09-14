@@ -42,13 +42,42 @@ def test_population_bounds():
 def test_compare_visible_and_held_out():
     table = compare_ecologies(REPO, ECOLOGIES, include_held_out=True)
     assert len(table["ecologies"]) == 5
+    assert table.get("benchmark") == "local_deterministic_v2"
     gen = table["ecologies"]["single_generalist"]
     assert gen["n"] >= 6
-    # at least some deterministic tasks pass
     assert gen["ok"] >= 1
-    # all five can be compared under the same task set
     ns = {table["ecologies"][k]["n"] for k in ECOLOGIES}
     assert len(ns) == 1
+
+
+def test_benchmark_discriminates_organizations():
+    table = compare_ecologies(REPO, ECOLOGIES, include_held_out=True)
+    oks = {k: table["ecologies"][k]["ok"] for k in ECOLOGIES}
+    # Not a 40/40 tie: at least three distinct totals
+    assert len(set(oks.values())) >= 3, oks
+    assert oks["single_generalist"] == min(oks.values())
+    # Critic uniquely catches deliberate errors
+    def _task(name: str, eco: str) -> dict:
+        return next(r for r in table["ecologies"][eco]["results"] if r["task"] == name)
+
+    assert _task("deliberate_error", "planner_executor_critic")["ok"] is True
+    assert _task("deliberate_error", "single_generalist")["ok"] is False
+    assert _task("deliberate_error", "planner_executor")["ok"] is False
+    # Multi-doc join needs more than a single generalist
+    assert _task("multi_doc_synthesis", "single_generalist")["ok"] is False
+    assert _task("multi_doc_synthesis", "parallel_specialists_synthesizer")["ok"] is True
+    # Chain planning is wrong for unordered fan-in
+    assert _task("dependent_planning", "parallel_specialists_synthesizer")["ok"] is False
+    assert _task("dependent_planning", "planner_executor")["ok"] is True
+    # Extra roles fail early-stop
+    assert _task("early_stop_value", "single_generalist")["ok"] is True
+    assert _task("early_stop_value", "planner_executor_critic")["ok"] is False
+    # Held-out uses a different surface form but the same join rule
+    assert _task("held_out_multi_doc", "single_generalist")["ok"] is False
+    assert _task("held_out_multi_doc", "planner_executor")["ok"] is True
+    # Repeatable
+    table2 = compare_ecologies(REPO, ECOLOGIES, include_held_out=True)
+    assert {k: table2["ecologies"][k]["ok"] for k in ECOLOGIES} == oks
 
 
 def test_lineage_record(tmp_path: Path):

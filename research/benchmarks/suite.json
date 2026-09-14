@@ -1,52 +1,93 @@
 {
-  "schema": "aetheria_benchmark_v1",
-  "name": "local_deterministic_v1",
+  "schema": "aetheria_benchmark_v2",
+  "name": "local_deterministic_v2",
   "network_access": false,
+  "model_calls": 0,
   "visible_tasks": [
-    "document_analysis",
-    "structured_synthesis",
-    "contradiction_detection",
-    "multi_step_planning",
+    "multi_doc_synthesis",
+    "cross_doc_contradiction",
+    "specialist_units",
+    "dependent_planning",
+    "code_fixture_edit",
+    "test_then_run",
+    "deliberate_error",
+    "ambiguity_uncertainty",
+    "duplication_trap",
+    "early_stop_value",
     "resource_budget_compliance",
     "clean_shutdown"
   ],
   "held_out_tasks": [
-    "recovery_after_interruption",
-    "held_out_contradiction"
+    "held_out_multi_doc",
+    "held_out_deliberate_error",
+    "held_out_early_stop",
+    "recovery_after_interruption"
   ],
   "tasks": {
-    "document_analysis": {
-      "input": "Alpha is 2. Beta is 3. Alpha plus Beta is claimed to be 4.",
-      "expect_contains": ["4", "wrong", "5"]
+    "multi_doc_synthesis": {
+      "docs": ["qty=4", "item=apples"],
+      "expect": {"qty": "4", "item": "apples"}
     },
-    "structured_synthesis": {
-      "input": "items: red, blue",
-      "expect_keys": ["count", "items"]
-    },
-    "contradiction_detection": {
-      "input": "The door is open. The door is closed.",
+    "cross_doc_contradiction": {
+      "docs": ["The valve is open.", "The valve is closed."],
       "expect_contradiction": true
     },
-    "multi_step_planning": {
-      "input": "Make tea: boil water, add leaves, pour.",
-      "expect_min_steps": 3
+    "specialist_units": {
+      "input": "mass_g=1000",
+      "expect_kg": 1.0
+    },
+    "dependent_planning": {
+      "steps": ["heat", "mix", "pour"],
+      "require_order": true
+    },
+    "code_fixture_edit": {
+      "files": {"mod.py": "VALUE = FOO"},
+      "replace": ["FOO", "BAR"],
+      "expect_contains": "BAR"
+    },
+    "test_then_run": {
+      "fn": "add",
+      "cases": [[1, 2, 3], [0, 0, 0]]
+    },
+    "deliberate_error": {
+      "claim": "2+2=5",
+      "correct": 4
+    },
+    "ambiguity_uncertainty": {
+      "input": "Meet at the bank.",
+      "senses": ["river", "finance"]
+    },
+    "duplication_trap": {
+      "docs": ["x=1", "x=1", "x=1"],
+      "expect_unique": 1
+    },
+    "early_stop_value": {
+      "answer": 42,
+      "max_useful_workers": 2
     },
     "resource_budget_compliance": {
-      "input": "spawn-many",
-      "expect_max_workers": true
+      "input": "spawn-many"
     },
     "clean_shutdown": {
-      "input": "start then cancel",
-      "expect_survivors": 0
+      "input": "start then cancel"
     },
-    "recovery_after_interruption": {
-      "input": "interrupt mid-run",
+    "held_out_multi_doc": {
+      "docs": ["price=9", "currency=usd"],
+      "expect": {"price": "9", "currency": "usd"},
       "held_out": true
     },
-    "held_out_contradiction": {
-      "input": "All cats are mammals. This cat is not a mammal.",
-      "held_out": true,
-      "expect_contradiction": true
+    "held_out_deliberate_error": {
+      "claim": "10-3=8",
+      "correct": 7,
+      "held_out": true
+    },
+    "held_out_early_stop": {
+      "answer": 7,
+      "max_useful_workers": 2,
+      "held_out": true
+    },
+    "recovery_after_interruption": {
+      "held_out": true
     }
   }
 }
