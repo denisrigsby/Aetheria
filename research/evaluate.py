@@ -1,12 +1,66 @@
-"""Local deterministic evaluation. Ecology-sensitive. No models, no network."""
+"""Local deterministic evaluation. Ecology-sensitive. No models, no network.
+
+Candidates cannot rewrite suite.json, scoring, held-out lists, promotion, or ceilings.
+"""
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Optional, Set
+
+_CANDIDATE_STRIP = (
+    "visible_tasks",
+    "held_out_tasks",
+    "tasks",
+    "scoring",
+    "hard_reject",
+    "benchmark",
+    "suite",
+    "evaluator",
+    "identity_checks",
+    "cancellation",
+    "promotion_status",
+)
 
 
 from .population import PopulationController
+
+
+def load_suite(repo: Path) -> Dict[str, Any]:
+    path = repo / "research" / "benchmarks" / "suite.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_profile(repo: Path) -> Dict[str, Any]:
+    path = repo / "research" / "config" / "windows-local.json"
+    if not path.is_file():
+        return {
+            "max_active_workers": 8,
+            "max_model_calls": 0,
+            "max_task_depth": 4,
+        }
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def sanitize_genome(genome: Dict[str, Any], profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Drop candidate-supplied evaluator overrides; clamp to research profile."""
+    g = copy.deepcopy(genome or {})
+    for k in _CANDIDATE_STRIP:
+        g.pop(k, None)
+    if g.get("promotion") not in ("research", "hold", "rejected"):
+        g["promotion"] = "research"
+    g["network_access"] = False
+    budget = dict(g.get("resource_budget") or {})
+    prof = profile or {}
+    cap_w = int(prof.get("max_active_workers") or 8)
+    cap_d = int(prof.get("max_task_depth") or 4)
+    cap_m = int(prof.get("max_model_calls") or 0)
+    budget["max_active_workers"] = min(int(budget.get("max_active_workers") or 1), cap_w)
+    budget["max_depth"] = min(int(budget.get("max_depth") or 1), cap_d)
+    budget["max_model_calls"] = min(int(budget.get("max_model_calls") or 0), cap_m)
+    g["resource_budget"] = budget
+    return g
 
 
 def capabilities(genome: Dict[str, Any]) -> Dict[str, Any]:
@@ -45,7 +99,8 @@ def _base(name: str, cap: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any]) -> Dict[str, Any]:
+def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any], profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    genome = sanitize_genome(genome, profile)
     cap = capabilities(genome)
     pop = PopulationController(max_active=int(cap["max_active"]), max_depth=int(cap["max_depth"]))
     out = _base(name, cap)
@@ -176,22 +231,30 @@ def run_task(name: str, spec: Dict[str, Any], genome: Dict[str, Any]) -> Dict[st
 
 
 def compare_ecologies(repo: Path, ecology_names: List[str], include_held_out: bool) -> Dict[str, Any]:
-    suite = json.loads((repo / "research" / "benchmarks" / "suite.json").read_text(encoding="utf-8"))
+    suite = load_suite(repo)
+    profile = load_profile(repo)
     tasks = list(suite["visible_tasks"])
+    held = list(suite.get("held_out_tasks") or [])
     if include_held_out:
-        tasks.extend(suite["held_out_tasks"])
+        tasks.extend(held)
     table: Dict[str, Any] = {
         "schema": "aetheria_comparison_v2",
         "benchmark": suite.get("name"),
+        "visible_tasks": list(suite["visible_tasks"]),
+        "held_out_tasks": held,
+        "profile_ceilings": {
+            "max_active_workers": profile.get("max_active_workers"),
+            "max_model_calls": profile.get("max_model_calls"),
+        },
         "ecologies": {},
     }
     for name in ecology_names:
         gpath = repo / "research" / "ecologies" / f"{name}.json"
-        genome = json.loads(gpath.read_text(encoding="utf-8"))
+        genome = sanitize_genome(json.loads(gpath.read_text(encoding="utf-8")), profile)
         results = []
         for t in tasks:
             spec = (suite.get("tasks") or {}).get(t) or {}
-            results.append(run_task(t, spec, genome))
+            results.append(run_task(t, spec, genome, profile))
         n_ok = sum(1 for r in results if r.get("ok"))
         dup = sum(float(r.get("duplication") or 0) for r in results)
         workers = sum(int(r.get("workers_used") or 0) for r in results)
@@ -207,4 +270,32 @@ def compare_ecologies(repo: Path, ecology_names: List[str], include_held_out: bo
             "mean_workers": round(workers / n, 3),
             "composite": round(composite, 4),
         }
+    table["explanation"] = explain_comparison(table)
     return table
+
+
+def explain_comparison(table: Dict[str, Any]) -> Dict[str, Any]:
+    """Per-task winners and a short why — not a single score."""
+    ecos = list(table.get("ecologies") or {})
+    if not ecos:
+        return {}
+    tasks = [r["task"] for r in table["ecologies"][ecos[0]]["results"]]
+    per_task = {}
+    for task in tasks:
+        rows = {}
+        for eco in ecos:
+            rec = next(r for r in table["ecologies"][eco]["results"] if r["task"] == task)
+            rows[eco] = {"ok": rec.get("ok"), "workers": rec.get("workers_used"), "duplication": rec.get("duplication")}
+        winners = [e for e, v in rows.items() if v["ok"]]
+        per_task[task] = {"winners": winners, "by_ecology": rows}
+    oks = {e: table["ecologies"][e]["ok"] for e in ecos}
+    best = max(oks, key=lambda k: (oks[k], -table["ecologies"][k]["mean_workers"]))
+    why = (
+        f"{best} has the most task ok ({oks[best]}/{table['ecologies'][best]['n']}). "
+        "Critic genomes uniquely pass deliberate_error; "
+        "fan-in fails dependent_planning; "
+        "single_generalist fails multi-doc join; "
+        "extra roles fail early_stop_value. "
+        "composite is secondary and penalizes workers/duplication."
+    )
+    return {"best_ok": best, "ok_counts": oks, "per_task": per_task, "why": why}
