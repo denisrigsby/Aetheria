@@ -7,14 +7,30 @@ All notable changes to the **public control plane** are documented here.
 
 ### Added
 
+- `scripts/lh_process_identity.py` — portable role matching; Windows PID-column liveness and identity-checked tree kill
+- `scripts/plant_control.py` — operator stop/standby/halt/resume (stop now signals watchdog and reports survivors)
+- `tests/test_lh_process_identity.py` (portable) and `tests/test_lh_process_windows.py` (Windows process fixtures)
+- CI: pytest on Ubuntu; Windows job for process tests + launcher presence
+- [docs/RELEASE_GATE.md](docs/RELEASE_GATE.md)
+
+### Changed
+
+- Stop contract: identity-checked `taskkill /PID /F /T` while supervisor is alive; recorded probe killed by probe identity; PID-only matches rejected; incomplete stop if allowlisted descendants remain
+- Watchdog `diagnose`/`kill_pid` use verified supervisor identity (not PID-only)
+- `status_report` orphan matcher includes `_lh_probe_` wrappers via the unified probe contract
+- OPERATIONS / README: watchdog default is **manual-start latch**, not automatic segment relaunch; STOP files are graceful, not a tree guarantee
 - **Sanitized public demo:** `scripts/demo_local_smoke.py`, `scripts/demo_local.ps1`, `Demo-Local.bat`, [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)
 - README **Try the local demo** section (clone → smoke without private core)
 - Operator hygiene PR propose path (dry-run default; human merge)
+- **`scripts/launch_lh_detached.py`** — reliable detached LH launch (absolute Python; no Store-`python` hang)
+- README / OPERATIONS: recovery path + pain table (session death, hang, thrash, plant≠chat)
 
 ### Changed
 
 - Docs index links PUBLIC_DEMO + HYGIENE
 - PUBLIC_DEMO / README: one-line optional `ollama pull qwen2.5:14b` (not required for smoke)
+- `launch_long_horizon.ps1` prefers absolute Python310 + detached launcher
+- Watchdog / plant_control resume use detached Python path (no 180s PowerShell wait hang)
 
 ## [0.3.1] - 2026-07-12
 

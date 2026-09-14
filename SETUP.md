@@ -39,7 +39,11 @@ Optional: `AETHERIA_BIN_ROOT`, `AETHERIA_LIVING_PATH`.
 cd <AETHERIA_ROOT>
 
 # Structure / syntax (works on this repository alone)
-python -m compileall -q scripts living
+python -m compileall -q scripts living tests
+python -m pytest tests/test_lh_process_identity.py -q
+
+# Windows (reference platform): also
+# python -m pytest tests/test_lh_process_windows.py -q
 
 # Runtime health (needs full install)
 python -u scripts/aetheria_hope_path.py --health-only

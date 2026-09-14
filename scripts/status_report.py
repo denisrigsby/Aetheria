@@ -22,6 +22,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+from lh_process_identity import ROLE_PROBE, is_probe, kill_if_verified  # noqa: E402
+
 OUT = ROOT / "measurements" / "status_report_latest.json"
 
 # Defaults (overridable via env / CLI)
@@ -127,9 +130,10 @@ def collect_related_and_orphans(
     related = []
     orphans = []
     keys = (
-        "long_horizon_supervisor",
-        "lh_watchdog",
+        "long_horizon_supervisor.py",
+        "lh_watchdog.py",
         "grok_supervised_12_probe",
+        "_lh_probe_",
         "residual_autopilot",
         "aetheria_hope_path",
         "hope_path",
@@ -173,8 +177,7 @@ def collect_related_and_orphans(
             pass
         related.append(entry)
 
-        is_probe = "grok_supervised_12_probe" in cmd
-        if not is_probe:
+        if not is_probe(cmd):
             continue
         # Orphan: probe running while plant not in a tick, and old enough
         idle_like = lh_status in (
@@ -263,13 +266,8 @@ def reap_orphans(orphans: list, lh_status: str) -> list:
         if not pid:
             continue
         try:
-            subprocess.run(
-                ["taskkill", "/PID", str(int(pid)), "/F"],
-                capture_output=True,
-                text=True,
-                timeout=30,
-            )
-            dead = not pid_alive(pid)
+            kr = kill_if_verified(pid, ROLE_PROBE, tree=True)
+            dead = not pid_alive(pid) or bool(kr.get("killed"))
             results.append(
                 {
                     "pid": pid,
