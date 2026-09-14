@@ -8,5 +8,5 @@
   "edge_added": ["critic", "planner"],
   "roles_unchanged": ["planner", "executor", "critic"],
   "max_model_calls": 0,
-  "notes": "Structural v2 win plus real revision-loop mission (vs04). Not production."
+  "notes": "Named research baseline: ecologies/planner_executor_critic_feedback.json. Stock planner_executor_critic.json kept for ablation. promotion_status remains hold. Not production. Not auto-promoted."
 }

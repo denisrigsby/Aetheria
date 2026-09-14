@@ -15,6 +15,23 @@ def _pec():
     return json.loads((REPO / "research" / "ecologies" / "planner_executor_critic.json").read_text(encoding="utf-8"))
 
 
+def test_feedback_named_baseline_is_research_not_production():
+    g = json.loads((REPO / "research" / "ecologies" / "planner_executor_critic_feedback.json").read_text(encoding="utf-8"))
+    pec = _pec()
+    assert g["promotion"] == "research"
+    assert g["roles"] == pec["roles"]
+    assert g["resource_budget"]["max_model_calls"] == 0
+    assert ["critic", "planner"] in g["communication_topology"]
+    assert ["critic", "planner"] not in pec["communication_topology"]
+    hold = json.loads((REPO / "research" / "holds" / "feedback-edge-genome.json").read_text(encoding="utf-8"))
+    assert hold["promotion_status"] == "hold"
+    assert hold["auto_promote"] is False
+    fb = score_genome(REPO, "fb", g, True)
+    parent = score_genome(REPO, "pec", pec, True)
+    assert fb["ok"] > parent["ok"]
+    assert fb["mean_workers"] == parent["mean_workers"]
+
+
 def test_fixed_baselines_still_discriminate():
     table = compare_ecologies(
         REPO,

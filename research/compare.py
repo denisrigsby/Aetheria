@@ -14,6 +14,7 @@ ECOLOGIES = [
     "single_generalist",
     "planner_executor",
     "planner_executor_critic",
+    "planner_executor_critic_feedback",
     "parallel_specialists_synthesizer",
     "hierarchical_coordinator",
 ]

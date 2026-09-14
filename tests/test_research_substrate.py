@@ -19,7 +19,8 @@ ECOLOGIES = [
 
 
 def test_genomes_load_and_deny_network():
-    for name in ECOLOGIES:
+    names = ECOLOGIES + ["planner_executor_critic_feedback"]
+    for name in names:
         g = json.loads((REPO / "research" / "ecologies" / f"{name}.json").read_text(encoding="utf-8"))
         assert g["schema"] == "aetheria_genome_v1"
         assert g["network_access"] is False
