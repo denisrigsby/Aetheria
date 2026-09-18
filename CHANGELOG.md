@@ -7,6 +7,7 @@ All notable changes to the **public control plane** are documented here.
 
 ### Added
 
+- **Mock public demo runtime** (`scripts/demo_runtime.py`, `python -m aetheria demo --cycles 3`): supervisor manages heartbeat/checkpoint/contract with no LLM
 - **Sanitized sitting demo** ([docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)): clocked organism on a private PC; plant ≠ chat; public vs private boundary; honest 2026-09 prototype status
 - README / HIGH_LEVEL: mouth + plant picture; green interruptions vs dirty HOLD (no AUTORUN brownout)
 - Arbitrary-path install: [docs/INSTALL.md](docs/INSTALL.md), `python -u scripts/aetheria.py init`, `requirements-dev.lock`

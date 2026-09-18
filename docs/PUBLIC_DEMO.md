@@ -36,6 +36,14 @@ powershell -File scripts/demo_local.ps1
 
 **Expected:** Python 3.10+ check, script compile, example JSON load, clear **scope banner**, optional status import probe.
 
+**Supervisor mock (no LLM):**
+
+```powershell
+python -m aetheria demo --cycles 3
+```
+
+That runs the real supervisor against `scripts/demo_runtime.py` (sleep, heartbeat, checkpoint, contract summary).
+
 **Not expected:** Multi-hour plant, chat UI, or private memory. If imports fail for cycle body, that is **by design** until you overlay a full Aetheria root (see [SETUP.md](../SETUP.md)).
 
 **Local only:** this demo is for your machine. No cloud agent parent, no sauce, no private living streams.

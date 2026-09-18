@@ -16,6 +16,14 @@ Aetheria is meant to feel like a **local admin and architect** of *this* compute
 
 That is the demo to polish. Hardware and extra models are optional.
 
+## Verify the supervisor (no LLM)
+
+```powershell
+python -m aetheria demo --cycles 3
+```
+
+The real supervisor drives a mock runtime: heartbeat, checkpoint, contract summary. No GPU, no keys.
+
 ## Clone smoke (this repo)
 
 ```powershell

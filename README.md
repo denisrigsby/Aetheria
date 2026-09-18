@@ -119,6 +119,18 @@ flowchart TB
 | Control plane (this repo) | Schedule, recovery, contracts, status | Private memory contents |
 | Private runtime | Cycle implementation, registry, living streams | Public distribution |
 
+## Verify the Supervisor
+
+You do not need an LLM or GPU to verify the Aetheria control plane. Run:
+
+```powershell
+python -m aetheria demo --cycles 3
+# or:
+python -u scripts/aetheria.py demo --cycles 3
+```
+
+The **supervisor** (real code) starts a **mock runtime** (sleep + print + ledger files). That demonstrates heartbeat, checkpointing, and the `lh_probe_summary_v1` contract without private keys, Ollama, or the private cycle body.
+
 ## Try the local demo (sanitized) — start here
 
 **High-signal path for clones:** prove the control plane works locally without private sauce.

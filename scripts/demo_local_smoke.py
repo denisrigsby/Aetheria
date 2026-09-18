@@ -38,6 +38,8 @@ def check_layout() -> bool:
         "measurements/lh_probe_summary.example.json",
         "docs/PUBLIC_DEMO.md",
         "README.md",
+        "scripts/demo_runtime.py",
+        "aetheria/__main__.py",
     ]
     missing = [p for p in need if not (ROOT / p).exists()]
     print(f"[2] Layout  missing={len(missing)}  ({'OK' if not missing else missing})")

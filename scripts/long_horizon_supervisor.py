@@ -220,14 +220,24 @@ def _load_probe_contract_summary() -> dict | None:
         return None
 
 
-def run_probe_cycles(cycles: int, tick: int) -> dict:
+def run_probe_cycles(cycles: int, tick: int, *, probe_script: Path | None = None) -> dict:
     """Run paradigm probe: env cycle count + contract summary; regex dual-read fallback.
 
     Primary: AETHERIA_NUM_CYCLES + grok_supervised_12_probe.py (no source rewrite).
+    Public clones: pass probe_script=scripts/demo_runtime.py (mock, no LLM).
     Parent trusts measurements/lh_probe_summary_latest.json when present.
     """
     ensure_env()
-    probe_script = ROOT / "grok_supervised_12_probe.py"
+    if probe_script is None:
+        probe_script = ROOT / "grok_supervised_12_probe.py"
+        demo = ROOT / "scripts" / "demo_runtime.py"
+        if not probe_script.exists() and os.environ.get("AETHERIA_DEMO", "").strip() in (
+            "1",
+            "true",
+            "True",
+        ):
+            probe_script = demo
+    probe_script = Path(probe_script)
     if not probe_script.exists():
         return {"ok": False, "error": "probe_script_missing", "error_class": "import_error", "tick": tick}
 
@@ -270,6 +280,7 @@ def run_probe_cycles(cycles: int, tick: int) -> dict:
     timeout = _probe_timeout_s(cycles)
     summary["timeout_s"] = timeout
     try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
         with log_path.open("w", encoding="utf-8") as lf:
             p = subprocess.Popen(
                 [sys.executable, "-u", str(run_target)],

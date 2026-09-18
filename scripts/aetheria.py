@@ -4,7 +4,8 @@
 One entry: this file. Root is the directory that contains scripts/ and measurements/.
 Does not start companion, Ollama, or cloud APIs.
 
-  python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose
+  python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo
+  python -m aetheria demo --cycles 3
 """
 from __future__ import annotations
 
@@ -13,6 +14,32 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def cmd_demo(cycles: int = 3) -> int:
+    """Supervisor + mock runtime. No LLM, no private cycle body, no plant start."""
+    print("Verify the Supervisor — mock lifecycle (no LLM, no GPU, no private keys)")
+    print(f"  cycles: {cycles}")
+    os.environ.setdefault("AETHERIA_PROBE_TIMEOUT_S", "60")
+    os.environ.setdefault("AETHERIA_DEMO_SLEEP_S", "2")
+    os.environ["AETHERIA_DEMO"] = "1"
+    import long_horizon_supervisor as lh
+
+    probe = ROOT / "scripts" / "demo_runtime.py"
+    rec = lh.run_probe_cycles(cycles, tick=0, probe_script=probe)
+    summary = ROOT / "measurements" / "lh_probe_summary_latest.json"
+    hb = ROOT / "measurements" / "demo_heartbeat.json"
+    ck = ROOT / "measurements" / "demo_checkpoint.json"
+    print(f"  supervisor_ok: {rec.get('ok')}  error={rec.get('error')}")
+    for label, p in (("summary", summary), ("heartbeat", hb), ("checkpoint", ck)):
+        if p.is_file():
+            print(f"  {label}: {p.relative_to(ROOT)}")
+            print("   ", p.read_text(encoding="utf-8").strip().replace("\n", "\n    ")[:800])
+    if rec.get("ok"):
+        print("DEMO LIFECYCLE PASS — heartbeat, checkpoint, contract summary.")
+        return 0
+    print("DEMO LIFECYCLE FAIL", file=sys.stderr)
+    return 1
 
 
 def _banner() -> None:
@@ -30,11 +57,21 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(ROOT / "scripts"))
     if not argv or argv[0] in ("-h", "--help", "help"):
         _banner()
-        print("commands: init | status | stop | start | resume | recover | diagnose")
+        print("commands: init | status | stop | start | resume | recover | diagnose | demo")
         return 0
     cmd = argv[0]
     rest = argv[1:]
     _banner()
+    if cmd == "demo":
+        cycles = 3
+        if "--cycles" in rest:
+            i = rest.index("--cycles")
+            if i + 1 < len(rest):
+                try:
+                    cycles = max(1, int(rest[i + 1]))
+                except ValueError:
+                    cycles = 3
+        return cmd_demo(cycles)
     if cmd == "init":
         # Creates empty state dirs only. Does not start the plant, watchdog, or probes.
         (ROOT / "measurements").mkdir(parents=True, exist_ok=True)
