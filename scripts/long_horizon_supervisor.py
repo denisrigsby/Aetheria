@@ -583,6 +583,13 @@ def main() -> int:
                 mod.record_green_tick(tick_ts, tick, bool(summary.get("ok")), pid=state.get("pid"))
             except Exception as e:
                 log(f"gate_a durable record note: {e}")
+        if summary.get("ok"):
+            try:
+                import campaign_snapshot as csnap
+
+                csnap.write_after_green_tick(state)
+            except Exception as e:
+                log(f"campaign_snapshot note: {e}")
         # Persist mom so next tick subprocess continues ladder (not reset to 0)
         try:
             mom = summary.get("final_mom")

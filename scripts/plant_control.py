@@ -597,6 +597,45 @@ def resume(
     return 0
 
 
+def cmd_recover() -> int:
+    """Dead plant only. Load campaign_snapshot_v1. Hash fail → exit 1, do not spawn."""
+    print("RECOVER plant from campaign_snapshot_v1")
+    snap = plant_snap()
+    if snap.get("alive"):
+        print("FAIL: supervisor identity-alive — recover will not spawn a second clock")
+        print(f"  pid={snap.get('pid')}")
+        return 1
+    try:
+        import campaign_snapshot as csnap
+    except Exception as e:
+        print(f"FAIL: campaign_snapshot import: {e}")
+        return 1
+    rec, why = csnap.load_snapshot()
+    if rec is None:
+        print(f"FAIL: snapshot {why}")
+        print(f"  path: {csnap.snap_path()}")
+        print("  recover does not spawn without a valid snapshot")
+        return 1
+    camp = rec.get("campaign") or {}
+    st = read_json(STATE_PATH) or {}
+    st["last_ok"] = bool(camp.get("last_ok"))
+    st["last_final_mom"] = camp.get("mom")
+    st["persisted_mom"] = camp.get("mom")
+    st["last_tick_finished"] = camp.get("last_tick_finished")
+    st["recovered_from_snapshot_at"] = utc()
+    st["status"] = "idle_between_ticks"
+    write_json(STATE_PATH, st)
+    print(f"  snapshot ok mom={camp.get('mom')} last_ok={camp.get('last_ok')}")
+    print("  segment tick may reset; campaign mom restored")
+    return resume(
+        with_watchdog=True,
+        cycles=None,
+        interval_min=None,
+        max_ticks=None,
+        continue_tick=True,
+    )
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Safe plant standby / halt / resume")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -636,6 +675,10 @@ def main(argv=None) -> int:
     p_start.add_argument("--interval-min", type=float, default=None)
     p_start.add_argument("--max-ticks", type=int, default=None)
     p_start.add_argument("--fresh-segment", action="store_true")
+    sub.add_parser(
+        "recover",
+        help="Dead plant only: load campaign_snapshot_v1 then spawn. Hash fail = no spawn.",
+    )
 
     args = ap.parse_args(argv)
 
@@ -671,6 +714,8 @@ def main(argv=None) -> int:
             max_ticks=args.max_ticks,
             continue_tick=not bool(args.fresh_segment),
         )
+    if args.cmd == "recover":
+        return cmd_recover()
     return 2
 
 

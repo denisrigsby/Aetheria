@@ -13,7 +13,9 @@ Rough sanitized sitting: **[docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)** ·
 
 Standalone product boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · readiness: [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) · install: [docs/INSTALL.md](docs/INSTALL.md) · research: [docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md](docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md)
 
-Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose`
+Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
+
+`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` (green-tick commit) only when the supervisor is identity-dead. Hash mismatch → no spawn.
 
 Local multi-cycle agent **control plane** — process supervision and on-disk continuity so long-running agent work does not die with the chat window that started it.
 

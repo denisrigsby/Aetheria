@@ -91,7 +91,9 @@ def main(argv: list[str] | None = None) -> int:
             if i + 1 < len(rest):
                 reason = rest[i + 1]
         return pc.cmd_stop(reason=reason)
-    if cmd in ("start", "resume", "recover"):
+    if cmd == "recover":
+        return pc.cmd_recover()
+    if cmd in ("start", "resume"):
         return pc.resume(
             with_watchdog=True,
             cycles=None,

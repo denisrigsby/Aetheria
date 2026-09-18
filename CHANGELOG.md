@@ -7,6 +7,7 @@ All notable changes to the **public control plane** are documented here.
 
 ### Added
 
+- **Campaign snapshot v1** (`scripts/campaign_snapshot.py`): after a green tick, tmp+replace `measurements/campaign_snapshot_v1.json` + measurements-set backup. `python -m aetheria recover` loads that file only (dead plant, hash fail = no spawn). `start`/`resume` no longer alias recover.
 - **Mock public demo runtime** (`scripts/demo_runtime.py`, `python -m aetheria demo --cycles 3`): supervisor manages heartbeat/checkpoint/contract with no LLM
 - **Sanitized sitting demo** ([docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)): clocked organism on a private PC; plant ≠ chat; public vs private boundary; honest 2026-09 prototype status
 - README / HIGH_LEVEL: mouth + plant picture; green interruptions vs dirty HOLD (no AUTORUN brownout)
