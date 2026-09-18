@@ -2,6 +2,8 @@
 
 | Document | Audience | Description |
 |----------|----------|-------------|
+| [SANITIZED_DEMO.md](SANITIZED_DEMO.md) | New readers | Rough sitting demo (public picture, no private dump) |
+| [PUBLIC_DEMO.md](PUBLIC_DEMO.md) | Clones | Control-plane smoke |
 | [WHY.md](WHY.md) | New readers | Problem, non-goals, success criteria |
 | [CYCLE_RUNNER.md](CYCLE_RUNNER.md) | Contributors / operators | Cycle contract, timeouts, orphan hygiene |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Contributors / operators | Process model, layers, diagrams |

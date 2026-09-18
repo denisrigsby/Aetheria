@@ -7,6 +7,8 @@ All notable changes to the **public control plane** are documented here.
 
 ### Added
 
+- **Sanitized sitting demo** ([docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)): clocked organism on a private PC; plant ≠ chat; public vs private boundary; honest 2026-09 prototype status
+- README / HIGH_LEVEL: mouth + plant picture; green interruptions vs dirty HOLD (no AUTORUN brownout)
 - Arbitrary-path install: [docs/INSTALL.md](docs/INSTALL.md), `python -u scripts/aetheria.py init`, `requirements-dev.lock`
 - Support/rollback/backup: [docs/SUPPORT.md](docs/SUPPORT.md)
 - Frontier evolution instructions and research substrate (`research/`: schemas, five fixed ecologies, local benchmark, bounded population controller)

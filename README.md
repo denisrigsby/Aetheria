@@ -5,7 +5,11 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria-sovereign-agent)](https://github.com/denisrigsby/Aetheria-sovereign-agent/releases)
 
-**Detached ticks. Identity-checked stop. Manual-start after crash. Restart-safe progress. Cloud optional.**
+**Detached ticks. Identity-checked stop. Green HOLD recovery. Restart-safe progress. Cloud optional.**
+
+Clocked organism on a **private PC**: mouth (local admin / architect) + plant (detached ticks). Chat is not the runtime.
+
+Rough sanitized sitting: **[docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)** · clone smoke: **[docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)**
 
 Standalone product boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · readiness: [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) · install: [docs/INSTALL.md](docs/INSTALL.md) · research: [docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md](docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md)
 
@@ -25,6 +29,7 @@ Local multi-cycle agent **control plane** — process supervision and on-disk co
 | Overnight babysitting | Rolling ticks / segments + watchdog |
 | Thrash restart after power flap | Manual-start policy; resume when stable |
 | Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
+| Crash vs green stop | Dirty `last_ok=false` HOLDs; green interruptions may guardian-start |
 
 See [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md).
 
@@ -134,7 +139,8 @@ python -u scripts/demo_local_smoke.py
 | Clear plant ≠ chat warnings | Live G4 train / adapters |
 | Soft status import probe | Auto-started multi-hour plant |
 
-Full doc: **[docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)**.  
+Sitting picture (what the private product should feel like, no private files): **[docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)**.  
+Full clone smoke: **[docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)**.  
 Private depth (if you have a full operator root) must **never** parent the plant from chat.
 
 **Local only / no sauce.** Demo smoke needs Python only. Optional later (private companion, not this smoke): `ollama pull qwen2.5:14b`.
@@ -207,6 +213,7 @@ docs/           Why, architecture, cycle runner, operations, internals
 
 | Document | Description |
 |----------|-------------|
+| [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md) | **Sitting picture** (no private dump) |
 | [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) | **Sanitized try-it-now demo** (clones) |
 | [docs/WHY.md](docs/WHY.md) | Problem, non-goals, success criteria |
 | [docs/CYCLE_RUNNER.md](docs/CYCLE_RUNNER.md) | Cycle contract, timeouts, orphan hygiene |

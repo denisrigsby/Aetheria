@@ -4,6 +4,8 @@
 
 **Parents long-horizon plant:** only if **you** launch it in a full local root — chat never does.
 
+For the *feeling* of the private product (no private files): [SANITIZED_DEMO.md](SANITIZED_DEMO.md).
+
 ---
 
 ## What you get from a clone
