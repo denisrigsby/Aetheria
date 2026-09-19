@@ -1,25 +1,25 @@
-# Aetheria Sovereign Agent
+# Aetheria
 
 [![CI](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria-sovereign-agent)](https://github.com/denisrigsby/Aetheria-sovereign-agent/releases)
 
-**Detached ticks. Identity-checked stop. Green HOLD recovery. Restart-safe progress. Cloud optional.**
+**Aetheria is a versioned, auditable process-continuity layer for long-running local workloads**, with a reference (mock) runtime in this repo and an optional private agent on one PC.
 
-Clocked organism on a **private PC**: mouth (local admin / architect) + plant (detached ticks). Chat is not the runtime.
+This repository is the **control plane**: supervisor, watchdog, STOP, heartbeat, checkpoint, recover. It is not a chat app, not a model host, and not a dump of the private organism.
 
-Rough sanitized sitting: **[docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)** · clone smoke: **[docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)**
+The private install — **mouth** (local admin / architect) + **plant** (detached ticks) + living memory — is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
 
-Standalone product boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · readiness: [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) · install: [docs/INSTALL.md](docs/INSTALL.md) · research: [docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md](docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md)
+**Plant clock ≠ chat.**
+
+Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) · boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · sitting picture: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
 
 Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
 
-`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` (green-tick commit) only when the supervisor is identity-dead. Hash mismatch → no spawn.
+`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch → no spawn.
 
-Local multi-cycle agent **control plane** — process supervision and on-disk continuity so long-running agent work does not die with the chat window that started it.
-
-> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not another multi-agent framework and not a chat UI.
+> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not a multi-agent framework and not a chat UI.
 
 ### The pain this targets
 
@@ -29,11 +29,9 @@ Local multi-cycle agent **control plane** — process supervision and on-disk co
 | Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
 | “Is it still working?” | `status_report` + measurements JSON |
 | Overnight babysitting | Rolling ticks / segments + watchdog |
-| Thrash restart after power flap | Manual-start policy; resume when stable |
+| Thrash restart after power flap | HOLD after dirty `last_ok`; resume when stable |
 | Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
 | Crash vs green stop | Dirty `last_ok=false` HOLDs; green interruptions may guardian-start |
-
-See [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md).
 
 ### Job #1 — local campaign runner
 
@@ -46,228 +44,67 @@ See [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md).
 
 **Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
 
-### Recovery (full operator root)
-
-Prefer the **detached Python launcher** (avoids Windows Store `python` alias hangs):
-
-```powershell
-python -u scripts/launch_lh_detached.py --continue-tick --max-ticks 48
-# or:
-python -u scripts/plant_control.py resume --with-watchdog
-python -u scripts/status_report.py
-```
-
-Segment end (`completed_max_ticks`) is **normal** — a new PID continues the campaign; mom / durable logs can carry across processes.
-
-## Why this exists
-
-Long-running local AI work often dies with the interactive session that started it. Context lives in chat. Restarts mean starting over. “Just leave it running” can turn into multi-hour hangs under unbounded manage/recon paths.
-
-Aetheria’s published control plane answers that with:
-
-1. A **detached plant clock** (long-horizon supervisor)  
-2. A **watchdog** that **latches manual start** after unexpected death (opt-in AUTORUN to thrash-relaunch)  
-3. A **cycle runner contract** (structured summary, env-based cycle count, hard timeouts)  
-4. **Rolling process segments** (default 48 ticks — multi-PID campaigns are normal)  
-5. **Restart-resilient green-tick logs** for optional change-control gates  
-6. **Operator tooling** to spot lag (orphan workers, memory, CPU) in one command  
-
-Private runtime pieces (orchestrator, living memory, asset registry) stay on the operator machine. This repository is the **auditable control plane**.
-
-**Not in this repo (private operator depth):** interactive companion chat, local generative backends, fine-tune / adapter train loops. If present locally, they must **never parent** the long-horizon plant clock.
-
-**Sovereign by default, cloud when you allow it** — optional external models/backup/notify are future adapters; they are not required for the control plane to run.
-
-→ Deep dive: [docs/WHY.md](docs/WHY.md) · [docs/CYCLE_RUNNER.md](docs/CYCLE_RUNNER.md) · [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md)
-
-## Features
-
-| Feature | Description |
-|---------|-------------|
-| **Supervised tick loop** | Scheduled multi-cycle work with on-disk checkpoints |
-| **Cycle runner contract** | `lh_probe_summary_v1` JSON; env `AETHERIA_NUM_CYCLES`; dual-read fallback |
-| **Bounded finalize** | After contract success, short grace then terminate hang-prone tails |
-| **Watchdog recovery** | Default: manual-start latch after crash/segment; AUTORUN file to relaunch |
-| **PID-truth + identity** | Alive = PID exists **and** cmdline is the claimed role; PID-only matches rejected |
-| **Stop** | Signals supervisor **and** watchdog STOP files; kills supervisor tree while still alive (`taskkill /PID /F /T` on Windows); kills recorded probe by identity; reports remaining allowlisted descendants; exit 1 if any remain |
-| **Rolling segments** | Default **48 ticks** per process — not single-PID heroics |
-| **Durable green ticks** | Gate progress survives process restart |
-| **Measured entry path** | `aetheria_hope_path` for health + short runs |
-| **Momentum carry** | Progress signals can continue across restarts |
-| **Conservation defaults** | Light manage + selective heavy health |
-| **Status + resource hygiene** | `status_report` / `resource_check` — orphans, RAM, CPU, segment vs campaign |
-| **Bounded smoke runner** | `run_probe_bounded` — no unbounded manual probes |
-| **Guarded edit sandbox** | Disposable SafeEdit demo target |
-| **Plant != chat** | Detached ticks; interactive sessions never own the schedule |
-
-## Architecture
-
-```mermaid
-flowchart TB
-  OP[Operator] -->|start / stop / status_report| SUP
-  SUP[long_horizon_supervisor] -->|env cycles + timeout| CR[Cycle runner contract]
-  CR -->|summary JSON| SUP
-  SUP --> DISK[(measurements/)]
-  SUP --> GLOG[gate_a_green_ticks.jsonl]
-  WD[lh_watchdog] -->|PID + heartbeat| SUP
-  WD -->|relaunch| SUP
-  HOPE[aetheria_hope_path] --> CR
-  CR --> PRIV[Private cycle body - full install]
-```
-
-| Layer | Owns | Does not own |
-|-------|------|----------------|
-| Operator | Intent, rare review | Multi-hour parent process |
-| Control plane (this repo) | Schedule, recovery, contracts, status | Private memory contents |
-| Private runtime | Cycle implementation, registry, living streams | Public distribution |
-
-## Verify the Supervisor
-
-You do not need an LLM or GPU to verify the Aetheria control plane. Run:
+## Verify the supervisor (no LLM, no GPU)
 
 ```powershell
 python -m aetheria demo --cycles 3
 # or:
 python -u scripts/aetheria.py demo --cycles 3
-```
-
-The **supervisor** (real code) starts a **mock runtime** (sleep + print + ledger files). That demonstrates heartbeat, checkpointing, and the `lh_probe_summary_v1` contract without private keys, Ollama, or the private cycle body.
-
-## Try the local demo (sanitized) — start here
-
-**High-signal path for clones:** prove the control plane works locally without private sauce.
-
-```powershell
-git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git
-cd Aetheria-sovereign-agent
 python -u scripts/demo_local_smoke.py
-# Windows one-click:
-#   Demo-Local.bat
-#   or: powershell -File scripts/demo_local.ps1
 ```
 
-| Demo includes | Demo does **not** include |
-|---------------|---------------------------|
-| Layout + compile smoke | Private living streams / registry guts |
-| Example measurement shapes | Companion chat / Ollama surface |
-| Clear plant ≠ chat warnings | Live G4 train / adapters |
-| Soft status import probe | Auto-started multi-hour plant |
+The **supervisor** (real code) starts a **mock runtime** (sleep + print + ledger files). That is heartbeat, checkpoint, and `lh_probe_summary_v1` without private keys, Ollama, or the private cycle body.
 
-Sitting picture (what the private product should feel like, no private files): **[docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)**.  
-Full clone smoke: **[docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)**.  
-Private depth (if you have a full operator root) must **never** parent the plant from chat.
+## Why public vs private
 
-**Local only / no sauce.** Demo smoke needs Python only. Optional later (private companion, not this smoke): `ollama pull qwen2.5:14b`.
+| Stays private | Why |
+|---------------|-----|
+| Living memory / session traces | User-specific; merge/concat forbidden |
+| Mouth (Forge, local models) | Operator chair; must not parent the clock |
+| Cycle body / probe internals | Security-sensitive runtime + unpublished research |
+| Credentials, host paths | Deployment-specific |
+
+This repo stays fully evaluable as infrastructure. See [docs/WHY.md](docs/WHY.md).
 
 ## Quick start
 
 ```powershell
 git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git
 cd Aetheria-sovereign-agent
+python -u scripts/demo_local_smoke.py
 ```
 
-**Conservation environment** (recommended for long runs):
-
-```powershell
-$env:AETHERIA_LIGHT_MANAGE = "1"
-$env:AETHERIA_SKIP_FINAL_RECON = "1"
-$env:AETHERIA_HEAVY_HEALTH_CYCLES = "6,12"
-$env:AETHERIA_META_RECON = "0"
-```
-
-**Status / lag check** (always safe, read-only unless reaping):
+**Status (read-only):**
 
 ```powershell
 python -u scripts/status_report.py
-# If ORPHAN_PROBES while plant is idle:
-python -u scripts/status_report.py --reap-orphans
 ```
 
-**Short measured run** (full install required for cycle body):
+**Stop (full install):**
 
 ```powershell
-python -u scripts/aetheria_hope_path.py --health-only
-python -u scripts/aetheria_hope_path.py --cycles 2
-```
-
-**Detached schedule + watchdog** (rolling segment defaults):
-
-```powershell
-powershell -File scripts/launch_long_horizon.ps1 -Cycles 2 -IntervalMin 30 -MaxTicks 48
-powershell -File scripts/launch_lh_watchdog.ps1
-```
-
-**Manual cycle smoke** (hard timeout — prefer this over bare probe scripts):
-
-```powershell
-python -u scripts/run_probe_bounded.py --cycles 2
-```
-
-**Stop:**
-
-```powershell
-Set-Content measurements/long_horizon_STOP "stop"
-Set-Content measurements/watchdog_STOP "stop"
-```
-
-> **Scope:** Clones of this repo alone are the control plane. The cycle body and registry resolve inside a complete local Aetheria root. That split is intentional.
-
-## Repository layout
-
-```
-scripts/        Supervisor, watchdog, hope path, cycle contract consumers,
-                status/resource hygiene, bounded runner, gate eval, sandbox edit
-living/         Path helpers + disposable sandbox target
-measurements/   Examples and schemas only (not live host state)
-templates/      Example handoff / resume shapes
-docs/           Why, architecture, cycle runner, operations, internals
+python -u scripts/aetheria.py stop --reason "operator"
 ```
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
-| [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md) | **Sitting picture** (no private dump) |
-| [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) | **Sanitized try-it-now demo** (clones) |
-| [docs/WHY.md](docs/WHY.md) | Problem, non-goals, success criteria |
-| [docs/CYCLE_RUNNER.md](docs/CYCLE_RUNNER.md) | Cycle contract, timeouts, orphan hygiene |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layers and components |
-| [docs/OPERATIONS.md](docs/OPERATIONS.md) | Start, stop, recover, maintenance |
-| [docs/INTERNALS.md](docs/INTERNALS.md) | Continuity files and change policy |
-| [docs/MEMORY_AND_STATE.md](docs/MEMORY_AND_STATE.md) | Public vs private boundary |
-| [docs/HYGIENE.md](docs/HYGIENE.md) | Public hygiene PR policy |
-| [SETUP.md](SETUP.md) | Requirements and smoke tests |
-| [CHANGELOG.md](CHANGELOG.md) | Release history |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | What belongs in PRs |
-| [SECURITY.md](SECURITY.md) | Vulnerability reporting |
-
-## Status
-
-| Area | State |
-|------|--------|
-| Light multi-cycle + supervision | **Stable** |
-| Cycle runner contract (summary + env cycles) | **Stable** (parent consumers published) |
-| Watchdog relaunch (PID-truth) | **Stable** |
-| Rolling segments (default 48) | **Stable** |
-| Durable green-tick / change gate | **Stable** |
-| Status + orphan/resource hygiene | **Stable** |
-| Guarded sandbox edit | **Demonstrated** |
-| Broad auto-edit of production modules | **Incomplete** (not claimed) |
-| Private cycle body / living / registry | **Not published** |
+| [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) | **Protocol v1** (heartbeat, STOP, recover, exits) |
+| [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) | Product boundary |
+| [docs/STATE_MODEL.md](docs/STATE_MODEL.md) | Authoritative files |
+| [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md) | Sitting picture (no private dump) |
+| [docs/WHY.md](docs/WHY.md) | Problem and non-goals |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layers |
+| [docs/OPERATIONS.md](docs/OPERATIONS.md) | Start / stop / recover |
 
 ## What this repository is not
 
-- Not a hosted multi-tenant agent cloud  
-- Not a dump of private memory, registries, or host paths  
-- Not a claim that full autonomous production-code editing is finished  
+- Not a hosted multi-tenant agent cloud
+- Not a dump of private memory, registries, or host paths
+- Not a chat UI or “digital employee” with a general shell
 - Not “chat as the long-run parent”
-
-## Contributing
-
-Bugfixes and documentation improvements to the published scripts are welcome.  
-Do **not** open PRs that include living dumps, registries, credentials, host absolute paths, or operator-private notes.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+- Not AUTORUN after a dirty death
 
 ## License
 

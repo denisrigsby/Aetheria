@@ -4,6 +4,19 @@ This repository is **one product**: a local **process control plane** for a long
 
 It is not a chat app, not a model host, and not a marketplace.
 
+Aetheria (full install) is a **versioned, auditable process-continuity layer** for long-running local work, with this public control plane and an **optional private agent** (mouth + living + GPU plant) on one PC. The private piece is an extension, not a hole in GitHub. Protocol: [RUNTIME_CONTRACT.md](RUNTIME_CONTRACT.md).
+
+## Why public vs private is architectural
+
+| Stays private | Reason |
+|---------------|--------|
+| Living jsonl, session traces | User-specific memory; merge/concat forbidden |
+| Mouth / local models | Operator chair; must not parent the clock |
+| Cycle body / probe internals | Security-sensitive runtime + unpublished research |
+| Credentials, host paths | Deployment-specific |
+
+Public GitHub stays fully evaluable as infrastructure (start, heartbeat, STOP, recover, mock demo) without those.
+
 ## Supported product
 
 | Slot | Choice |
