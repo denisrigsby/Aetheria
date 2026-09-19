@@ -32,3 +32,7 @@ An identity match for supervisor / watchdog / probe roles SHOULD bind:
 ## Mismatch policy
 
 A mismatch must **never** kill, resume, or adopt. Prefer HOLD / report survivors.
+
+## Binding helper
+
+See scripts/process_identity_bind.py (creation time / exe / parent / campaign UUID / job object fields).

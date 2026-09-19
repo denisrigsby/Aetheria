@@ -13,3 +13,13 @@
 | No secrets / host paths in public artifacts | **PASS** | Repo hygiene + .gitignore doctrine |
 
 Update this table only when CI proves a change. No soft-green.
+
+## Update after P0b
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| Unrelated processes survive stale-PID recovery/stop | **PARTIAL→improved** | `process_identity_bind` creation-time mismatch refuses kill |
+| Simultaneous start/recover → ≤1 worker | **PARTIAL** | `CampaignLock` + concurrency test (lock protocol) |
+| Localhost mutations require authorization | **PARTIAL→improved** | Talk-face ref POST requires `X-Aetheria-Token` |
+| Job Object containment | **PARTIAL** | `job_object_win.py` helper shipped; not fully wired/CI on Linux |
+

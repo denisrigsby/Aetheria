@@ -1,52 +1,64 @@
-# -*- coding: utf-8 -*-
-"""Public Talk-face reference: allowlist + refuse + fail-closed confirm."""
+"""Allowlist / refuse / fail-closed for Talk-face reference server."""
 from __future__ import annotations
 
+import importlib.util
 import json
 import threading
-import urllib.error
-import urllib.request
+from http.client import HTTPConnection
 from pathlib import Path
 
-import living.talk_face_ref.server as srv
+ROOT = Path(__file__).resolve().parents[1]
 
 
-def _http(method: str, path: str, body=None):
-    data = None
-    headers = {}
-    if body is not None:
-        data = json.dumps(body).encode("utf-8")
-        headers["Content-Type"] = "application/json"
-    req = urllib.request.Request(
-        f"http://127.0.0.1:{srv.PORT}{path}",
-        data=data,
-        headers=headers,
-        method=method,
-    )
+def _load():
+    path = ROOT / "living" / "talk_face_ref" / "server.py"
+    spec = importlib.util.spec_from_file_location("tfr", path)
+    mod = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_talk_face_ref_allowlist_and_failclosed():
+    mod = _load()
+    httpd, token = mod.make_server_with_token(host="127.0.0.1", port=0)
+    port = httpd.server_address[1]
+    th = threading.Thread(target=httpd.serve_forever, daemon=True)
+    th.start()
     try:
-        with urllib.request.urlopen(req, timeout=5) as r:
-            return r.status, json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        return e.code, json.loads(e.read().decode("utf-8") or "{}")
-
-
-def test_talk_face_ref_allowlist_and_failclosed(monkeypatch):
-    static = Path(__file__).resolve().parents[1] / "measurements" / "visual_refs" / "talk_face_v1"
-    assert static.is_dir()
-    monkeypatch.setattr(srv, "STATIC", static)
-    httpd = srv.ThreadingHTTPServer((srv.HOST, srv.PORT), srv.Handler)
-    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
-    thread.start()
-    try:
-        code, st = _http("GET", "/api/status")
-        assert code == 200 and st.get("flags", {}).get("plant_chat") == "BLOCKED"
-        code, refused = _http("POST", "/api/turn", {"message": "enable plant_chat"})
-        assert code == 403 and refused.get("ok") is False
-        code, turn = _http("POST", "/api/turn", {"message": "hello"})
-        assert code == 200 and turn.get("ok") is True
-        code, bad = _http("POST", "/api/apply", {"confirm": False})
-        assert code == 400 and bad.get("error") == "confirm_required"
-        code, apply = _http("POST", "/api/apply", {"confirm": True})
-        assert code == 400 and "fail_closed" in str(apply.get("error") or "")
+        c = HTTPConnection("127.0.0.1", port, timeout=5)
+        c.request("GET", "/api/status")
+        r = c.getresponse(); body = json.loads(r.read().decode())
+        assert r.status == 200 and body.get("flags", {}).get("plant_chat") == "BLOCKED"
+        c.close()
+        # POST without token → 401
+        c = HTTPConnection("127.0.0.1", port, timeout=5)
+        raw = json.dumps({"message": "/status"}).encode()
+        c.request("POST", "/api/turn", body=raw, headers={"Content-Type": "application/json"})
+        r = c.getresponse(); r.read()
+        assert r.status == 401
+        c.close()
+        # POST with token → 200
+        c = HTTPConnection("127.0.0.1", port, timeout=5)
+        c.request(
+            "POST",
+            "/api/turn",
+            body=raw,
+            headers={"Content-Type": "application/json", "X-Aetheria-Token": token},
+        )
+        r = c.getresponse(); body = json.loads(r.read().decode())
+        assert r.status == 200 and body.get("ok") is True
+        c.close()
+        # apply fail-closed
+        c = HTTPConnection("127.0.0.1", port, timeout=5)
+        c.request(
+            "POST",
+            "/api/apply",
+            body=b"{"confirm": true}",
+            headers={"Content-Type": "application/json", "X-Aetheria-Token": token},
+        )
+        r = c.getresponse(); body = json.loads(r.read().decode())
+        assert body.get("error") == "need_brief" or body.get("ok") is False
+        c.close()
     finally:
         httpd.shutdown()

@@ -25,7 +25,8 @@ def listening() -> bool:
 def main() -> int:
     server = ROOT / "living" / "talk_face_ref" / "server.py"
     if not server.is_file():
-        print("missing", server)
+        print("Note: server prints X-Aetheria-Token for POSTs.\n", flush=True)
+print("missing", server)
         return 2
     child = None
     if not listening():
