@@ -1,14 +1,12 @@
-# Dual face, one plant
+# One plant, two surfaces
 
-**Plant clock ≠ chat.**
+Public lead name: **plant clock**. The two UIs are surfaces over one plant — not two products.
 
-| Face | Role | Look |
-|------|------|------|
-| **Talk-face** | Scrubbed safety mouth (localhost chat UI) | Polished teal/navy HTML app window |
-| **Forge** | Industrial operator console | Textual TUI |
+| Surface | Role |
+|---------|------|
+| **Talk-face** | Scrubbed localhost safety mouth |
+| **Forge** | Industrial operator console (private plant) |
 
-Desktop entry opens Talk-face first (Edge/Chrome `--app` mode). **Open Forge** inside Talk-face spawns the industrial terminal. Both may run together. Neither parents the plant clock.
+Both may run. Neither parents the plant clock. Talk-face must not enable `plant_chat` / `kit_act`, and writes stay fail-closed through the plant spine.
 
-`plant_chat` and `kit_act` stay blocked through Talk-face. Confirm write is fail-closed on the plant spine.
-
-See [TALK_FACE.md](TALK_FACE.md), [DEFINITION.md](DEFINITION.md), [CLAIMS.md](CLAIMS.md).
+Older phrase “dual face” meant the same architecture. Prefer **one plant, two surfaces** in public copy.

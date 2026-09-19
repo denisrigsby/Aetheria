@@ -1,4 +1,4 @@
-# Arbitrary-path installation
+﻿# Arbitrary-path installation
 
 The control plane and research substrate run from **any directory**. They do not require a developer home path, a nested clone, or a pre-existing `.venv`.
 
@@ -10,7 +10,7 @@ The control plane and research substrate run from **any directory**. They do not
 ## Install
 
 ```text
-git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git aetheria
+git clone https://github.com/denisrigsby/Aetheria.git aetheria
 cd aetheria
 python -m pip install -r requirements-dev.lock
 python -u scripts/aetheria.py init
