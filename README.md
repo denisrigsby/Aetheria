@@ -35,6 +35,20 @@ More: [docs/GLOSSARY.md](docs/GLOSSARY.md) · Architecture: [docs/ARCHITECTURE.m
 
 Origin: solo human–AI collaboration on a real Windows operator machine. See [docs/ORIGIN.md](docs/ORIGIN.md) · [docs/DEFINITION.md](docs/DEFINITION.md).
 
+
+## Assurance (read before production claims)
+
+This repository is **not production-audited** for supervising valuable or security-sensitive work yet.
+
+- Claims labels: [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md) — **Tests / Mock / Untested / Private**
+- Process identity: [docs/PROCESS_IDENTITY.md](docs/PROCESS_IDENTITY.md)
+- Atomic state: [docs/ATOMIC_STATE.md](docs/ATOMIC_STATE.md)
+- Threat model: [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md)
+- Release gate checklist: [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) (honest PASS/PARTIAL/FAIL)
+- Snapshot digests are **integrity checksums**, not authentication.
+
+**Conventional terms:** supervisor (plant clock), worker (tick/cycle), UI mouth (Talk-face), operator console (Forge), paused state (HOLD).
+
 ## Continuity proof (run this)
 
 ```powershell
