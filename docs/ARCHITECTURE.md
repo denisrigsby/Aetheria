@@ -1,3 +1,5 @@
+Public vs mock vs private overlay: [ARCHITECTURE_PUBLIC_OVERLAY.md](ARCHITECTURE_PUBLIC_OVERLAY.md)
+
 # Architecture
 
 ## Design goal

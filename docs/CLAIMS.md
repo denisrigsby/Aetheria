@@ -14,3 +14,7 @@ Origin: solo human–AI collaboration on **Windows**. See [ORIGIN.md](ORIGIN.md)
 Public reference tests cover allowlist / refuse / fail-closed confirm on the mock spine. Full long-horizon and L5 artifacts remain on the operator machine by design (private vs public boundary).
 
 Discovery doctrine: searchable popular language is allowed only when bound to a proveable fact. See README.
+
+## Public fault-injection (CI)
+
+See 	ests/test_fault_injection_public.py for stale heartbeat, STOP idempotence, hash-mismatched snapshot refusal, wrong-role PID rejection, duplicate-supervisor role detection, interrupted checkpoint .tmp, and dirty last_ok → HOLD policy. These are control-plane proofs with a mock/reference worker — not the private plant.

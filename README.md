@@ -1,4 +1,4 @@
-﻿# Aetheria
+# Aetheria
 
 [![CI](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -8,11 +8,32 @@
 **Aetheria is a local plant clock for serious AI work on your Windows PC.**
 Chat is a mouth you can open or close. **The work clock is not the chat.**
 
-People need AI work that keeps going when the chat dies â€” overnight, after a crash, without babysitting a fragile window.
+**Literal subtitle:** A Windows-local, fail-closed supervisor for long-running AI work loops.
 
-This repository is the **public control plane**: supervisor, watchdog, STOP, heartbeat, checkpoint, recover, plus a Talk-face reference mouth. It is not a chat app, not a model host, and not a dump of the private operator plant.
+> **Scope (read this):** Windows-first · local-only · reference implementation.  
+> This public repo ships a **real supervisor control plane** and a **mock / reference worker**.  
+> The private operator plant (Forge console, living memory, real cycle body) is **not** included.
 
-Origin: solo humanâ€“AI collaboration on a real Windows operator machine. See [docs/ORIGIN.md](docs/ORIGIN.md) Â· [docs/DEFINITION.md](docs/DEFINITION.md).
+People need AI work that keeps going when the chat dies — overnight, after a crash, without babysitting a fragile window.
+
+### 30-second scenario
+
+Start a long job → close the UI → kill the worker mid-cycle → see heartbeat go stale and land in **HOLD** (fail-closed) → recover only through an identity-checked path (not blind PID reuse).  
+Runnable public slice: `python -u scripts/demo_continuity.py` (UI closed, pulse continues). Full narrative: [docs/SCENARIO_30S.md](docs/SCENARIO_30S.md).
+
+### Glossary
+
+| Aetheria term | Plain technical equivalent |
+|---------------|----------------------------|
+| Plant clock | Detached supervised job runtime |
+| Mouth / Talk-face | Optional local chat or operator UI |
+| Forge | Private operator console |
+| Tick / cycle | One bounded unit of agent work |
+| HOLD | Fail-closed paused state pending operator action |
+
+More: [docs/GLOSSARY.md](docs/GLOSSARY.md) · Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/ARCHITECTURE_PUBLIC_OVERLAY.md](docs/ARCHITECTURE_PUBLIC_OVERLAY.md) · States: [docs/STATE_TRANSITIONS.md](docs/STATE_TRANSITIONS.md)
+
+Origin: solo human–AI collaboration on a real Windows operator machine. See [docs/ORIGIN.md](docs/ORIGIN.md) · [docs/DEFINITION.md](docs/DEFINITION.md).
 
 ## Continuity proof (run this)
 
@@ -47,7 +68,7 @@ The private install Ã¢â‚¬â€ **mouth** (local admin / architect) + **p
 
 **Plant clock Ã¢â€°Â  chat.**
 
-Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) Ã‚Â· boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) Ã‚Â· state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) Ã‚Â· sitting picture: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
+Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) Ã‚Â· boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) Ã‚Â· state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) Ã‚Â· operator walkthrough: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
 
 Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
 
