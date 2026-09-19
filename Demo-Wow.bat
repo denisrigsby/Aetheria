@@ -1,11 +1,3 @@
 @echo off
-setlocal
-cd /d "%~dp0"
-title Aetheria WOW Demo
-echo.
-echo  Aetheria WOW Demo - plant clock keeps ticking after chat closes
-echo  Public reference only. Not the private plant.
-echo.
-python -u scripts/demo_wow.py
-echo.
-pause
+echo note: Demo-Wow.bat renamed to Demo-Continuity.bat
+call "%~dp0Demo-Continuity.bat"

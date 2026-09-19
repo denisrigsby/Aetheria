@@ -19,15 +19,15 @@ Origin: solo human–AI collaboration on Windows. See [docs/ORIGIN.md](docs/ORIG
 
 Plant clock ≠ chat. See [docs/DUAL_FACE.md](docs/DUAL_FACE.md).
 
-## WOW demo (60 seconds)
+## Continuity proof
 
-```powershell
-python -u scripts/demo_wow.py
-# or: Demo-Wow.bat
-```
+`powershell
+python -u scripts/demo_continuity.py
+# or: Demo-Continuity.bat
+`
 
-You will see a plant pulse keep ticking **after** Talk-face closes. That is the claim made visible.
-Docs: [docs/WOW_DEMO.md](docs/WOW_DEMO.md) · Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
+Public reference only (mock pulse + Talk-face reference mouth). Close Talk-face; the pulse file keeps advancing. That is plant clock != chat, runnable.
+Docs: [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) · Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
 
 Talk-face only:
 ```powershell
