@@ -28,17 +28,19 @@ def test_talk_face_ref_allowlist_and_failclosed():
     try:
         c = HTTPConnection("127.0.0.1", port, timeout=5)
         c.request("GET", "/api/status")
-        r = c.getresponse(); body = json.loads(r.read().decode())
+        r = c.getresponse()
+        body = json.loads(r.read().decode())
         assert r.status == 200 and body.get("flags", {}).get("plant_chat") == "BLOCKED"
         c.close()
-        # POST without token → 401
-        c = HTTPConnection("127.0.0.1", port, timeout=5)
+
         raw = json.dumps({"message": "/status"}).encode()
+        c = HTTPConnection("127.0.0.1", port, timeout=5)
         c.request("POST", "/api/turn", body=raw, headers={"Content-Type": "application/json"})
-        r = c.getresponse(); r.read()
+        r = c.getresponse()
+        r.read()
         assert r.status == 401
         c.close()
-        # POST with token → 200
+
         c = HTTPConnection("127.0.0.1", port, timeout=5)
         c.request(
             "POST",
@@ -46,18 +48,21 @@ def test_talk_face_ref_allowlist_and_failclosed():
             body=raw,
             headers={"Content-Type": "application/json", "X-Aetheria-Token": token},
         )
-        r = c.getresponse(); body = json.loads(r.read().decode())
+        r = c.getresponse()
+        body = json.loads(r.read().decode())
         assert r.status == 200 and body.get("ok") is True
         c.close()
-        # apply fail-closed
+
+        apply_raw = json.dumps({"confirm": True}).encode()
         c = HTTPConnection("127.0.0.1", port, timeout=5)
         c.request(
             "POST",
             "/api/apply",
-            body=b"{"confirm": true}",
+            body=apply_raw,
             headers={"Content-Type": "application/json", "X-Aetheria-Token": token},
         )
-        r = c.getresponse(); body = json.loads(r.read().decode())
+        r = c.getresponse()
+        body = json.loads(r.read().decode())
         assert body.get("error") == "need_brief" or body.get("ok") is False
         c.close()
     finally:
