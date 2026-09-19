@@ -36,3 +36,8 @@ After `stop` exit 0 (no allowlisted survivors), unlink `long_horizon.pid` and `w
 ## Not in this model
 
 Compaction or deletion of living/session stores from a query path. Public product does not compact “memory.”
+
+
+## Transition table
+
+Executable transitions: [STATE_TRANSITIONS.md](STATE_TRANSITIONS.md).
