@@ -1,3 +1,5 @@
+
+# Localhost mouth: bind loopback only. Per-launch auth token = tracked gap (see RELEASE_GATE_ASSURANCE).
 # -*- coding: utf-8 -*-
 """Localhost Talk-face reference server (mock spine). Public-safe demo."""
 from __future__ import annotations
