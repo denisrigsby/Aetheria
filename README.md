@@ -1,5 +1,38 @@
-# Aetheria
+﻿# Aetheria
 
+
+## Definition
+
+**Aetheria** is the local plant clock for serious AI work on your Windows PC.
+Chat is a mouth you can open or close. **The work clock is not the chat.**
+
+People need AI work that keeps going when the chat dies — overnight, after a crash, without babysitting.
+
+Origin: solo human–AI collaboration on Windows. See [docs/ORIGIN.md](docs/ORIGIN.md) · [docs/DEFINITION.md](docs/DEFINITION.md).
+
+## Dual face
+
+| Face | Role |
+|------|------|
+| **Talk-face** | Scrubbed localhost safety mouth |
+| **Forge** | Industrial operator console (private plant) |
+
+Plant clock ≠ chat. See [docs/DUAL_FACE.md](docs/DUAL_FACE.md).
+
+## WOW demo (60 seconds)
+
+```powershell
+python -u scripts/demo_wow.py
+# or: Demo-Wow.bat
+```
+
+You will see a plant pulse keep ticking **after** Talk-face closes. That is the claim made visible.
+Docs: [docs/WOW_DEMO.md](docs/WOW_DEMO.md) · Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
+
+Talk-face only:
+```powershell
+python -u scripts/talk_face_ref_demo.py
+```
 [![CI](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
@@ -9,17 +42,17 @@
 
 This repository is the **control plane**: supervisor, watchdog, STOP, heartbeat, checkpoint, recover. It is not a chat app, not a model host, and not a dump of the private organism.
 
-The private install — **mouth** (local admin / architect) + **plant** (detached ticks) + living memory — is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
+The private install â€” **mouth** (local admin / architect) + **plant** (detached ticks) + living memory â€” is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
 
-**Plant clock ≠ chat.**
+**Plant clock â‰  chat.**
 
-Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) · boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · sitting picture: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
+Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) Â· boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) Â· state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) Â· sitting picture: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
 
 Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
 
-`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch → no spawn.
+`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch â†’ no spawn.
 
-> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not a multi-agent framework and not a chat UI.
+> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion â€” not a multi-agent framework and not a chat UI.
 
 ### The pain this targets
 
@@ -27,20 +60,20 @@ Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagno
 |---------------------|----------------------|
 | Dies when chat/IDE closes | Detached supervisor + on-disk state |
 | Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
-| “Is it still working?” | `status_report` + measurements JSON |
+| â€œIs it still working?â€ | `status_report` + measurements JSON |
 | Overnight babysitting | Rolling ticks / segments + watchdog |
 | Thrash restart after power flap | HOLD after dirty `last_ok`; resume when stable |
-| Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
+| Chat is the whole runtime | **Plant clock â‰  chat** â€” chat never owns the schedule |
 | Crash vs green stop | Dirty `last_ok=false` HOLDs; green interruptions may guardian-start |
 
-### Job #1 — local campaign runner
+### Job #1 â€” local campaign runner
 
 | Step | What you prove |
 |------|----------------|
-| 1 | `python -u scripts/demo_local_smoke.py` — control plane layout + compile (no private sauce) |
-| 2 | (Full operator root) launch supervisor + watchdog — detached ticks |
-| 3 | `status_report` / measurements — still alive? |
-| 4 | `python -u scripts/plant_control.py stop` — STOP files + identity-checked tree kill; survivors reported |
+| 1 | `python -u scripts/demo_local_smoke.py` â€” control plane layout + compile (no private sauce) |
+| 2 | (Full operator root) launch supervisor + watchdog â€” detached ticks |
+| 3 | `status_report` / measurements â€” still alive? |
+| 4 | `python -u scripts/plant_control.py stop` â€” STOP files + identity-checked tree kill; survivors reported |
 
 **Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
 
@@ -102,10 +135,10 @@ python -u scripts/aetheria.py stop --reason "operator"
 
 - Not a hosted multi-tenant agent cloud
 - Not a dump of private memory, registries, or host paths
-- Not a chat UI or “digital employee” with a general shell
-- Not “chat as the long-run parent”
+- Not a chat UI or â€œdigital employeeâ€ with a general shell
+- Not â€œchat as the long-run parentâ€
 - Not AUTORUN after a dirty death
 
 ## License
 
-[MIT](LICENSE) © 2026 Denis Rigsby / Aetheria Project
+[MIT](LICENSE) Â© 2026 Denis Rigsby / Aetheria Project

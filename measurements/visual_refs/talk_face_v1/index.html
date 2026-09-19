@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aetheria Forge</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300d9a3'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='18' font-weight='800' fill='%2304120e'%3EA%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="titlebar">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div class="brand-text">
+          <h1>Aetheria Forge</h1>
+          <div class="status">
+            <span class="dot" id="liveDot"></span>
+            <span id="liveLabel">Connecting</span>
+            <span class="badge" id="flagsBadge">plant_chat BLOCKED</span>
+          </div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Face menu">
+        <button type="button" class="active" id="tabLive" title="Chat face">Live</button>
+        <button type="button" id="openForgeBtn" title="Open Forge industrial terminal in a new window">Open Forge</button>
+        <button type="button" id="clearChatBtn" title="Clear conversation; menu stays">Clear chat</button>
+        <button type="button" class="quit" id="quitHintBtn" title="Close this browser tab when done">Close tab</button>
+      </nav>
+    </div>
+
+    <div class="chat-header">
+      <div class="chat-title">Chat</div>
+      <div class="tools">
+        <button type="button" class="tool-btn" id="copyBtn">Copy</button>
+        <button type="button" class="tool-btn" id="refreshBtn">Refresh</button>
+        <button type="button" class="tool-btn warn" id="confirmBtn" disabled>Confirm write</button>
+      </div>
+    </div>
+
+    <div class="messages" id="log" aria-live="polite"></div>
+
+    <div class="pending-strip" id="pendingBox">No staged write.</div>
+
+    <div class="composer">
+      <form id="composer" class="input-row" autocomplete="off">
+        <div class="input-wrap">
+          <textarea id="input" rows="1" placeholder="Type a message…" required></textarea>
+        </div>
+        <button type="submit" class="send-btn" id="sendBtn">Send</button>
+      </form>
+      <div class="footer-hint">
+        <span><span class="kbd">Enter</span> sends</span>
+        <span><span class="kbd">Shift</span>+<span class="kbd">Enter</span> newline</span>
+        <span>Desktop shortcut opens this face · Open Forge is the industrial terminal</span>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
