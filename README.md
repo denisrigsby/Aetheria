@@ -1,58 +1,59 @@
 ﻿# Aetheria
 
+[![CI](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria)](https://github.com/denisrigsby/Aetheria/releases)
 
-## Definition
-
-**Aetheria** is the local plant clock for serious AI work on your Windows PC.
+**Aetheria is a local plant clock for serious AI work on your Windows PC.**
 Chat is a mouth you can open or close. **The work clock is not the chat.**
 
-People need AI work that keeps going when the chat dies — overnight, after a crash, without babysitting.
+People need AI work that keeps going when the chat dies â€” overnight, after a crash, without babysitting a fragile window.
 
-Origin: solo human–AI collaboration on Windows. See [docs/ORIGIN.md](docs/ORIGIN.md) · [docs/DEFINITION.md](docs/DEFINITION.md).
+This repository is the **public control plane**: supervisor, watchdog, STOP, heartbeat, checkpoint, recover, plus a Talk-face reference mouth. It is not a chat app, not a model host, and not a dump of the private operator plant.
 
-## Dual face
+Origin: solo humanâ€“AI collaboration on a real Windows operator machine. See [docs/ORIGIN.md](docs/ORIGIN.md) Â· [docs/DEFINITION.md](docs/DEFINITION.md).
 
-| Face | Role |
-|------|------|
-| **Talk-face** | Scrubbed localhost safety mouth |
-| **Forge** | Industrial operator console (private plant) |
+## Continuity proof (run this)
 
-Plant clock ≠ chat. See [docs/DUAL_FACE.md](docs/DUAL_FACE.md).
-
-## Continuity proof
-
-`powershell
+```powershell
 python -u scripts/demo_continuity.py
 # or: Demo-Continuity.bat
-`
+```
 
-Public reference only (mock pulse + Talk-face reference mouth). Close Talk-face; the pulse file keeps advancing. That is plant clock != chat, runnable.
-Docs: [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) · Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
+Public reference only (mock pulse + Talk-face reference mouth). Close Talk-face; the pulse file keeps advancing. That is **plant clock â‰  chat**, runnable.
+Docs: [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) Â· Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
 
 Talk-face only:
+
 ```powershell
 python -u scripts/talk_face_ref_demo.py
 ```
-[![CI](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria-sovereign-agent)](https://github.com/denisrigsby/Aetheria-sovereign-agent/releases)
 
-**Aetheria is a versioned, auditable process-continuity layer for long-running local workloads**, with a reference (mock) runtime in this repo and an optional private agent on one PC.
+## One plant, two surfaces
 
-This repository is the **control plane**: supervisor, watchdog, STOP, heartbeat, checkpoint, recover. It is not a chat app, not a model host, and not a dump of the private organism.
+| Surface | Role |
+|---------|------|
+| **Talk-face** | Scrubbed localhost safety mouth |
+| **Forge** | Industrial operator console (private plant) |
 
-The private install â€” **mouth** (local admin / architect) + **plant** (detached ticks) + living memory â€” is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
+Same plant underneath. Surfaces do not own the clock. See [docs/DUAL_FACE.md](docs/DUAL_FACE.md).
 
-**Plant clock â‰  chat.**
+## Discovery posts
 
-Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) Â· boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) Â· state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) Â· sitting picture: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
+Paste-ready Show HN / Reddit text: [docs/DISCOVERY_POST.md](docs/DISCOVERY_POST.md).
+
+The private install Ã¢â‚¬â€ **mouth** (local admin / architect) + **plant** (detached ticks) + living memory Ã¢â‚¬â€ is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
+
+**Plant clock Ã¢â€°Â  chat.**
+
+Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) Ã‚Â· boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) Ã‚Â· state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) Ã‚Â· sitting picture: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
 
 Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
 
-`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch â†’ no spawn.
+`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch Ã¢â€ â€™ no spawn.
 
-> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion â€” not a multi-agent framework and not a chat UI.
+> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion Ã¢â‚¬â€ not a multi-agent framework and not a chat UI.
 
 ### The pain this targets
 
@@ -60,20 +61,20 @@ Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagno
 |---------------------|----------------------|
 | Dies when chat/IDE closes | Detached supervisor + on-disk state |
 | Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
-| â€œIs it still working?â€ | `status_report` + measurements JSON |
+| Ã¢â‚¬Å“Is it still working?Ã¢â‚¬Â | `status_report` + measurements JSON |
 | Overnight babysitting | Rolling ticks / segments + watchdog |
 | Thrash restart after power flap | HOLD after dirty `last_ok`; resume when stable |
-| Chat is the whole runtime | **Plant clock â‰  chat** â€” chat never owns the schedule |
+| Chat is the whole runtime | **Plant clock Ã¢â€°Â  chat** Ã¢â‚¬â€ chat never owns the schedule |
 | Crash vs green stop | Dirty `last_ok=false` HOLDs; green interruptions may guardian-start |
 
-### Job #1 â€” local campaign runner
+### Job #1 Ã¢â‚¬â€ local campaign runner
 
 | Step | What you prove |
 |------|----------------|
-| 1 | `python -u scripts/demo_local_smoke.py` â€” control plane layout + compile (no private sauce) |
-| 2 | (Full operator root) launch supervisor + watchdog â€” detached ticks |
-| 3 | `status_report` / measurements â€” still alive? |
-| 4 | `python -u scripts/plant_control.py stop` â€” STOP files + identity-checked tree kill; survivors reported |
+| 1 | `python -u scripts/demo_local_smoke.py` Ã¢â‚¬â€ control plane layout + compile (no private sauce) |
+| 2 | (Full operator root) launch supervisor + watchdog Ã¢â‚¬â€ detached ticks |
+| 3 | `status_report` / measurements Ã¢â‚¬â€ still alive? |
+| 4 | `python -u scripts/plant_control.py stop` Ã¢â‚¬â€ STOP files + identity-checked tree kill; survivors reported |
 
 **Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
 
@@ -102,8 +103,8 @@ This repo stays fully evaluable as infrastructure. See [docs/WHY.md](docs/WHY.md
 ## Quick start
 
 ```powershell
-git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git
-cd Aetheria-sovereign-agent
+git clone https://github.com/denisrigsby/Aetheria.git
+cd Aetheria
 python -u scripts/demo_local_smoke.py
 ```
 
@@ -135,10 +136,10 @@ python -u scripts/aetheria.py stop --reason "operator"
 
 - Not a hosted multi-tenant agent cloud
 - Not a dump of private memory, registries, or host paths
-- Not a chat UI or â€œdigital employeeâ€ with a general shell
-- Not â€œchat as the long-run parentâ€
+- Not a chat UI or Ã¢â‚¬Å“digital employeeÃ¢â‚¬Â with a general shell
+- Not Ã¢â‚¬Å“chat as the long-run parentÃ¢â‚¬Â
 - Not AUTORUN after a dirty death
 
 ## License
 
-[MIT](LICENSE) Â© 2026 Denis Rigsby / Aetheria Project
+[MIT](LICENSE) Ã‚Â© 2026 Denis Rigsby / Aetheria Project
