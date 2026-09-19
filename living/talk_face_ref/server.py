@@ -1,22 +1,31 @@
+"""Localhost Talk-face reference server (mock spine). Public-safe demo.
 
-# Localhost mouth: bind loopback only. Per-launch auth token = tracked gap (see RELEASE_GATE_ASSURANCE).
-# -*- coding: utf-8 -*-
-"""Localhost Talk-face reference server (mock spine). Public-safe demo."""
+Hardening:
+- loopback bind only
+- per-launch auth token required for state-changing POSTs
+- MAX_BODY request size limit
+- no state-changing GET
+"""
 from __future__ import annotations
 
 import json
+import secrets
 import sys
 from datetime import datetime, timezone
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Tuple
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 STATIC = ROOT / "measurements" / "visual_refs" / "talk_face_v1"
-HOST, PORT = "127.0.0.1", 8765
-ALLOWLIST = ["/api/turn", "/api/status", "/api/pending", "/api/apply", "/api/open_forge"]
+HOST = "127.0.0.1"
+PORT = 8765
+MAX_BODY = 256_000
 FLAGS = {"plant_chat": "BLOCKED", "kit_act": False}
+
+# Set by make_server_with_token / main
+LAUNCH_TOKEN: Optional[str] = None
 
 
 def _utc() -> str:
@@ -24,111 +33,102 @@ def _utc() -> str:
 
 
 def _mock_turn(msg: str) -> Dict[str, Any]:
-    low = (msg or "").lower()
-    if any(x in low for x in ("enable plant_chat", "enable plant chat", "enable kit_act", "enable kit act")):
-        return {"ok": False, "error": "refused: plant_chat/kit_act not available via Talk-face", "ts": _utc(), "flags": dict(FLAGS)}
-    return {
-        "ok": True,
-        "text": (
-            "Talk-face reference mouth online (mock spine). "
-            "Plant clock is not chat. "
-            f"You said: {(msg or '')[:240]}"
-        ),
-        "ts": _utc(),
-        "flags": dict(FLAGS),
-        "source": "talk_face_ref_mock",
-    }
+    text = (
+        "Talk-face reference mouth online (mock spine). "
+        "plant_chat BLOCKED; kit_act false. "
+        f"Echo: {msg[:200]}"
+    )
+    return {"ok": True, "text": text, "ts": _utc(), "flags": dict(FLAGS), "source": "talk_face_ref_mock"}
 
 
-class Handler(SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=str(STATIC), **kwargs)
-
-    def log_message(self, fmt: str, *args) -> None:
-        try:
-            line = fmt % args
-        except Exception:
-            line = str(fmt)
-        if "favicon.ico" in line:
-            return
-        sys.stderr.write("[talk_face_ref] " + line + "\n")
+class Handler(BaseHTTPRequestHandler):
+    def log_message(self, fmt: str, *args) -> None:  # noqa: A003
+        sys.stderr.write("[talk_face_ref] " + (fmt % args) + "\n")
 
     def _json(self, code: int, payload: Dict[str, Any]) -> None:
-        body = json.dumps(payload, ensure_ascii=True).encode("utf-8")
+        raw = json.dumps(payload).encode("utf-8")
         self.send_response(code)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(raw)))
         self.end_headers()
-        self.wfile.write(body)
+        self.wfile.write(raw)
 
-    def _read_json(self) -> Dict[str, Any]:
-        n = int(self.headers.get("Content-Length") or 0)
-        raw = self.rfile.read(n) if n else b"{}"
-        try:
-            data = json.loads(raw.decode("utf-8") or "{}")
-        except Exception:
-            return {}
-        return data if isinstance(data, dict) else {}
+    def _token_ok(self) -> bool:
+        if not LAUNCH_TOKEN:
+            return True
+        return self.headers.get("X-Aetheria-Token") == LAUNCH_TOKEN
 
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
-        if path == "/favicon.ico":
-            svg = (
-                b"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
-                b"<rect width='32' height='32' rx='8' fill='%2300d9a3'/>"
-                b"<text x='16' y='22' text-anchor='middle' font-size='18' "
-                b"font-weight='800' fill='%2304120e'>A</text></svg>"
-            )
-            self.send_response(200)
-            self.send_header("Content-Type", "image/svg+xml")
-            self.send_header("Content-Length", str(len(svg)))
-            self.end_headers()
-            self.wfile.write(svg)
+        if path in ("/api/status", "/api/pending"):
+            if path == "/api/status":
+                self._json(200, {"ok": True, "ts": _utc(), "flags": dict(FLAGS), "data": {"flags": dict(FLAGS), "mode": "reference_mock"}})
+            else:
+                self._json(200, {"ok": True, "ts": _utc(), "data": {}, "brief": "No staged write (mock)." })
             return
-        if path == "/api/status":
-            self._json(200, {"ok": True, "text": "Talk-face reference · mock spine · plant_chat BLOCKED", "ts": _utc(), "flags": dict(FLAGS), "data": {"flags": dict(FLAGS), "mode": "reference_mock"}})
+        if path == "/api/token":
+            # Intentionally not exposing token over GET in hardened mode
+            self._json(404, {"ok": False, "error": "token_not_via_get"})
             return
-        if path == "/api/pending":
-            self._json(200, {"ok": True, "brief": "", "data": {}, "flags": dict(FLAGS), "ts": _utc()})
+        # static
+        if path == "/":
+            path = "/index.html"
+        target = (STATIC / path.lstrip("/")).resolve()
+        if not str(target).startswith(str(STATIC.resolve())) or not target.is_file():
+            self.send_error(404)
             return
-        if path.startswith("/api/"):
-            self._json(404, {"ok": False, "error": "unknown_api", "allowlist": ALLOWLIST})
-            return
-        if path in ("/", "/index.html"):
-            self.path = "/index.html"
-        return SimpleHTTPRequestHandler.do_GET(self)
+        data = target.read_bytes()
+        ctype = "text/html" if target.suffix == ".html" else "application/octet-stream"
+        if target.suffix == ".js":
+            ctype = "application/javascript"
+        elif target.suffix == ".css":
+            ctype = "text/css"
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     def do_POST(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
-        body = self._read_json()
+        length = int(self.headers.get("Content-Length") or 0)
+        if length > MAX_BODY:
+            self._json(413, {"ok": False, "error": "body_too_large"})
+            return
+        if not self._token_ok():
+            self._json(401, {"ok": False, "error": "unauthorized", "hint": "X-Aetheria-Token required for POST"})
+            return
+        raw = self.rfile.read(length) if length else b"{}"
+        try:
+            body = json.loads(raw.decode("utf-8") or "{}")
+        except Exception:
+            body = {}
         if path == "/api/turn":
-            out = _mock_turn(str(body.get("message") or body.get("text") or ""))
-            code = 403 if out.get("ok") is False else 200
-            self._json(code, out)
+            msg = str(body.get("message") or body.get("text") or "")
+            self._json(200, _mock_turn(msg))
             return
         if path == "/api/apply":
-            if not bool(body.get("confirm")):
-                self._json(400, {"ok": False, "error": "confirm_required", "ts": _utc()})
-                return
-            self._json(400, {"ok": False, "error": "reference_stub_fail_closed: no disk write in public demo", "ts": _utc(), "flags": dict(FLAGS)})
+            self._json(200, {"ok": False, "error": "need_brief", "text": "Mock fail-closed confirm (need_brief).", "ts": _utc(), "flags": dict(FLAGS)})
             return
-        if path == "/api/open_forge":
-            self._json(200, {"ok": True, "text": "Reference stub: Open Forge would spawn the industrial TUI on a private plant. No Forge binary is bundled here.", "ts": _utc(), "flags": dict(FLAGS)})
-            return
-        self._json(404, {"ok": False, "error": "unknown_api", "allowlist": ALLOWLIST})
+        self._json(404, {"ok": False, "error": "unknown_api"})
+
+
+def make_server_with_token(host: str = HOST, port: int = PORT) -> Tuple[ThreadingHTTPServer, str]:
+    global LAUNCH_TOKEN
+    LAUNCH_TOKEN = secrets.token_urlsafe(24)
+    httpd = ThreadingHTTPServer((host, port), Handler)
+    return httpd, LAUNCH_TOKEN
 
 
 def main() -> int:
-    if not STATIC.is_dir():
-        print("missing static", STATIC, file=sys.stderr)
-        return 2
-    httpd = ThreadingHTTPServer((HOST, PORT), Handler)
-    print(f"Talk-face REF http://{HOST}:{PORT}/  (localhost only, mock spine)", flush=True)
+    global LAUNCH_TOKEN
+    httpd, token = make_server_with_token(HOST, PORT)
+    print(f"Talk-face REF http://{HOST}:{httpd.server_address[1]}/  (localhost only, mock spine)", flush=True)
+    print(f"POST requires header X-Aetheria-Token: {token}", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("bye", flush=True)
+        pass
     return 0
 
 
