@@ -1,6 +1,6 @@
 ﻿# Sanitized demo (what a sitting should feel like)
 
-**Purpose:** A rough, public picture of Aetheria as a **clocked organism on one private PC** â€” not a dump of the operator machine.
+**Purpose:** A rough, public picture of Aetheria as a **clocked organism on one private PC** — not a dump of the operator machine.
 
 This is **not** the private Forge chat, living memory, host measurements, or model weights. Those stay on the operator box.
 
@@ -34,7 +34,7 @@ python -u scripts/demo_local_smoke.py
 
 Windows: `Demo-Local.bat`
 
-**Expected:** Python check, compile, example JSON, **plant â‰  chat** banner.  
+**Expected:** Python check, compile, example JSON, **plant ≠ chat** banner.  
 **Not expected:** multi-hour plant, companion UI, private memory.
 
 See [PUBLIC_DEMO.md](PUBLIC_DEMO.md).
@@ -45,7 +45,7 @@ See [PUBLIC_DEMO.md](PUBLIC_DEMO.md).
 |--------------------|----------------------------|
 | Supervisor, watchdog, stop/status contracts | Living streams, Forge mouth, Ollama surface |
 | Example measurement *shapes* | Live host state, chat logs, credentials |
-| Docs: clock â‰  chat, recovery, conservation | Absolute paths, host names, personal notes |
+| Docs: clock ≠ chat, recovery, conservation | Absolute paths, host names, personal notes |
 
 ## Law (sanitized)
 
