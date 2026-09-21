@@ -4,7 +4,7 @@
 
 After Talk-face (the mouth) closes, a plant pulse keeps advancing.
 
-That is the public slice of: **plant clock != chat**.
+That is the public slice of: **plant clock ≠ chat**.
 
 ## Run
 
