@@ -5,6 +5,10 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria)](https://github.com/denisrigsby/Aetheria/releases)
 
+> **Evidence index:** [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md) · [docs/EXPORT_PARITY.md](docs/EXPORT_PARITY.md)  
+> **Voice:** claim only what gates prove; P1–P5 = internal certification; pending stays visible.  
+> **Parity:** public export ≠ live plant (PRIVATE_AHEAD). Full program asset-class only as defined by `gate_full_program_asset_class_v1`.
+
 **Aetheria is a local plant clock for serious AI work on your Windows PC.**
 Chat is a mouth you can open or close. **The work clock is not the chat.**
 

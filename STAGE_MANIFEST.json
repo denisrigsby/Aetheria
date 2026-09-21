@@ -1,0 +1,23 @@
+{
+    "public_equals_plant":  false,
+    "staged":  [
+                   "FINAL_STATE_BRIEF.md",
+                   "docs/FINAL_STATE_BRIEF.md",
+                   "docs/EXPORT_PARITY.md",
+                   "PUBLIC_EXPORT_PRIMARY.txt",
+                   "README.md (evidence banner)",
+                   "docs/PRODUCTION_READINESS.md (title softened)"
+               ],
+    "export_root":  "C:\\Users\\denis\\.grok\\bin\\_gh_export_aetheria",
+    "next":  "Denis GO for remote push + CI green on shipping cut",
+    "ts_utc":  "2026-09-21T01:45:25.5570932Z",
+    "removed_backup_globs":  [
+                                 "*.pre_hold*",
+                                 "*.bak_*",
+                                 "*~"
+                             ],
+    "parity":  "PRIVATE_AHEAD",
+    "schema":  "aetheria_local_export_stage_v1",
+    "remote_push":  "HELD",
+    "denis_directive":  "Stage export locally only; do not push remote"
+}

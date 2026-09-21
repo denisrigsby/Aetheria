@@ -1,0 +1,11 @@
+PUBLIC EXPORT — LOCAL STAGE ONLY (no remote push)
+
+Remote (when Denis GO): https://github.com/denisrigsby/Aetheria-sovereign-agent
+This tree: C:\Users\denis\.grok\bin\_gh_export_aetheria
+
+STATUS: STAGED locally with final-state brief + parity note.
+DO NOT git push until Denis explicitly GO on public cut.
+DO NOT push private companion from C:\Users\denis\.grok\bin (outside this folder).
+
+Parity: PRIVATE_AHEAD — public ≠ plant.
+Evidence index: FINAL_STATE_BRIEF.md

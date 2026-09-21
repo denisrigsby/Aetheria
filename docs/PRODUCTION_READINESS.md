@@ -1,4 +1,4 @@
-# Production-readiness checklist
+# Control-plane readiness checklist (evidence index)
 
 Standalone product = process control plane ([STANDALONE_PRODUCT.md](STANDALONE_PRODUCT.md)). Companion, Ollama, cloud, and living memory are **out of scope** until this list is green.
 
