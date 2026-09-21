@@ -55,9 +55,9 @@ Forward-looking benefits (federated / networked plant) are **not** claimed as pr
 ## Pending (visible)
 
 - ASSURANCE doc hygiene (NONCLAIM cards; overall may remain PARTIAL)
-- Public export sync (PRIVATE_AHEAD until Denis GO on publish)
-- Public CI green on the cut that ships
-- Metadata sweep on the public surface before viewers/bots see the cut
+- Public export sync: brief on main; parity remains PRIVATE_AHEAD (public≠plant)
+- Public CI: verify green on main after bleach push
+- Metadata bleach: operator absolute paths scrubbed from export tree (post-push pass)
 
 ## Locked (fail-closed)
 
