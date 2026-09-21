@@ -60,7 +60,7 @@ python -u scripts/demo_continuity.py
 # or: Demo-Continuity.bat
 ```
 
-Public reference only (mock pulse + Talk-face reference mouth). Close Talk-face; the pulse file keeps advancing. That is **plant clock â‰  chat**, runnable.
+Public reference only (mock pulse + Talk-face reference mouth). Close Talk-face; the pulse file keeps advancing. That is **plant clock ≠ chat**, runnable.
 Docs: [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) · Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
 
 Talk-face only:
@@ -82,17 +82,17 @@ Same plant underneath. Surfaces do not own the clock. See [docs/DUAL_FACE.md](do
 
 Paste-ready Show HN / Reddit text: [docs/DISCOVERY_POST.md](docs/DISCOVERY_POST.md).
 
-The private install Ã¢â‚¬â€ **mouth** (local admin / architect) + **plant** (detached ticks) + living memory Ã¢â‚¬â€ is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
+The private install — **mouth** (local admin / architect) + **plant** (detached ticks) + living memory — is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
 
-**Plant clock Ã¢â€°Â  chat.**
+**Plant clock ≠ chat.**
 
-Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) Ã‚· boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) Ã‚· state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) Ã‚· operator walkthrough: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
+Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) · boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · operator walkthrough: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
 
 Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
 
-`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch Ã¢â€ â€™ no spawn.
+`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch → no spawn.
 
-> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion Ã¢â‚¬â€ not a multi-agent framework and not a chat UI.
+> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not a multi-agent framework and not a chat UI.
 
 ### The pain this targets
 
@@ -100,20 +100,20 @@ Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagno
 |---------------------|----------------------|
 | Dies when chat/IDE closes | Detached supervisor + on-disk state |
 | Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
-| Ã¢â‚¬Å“Is it still working?Ã¢â‚¬Â | `status_report` + measurements JSON |
+| “Is it still working?” | `status_report` + measurements JSON |
 | Overnight babysitting | Rolling ticks / segments + watchdog |
 | Thrash restart after power flap | HOLD after dirty `last_ok`; resume when stable |
-| Chat is the whole runtime | **Plant clock Ã¢â€°Â  chat** Ã¢â‚¬â€ chat never owns the schedule |
+| Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
 | Crash vs green stop | Dirty `last_ok=false` HOLDs; green interruptions may guardian-start |
 
-### Job #1 Ã¢â‚¬â€ local campaign runner
+### Job #1 — local campaign runner
 
 | Step | What you prove |
 |------|----------------|
-| 1 | `python -u scripts/demo_local_smoke.py` Ã¢â‚¬â€ control plane layout + compile (no private sauce) |
-| 2 | (Full operator root) launch supervisor + watchdog Ã¢â‚¬â€ detached ticks |
-| 3 | `status_report` / measurements Ã¢â‚¬â€ still alive? |
-| 4 | `python -u scripts/plant_control.py stop` Ã¢â‚¬â€ STOP files + identity-checked tree kill; survivors reported |
+| 1 | `python -u scripts/demo_local_smoke.py` — control plane layout + compile (no private sauce) |
+| 2 | (Full operator root) launch supervisor + watchdog — detached ticks |
+| 3 | `status_report` / measurements — still alive? |
+| 4 | `python -u scripts/plant_control.py stop` — STOP files + identity-checked tree kill; survivors reported |
 
 **Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
 
@@ -175,10 +175,10 @@ python -u scripts/aetheria.py stop --reason "operator"
 
 - Not a hosted multi-tenant agent cloud
 - Not a dump of private memory, registries, or host paths
-- Not a chat UI or Ã¢â‚¬Å“digital employeeÃ¢â‚¬Â with a general shell
-- Not Ã¢â‚¬Å“chat as the long-run parentÃ¢â‚¬Â
+- Not a chat UI or “digital employee” with a general shell
+- Not “chat as the long-run parent”
 - Not AUTORUN after a dirty death
 
 ## License
 
-[MIT](LICENSE) Ã‚© 2026 Denis Rigsby / Aetheria Project
+[MIT](LICENSE) © 2026 Denis Rigsby / Aetheria Project
