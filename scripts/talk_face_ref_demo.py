@@ -25,9 +25,9 @@ def listening() -> bool:
 def main() -> int:
     server = ROOT / "living" / "talk_face_ref" / "server.py"
     if not server.is_file():
-        print("Note: server prints X-Aetheria-Token for POSTs.\n", flush=True)
-print("missing", server)
+        print("missing", server)
         return 2
+    child = None
     child = None
     if not listening():
         child = subprocess.Popen([sys.executable, "-u", str(server)], cwd=str(ROOT))
