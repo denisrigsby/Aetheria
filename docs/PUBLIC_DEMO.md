@@ -2,7 +2,7 @@
 
 **Purpose:** Prove this control plane is real and runnable *as documentation + smoke tooling* without exposing private operator depth (living streams, companion chat, G4 train, host secrets).
 
-**Parents long-horizon plant:** only if **you** launch it in a full local root â€” chat never does.
+**Parents long-horizon plant:** only if **you** launch it in a full local root — chat never does.
 
 For the *feeling* of the private product (no private files): [SANITIZED_DEMO.md](SANITIZED_DEMO.md).
 
@@ -58,7 +58,7 @@ The sanitized demo does **not** need a model. If you later run a **private** com
 ollama pull qwen2.5:14b
 ```
 
-That is optional, private-depth tooling â€” not part of this control-plane smoke.
+That is optional, private-depth tooling — not part of this control-plane smoke.
 
 ---
 
@@ -78,8 +78,8 @@ Never set live train flags or attach the plant to a chat session as parent.
 ## Success criteria (demo)
 
 1. Clone runs smoke without private files  
-2. README / this doc explain plant â‰  chat  
-3. Operator can decide to go deeper via full install â€” or stop here  
+2. README / this doc explain plant ≠ chat  
+3. Operator can decide to go deeper via full install — or stop here  
 
 ---
 
