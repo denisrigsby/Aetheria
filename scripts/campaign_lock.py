@@ -317,6 +317,67 @@ def _clear_claim(path: Path, claim_id: str) -> None:
         pass
 
 
+def _probe_create_time(pid: int | None, create_time_fn: Callable[[int], str | None]) -> str | None:
+    if pid is None:
+        return None
+    try:
+        value = create_time_fn(pid)
+    except Exception:
+        return None
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _stamp_create_times(
+    lock_path: Path,
+    claim_path: Path,
+    claim_id: str,
+    *,
+    owner_pid: int,
+    owner_create: str | None,
+    worker_pid: int | None,
+    worker_create: str | None,
+    timeout_s: float,
+) -> None:
+    """Fill create_time on the claim this admit published.
+
+    If the lock is busy or the claim id changed, leave the document alone.
+    A live claim with no create_time still blocks a later admit.
+    """
+    if not claim_id or (owner_create is None and worker_create is None):
+        return
+    with CampaignLock(lock_path, timeout_s=timeout_s) as acquired:
+        if not acquired:
+            return
+        doc = _read_claim(claim_path)
+        if not doc or doc.get("_corrupt") or doc.get("claim_id") != claim_id:
+            return
+        if doc.get("state") not in ("spawning", "live"):
+            return
+        changed = False
+        if (
+            owner_create
+            and not doc.get("owner_create_time")
+            and _as_pid(doc.get("owner_pid")) == owner_pid
+        ):
+            doc["owner_create_time"] = owner_create
+            changed = True
+        if (
+            worker_create
+            and worker_pid is not None
+            and not doc.get("worker_create_time")
+            and _as_pid(doc.get("worker_pid")) == worker_pid
+        ):
+            doc["worker_create_time"] = worker_create
+            changed = True
+        if not changed:
+            return
+        doc.pop("_corrupt", None)
+        _write_claim(claim_path, doc)
+
+
 def single_flight_spawn(
     lock_path: Path,
     claim_path: Path,
@@ -331,7 +392,12 @@ def single_flight_spawn(
     """Admit at most one spawn for ``role`` across processes.
 
     The lock is held across the role check, the claim publish, and ``spawn``.
-    A caller that loses the lock or sees a live role/claim does not call ``spawn``.
+    Create-time reads stored on the new claim run after that hold is released.
+    On Windows those reads are CIM queries and can outlast a short waiter; they
+    must not turn a lost race into ``lock_timeout``. A live claim with no
+    create_time yet still blocks another spawn (missing create_time is treated
+    as the same process). A caller that loses the lock or sees a live role or
+    claim does not call ``spawn``.
     """
     alive = pid_alive_fn or pid_alive
     created = create_time_fn or process_create_time
@@ -343,6 +409,9 @@ def single_flight_spawn(
         "pid": None,
         "detail": None,
     }
+    admitted: dict[str, Any] | None = None
+    claim_id = ""
+    worker: int | None = None
     with CampaignLock(lock_path, timeout_s=timeout_s) as acquired:
         if not acquired:
             return {**refused, "reason": "lock_timeout"}
@@ -355,19 +424,15 @@ def single_flight_spawn(
         if _claim_blocks(_read_claim(claim_path), alive=alive, create_time_fn=created):
             return {**refused, "reason": "claim_held"}
         claim_id = f"{os.getpid()}-{time.time_ns()}"
-        owner_create = None
-        try:
-            owner_create = created(os.getpid())
-        except Exception:
-            owner_create = None
+        owner_pid = os.getpid()
         _write_claim(
             claim_path,
             {
                 "schema": CLAIM_SCHEMA,
                 "role": role,
                 "state": "spawning",
-                "owner_pid": os.getpid(),
-                "owner_create_time": owner_create,
+                "owner_pid": owner_pid,
+                "owner_create_time": None,
                 "worker_pid": None,
                 "worker_create_time": None,
                 "claim_id": claim_id,
@@ -385,29 +450,36 @@ def single_flight_spawn(
                 detail = result.get("detail")
             return {**refused, "reason": "spawn_failed", "detail": detail}
         worker = _as_pid(result.get("pid"))
-        worker_create = None
-        if worker is not None:
-            try:
-                worker_create = created(worker)
-            except Exception:
-                worker_create = None
         _write_claim(
             claim_path,
             {
                 "schema": CLAIM_SCHEMA,
                 "role": role,
                 "state": "live",
-                "owner_pid": os.getpid(),
-                "owner_create_time": owner_create,
+                "owner_pid": owner_pid,
+                "owner_create_time": None,
                 "worker_pid": worker,
-                "worker_create_time": worker_create,
+                "worker_create_time": None,
                 "claim_id": claim_id,
             },
         )
-        return {
+        admitted = {
             "spawned": True,
             "reason": "admitted",
             "role": role,
             "pid": worker,
             "detail": result.get("detail"),
         }
+    owner_create = _probe_create_time(owner_pid, created)
+    worker_create = _probe_create_time(worker, created)
+    _stamp_create_times(
+        lock_path,
+        claim_path,
+        claim_id,
+        owner_pid=owner_pid,
+        owner_create=owner_create,
+        worker_pid=worker,
+        worker_create=worker_create,
+        timeout_s=timeout_s,
+    )
+    return admitted if admitted is not None else {**refused, "reason": "spawn_failed"}
