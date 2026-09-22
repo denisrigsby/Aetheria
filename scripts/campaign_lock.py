@@ -15,6 +15,8 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
+from atomic_state import atomic_write_json
+
 CLAIM_SCHEMA = "aetheria_campaign_role_claim_v1"
 _EMPTY_LOCK_GRACE_S = 1.0
 
@@ -190,14 +192,66 @@ def _read_claim(path: Path) -> dict | None:
     return doc
 
 
+def process_create_time(pid: int) -> str | None:
+    """Stable process start token. Not a path. None when the OS does not provide one."""
+    try:
+        p = int(pid)
+    except (TypeError, ValueError):
+        return None
+    if p <= 0:
+        return None
+    if sys.platform == "win32":
+        try:
+            from process_identity_bind import windows_binding
+        except Exception:
+            return None
+        binding = windows_binding(p)
+        if binding is None or not binding.creation_time:
+            return None
+        return str(binding.creation_time)
+    stat_path = Path(f"/proc/{p}/stat")
+    try:
+        text = stat_path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    end = text.rfind(")")
+    if end < 0:
+        return None
+    fields = text[end + 1 :].split()
+    # proc(5) field 22 starttime is index 19 after the comm field.
+    if len(fields) < 20 or not fields[19].isdigit():
+        return None
+    return fields[19]
+
+
 def _write_claim(path: Path, doc: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
-    tmp.write_text(json.dumps(dict(doc), sort_keys=True) + "\n", encoding="utf-8")
-    os.replace(tmp, path)
+    atomic_write_json(path, dict(doc))
 
 
-def _claim_blocks(doc: dict | None, *, alive: Callable[[int], bool]) -> bool:
+def _same_process(pid: int, recorded: Any, create_time_fn: Callable[[int], str | None]) -> bool:
+    """Whether a live pid is still the process we recorded.
+
+    A create_time mismatch is PID reuse: not our worker, and not a kill target.
+    A recorded create_time that cannot be re-read fails closed (treat as same).
+    """
+    recorded_s = str(recorded).strip() if recorded else ""
+    if not recorded_s or recorded_s.lower() == "none":
+        return True
+    try:
+        live = create_time_fn(pid)
+    except Exception:
+        live = None
+    if not live:
+        return True
+    return str(live) == recorded_s
+
+
+def _claim_blocks(
+    doc: dict | None,
+    *,
+    alive: Callable[[int], bool],
+    create_time_fn: Callable[[int], str | None],
+) -> bool:
     if doc is None:
         return False
     if doc.get("_corrupt"):
@@ -205,20 +259,20 @@ def _claim_blocks(doc: dict | None, *, alive: Callable[[int], bool]) -> bool:
     state = doc.get("state")
     if state == "spawning":
         owner = _as_pid(doc.get("owner_pid"))
-        if owner is None:
-            return True
-        return alive(owner)
+        if owner is None or not alive(owner):
+            return owner is None
+        return _same_process(owner, doc.get("owner_create_time"), create_time_fn)
     if state == "live":
         worker = _as_pid(doc.get("worker_pid"))
-        if worker is None:
-            return True
-        return alive(worker)
+        if worker is None or not alive(worker):
+            return worker is None
+        return _same_process(worker, doc.get("worker_create_time"), create_time_fn)
     return True
 
 
-def _clear_claim(path: Path, token: str) -> None:
+def _clear_claim(path: Path, claim_id: str) -> None:
     doc = _read_claim(path)
-    if not doc or doc.get("_corrupt") or doc.get("token") != token:
+    if not doc or doc.get("_corrupt") or doc.get("claim_id") != claim_id:
         return
     try:
         path.unlink()
@@ -235,6 +289,7 @@ def single_flight_spawn(
     spawn: Callable[[], Mapping[str, Any]],
     timeout_s: float = 2.0,
     pid_alive_fn: Callable[[int], bool] | None = None,
+    create_time_fn: Callable[[int], str | None] | None = None,
 ) -> dict[str, Any]:
     """Admit at most one spawn for ``role`` across processes.
 
@@ -242,6 +297,7 @@ def single_flight_spawn(
     A caller that loses the lock or sees a live role/claim does not call ``spawn``.
     """
     alive = pid_alive_fn or pid_alive
+    created = create_time_fn or process_create_time
     lock_path = Path(lock_path)
     claim_path = Path(claim_path)
     refused = {
@@ -259,9 +315,14 @@ def single_flight_spawn(
             return {**refused, "reason": "role_check_error"}
         if busy:
             return {**refused, "reason": "role_alive"}
-        if _claim_blocks(_read_claim(claim_path), alive=alive):
+        if _claim_blocks(_read_claim(claim_path), alive=alive, create_time_fn=created):
             return {**refused, "reason": "claim_held"}
-        token = f"{os.getpid()}-{time.time_ns()}"
+        claim_id = f"{os.getpid()}-{time.time_ns()}"
+        owner_create = None
+        try:
+            owner_create = created(os.getpid())
+        except Exception:
+            owner_create = None
         _write_claim(
             claim_path,
             {
@@ -269,22 +330,30 @@ def single_flight_spawn(
                 "role": role,
                 "state": "spawning",
                 "owner_pid": os.getpid(),
+                "owner_create_time": owner_create,
                 "worker_pid": None,
-                "token": token,
+                "worker_create_time": None,
+                "claim_id": claim_id,
             },
         )
         try:
             result = spawn()
         except Exception as e:
-            _clear_claim(claim_path, token)
+            _clear_claim(claim_path, claim_id)
             return {**refused, "reason": "spawn_error", "detail": type(e).__name__}
         if not isinstance(result, Mapping) or not result.get("ok"):
-            _clear_claim(claim_path, token)
+            _clear_claim(claim_path, claim_id)
             detail = None
             if isinstance(result, Mapping):
                 detail = result.get("detail")
             return {**refused, "reason": "spawn_failed", "detail": detail}
         worker = _as_pid(result.get("pid"))
+        worker_create = None
+        if worker is not None:
+            try:
+                worker_create = created(worker)
+            except Exception:
+                worker_create = None
         _write_claim(
             claim_path,
             {
@@ -292,8 +361,10 @@ def single_flight_spawn(
                 "role": role,
                 "state": "live",
                 "owner_pid": os.getpid(),
+                "owner_create_time": owner_create,
                 "worker_pid": worker,
-                "token": token,
+                "worker_create_time": worker_create,
+                "claim_id": claim_id,
             },
         )
         return {

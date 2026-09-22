@@ -35,6 +35,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -46,6 +47,7 @@ ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import atomic_write_json  # noqa: E402
 from campaign_lock import single_flight_spawn  # noqa: E402
 from lh_process_identity import (  # noqa: E402
     ROLE_PROBE,
@@ -55,6 +57,8 @@ from lh_process_identity import (  # noqa: E402
     list_allowlisted,
     verified_role,
 )
+
+_SECRET_KEY = re.compile(r"(secret|password|api[_-]?key|token|credential|authorization)", re.I)
 
 MEAS = ROOT / "measurements"
 STATE_PATH = MEAS / "long_horizon_state.json"
@@ -93,6 +97,11 @@ def read_json(path: Path) -> Dict[str, Any]:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return {"_error": "unreadable", "path": str(path)}
+
+
+def _reject_secret_fields(doc: dict) -> None:
+    if any(_SECRET_KEY.search(str(k)) for k in doc):
+        raise ValueError("secret_field")
 
 
 def write_json(path: Path, obj: dict) -> None:
@@ -507,7 +516,8 @@ def _apply_recover_record(rec: dict) -> None:
     st["last_tick_finished"] = camp.get("last_tick_finished")
     st["recovered_from_snapshot_at"] = utc()
     st["status"] = "idle_between_ticks"
-    write_json(STATE_PATH, st)
+    _reject_secret_fields(st)
+    atomic_write_json(STATE_PATH, st)
     print(f"  snapshot applied mom={camp.get('mom')} last_ok={camp.get('last_ok')}")
     print("  segment tick may reset; campaign mom restored")
 
@@ -537,6 +547,25 @@ def _optional_recover_reap() -> None:
         print(f"  recover/reap note: {type(e).__name__}: {e}")
 
 
+def admit_launch_kwargs(
+    *,
+    cycles: int,
+    interval_min: float,
+    max_ticks: int,
+    continue_tick: bool,
+) -> Dict[str, Any]:
+    """Start/recover launch options. Do not kill from a PID file (stop_old stays false)."""
+    return {
+        "cycles": cycles,
+        "interval_min": interval_min,
+        "max_ticks": max_ticks,
+        "continue_tick": bool(continue_tick),
+        "clear_latches": True,
+        "stop_old": False,
+        "poll_s": 60.0,
+    }
+
+
 def _launch_supervisor(
     *,
     cycles: int,
@@ -553,12 +582,12 @@ def _launch_supervisor(
     assert spec.loader
     spec.loader.exec_module(mod)
     ok_l, detail, pid_l = mod.launch_lh_detached(
-        cycles=cycles,
-        interval_min=interval_min,
-        max_ticks=max_ticks,
-        continue_tick=bool(continue_tick),
-        clear_latches=True,
-        poll_s=60.0,
+        **admit_launch_kwargs(
+            cycles=cycles,
+            interval_min=interval_min,
+            max_ticks=max_ticks,
+            continue_tick=continue_tick,
+        )
     )
     return {"ok": bool(ok_l), "pid": pid_l, "detail": detail}
 
@@ -615,14 +644,16 @@ def resume(
             state["resume_requested_at"] = utc()
             state["continue_tick"] = bool(continue_tick)
             state["max_ticks"] = mt
-            write_json(STATE_PATH, state)
+            _reject_secret_fields(state)
+            atomic_write_json(STATE_PATH, state)
         elif recover_record is None and st and not st.get("_error"):
             patched = dict(st)
             patched["standby"] = False
             patched["resume_requested_at"] = utc()
             patched["continue_tick"] = bool(continue_tick)
             patched["max_ticks"] = mt
-            write_json(STATE_PATH, patched)
+            _reject_secret_fields(patched)
+            atomic_write_json(STATE_PATH, patched)
         return _launch_supervisor(
             cycles=cyc,
             interval_min=iv,
@@ -711,7 +742,7 @@ def cmd_recover() -> int:
     rec, why = csnap.load_snapshot()
     if rec is None:
         print(f"FAIL: snapshot {why}")
-        print(f"  path: {csnap.snap_path()}")
+        print("  path: measurements/campaign_snapshot_v1.json")
         print("  recover does not spawn without a valid snapshot")
         return 1
     camp = rec.get("campaign") or {}

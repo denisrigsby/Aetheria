@@ -87,6 +87,41 @@ def conservation_env() -> None:
         os.environ["AETHERIA_RED_HELIX_ACTUATE"] = "1"
 
 
+def supervisor_argv(
+    py: str,
+    script: str,
+    *,
+    cycles: int,
+    interval_min: float,
+    max_ticks: int,
+    backup_every: int,
+    continue_tick: bool,
+    once: bool,
+    ignore_standby: bool,
+) -> List[str]:
+    """Argv the supervisor parser accepts. No flags outside that contract."""
+    args: List[str] = [
+        py,
+        "-u",
+        script,
+        "--cycles",
+        str(int(cycles)),
+        "--interval-min",
+        str(float(interval_min)),
+        "--max-ticks",
+        str(int(max_ticks)),
+        "--backup-every",
+        str(int(backup_every)),
+    ]
+    if continue_tick:
+        args.append("--continue-tick")
+    if once:
+        args.append("--once")
+    if ignore_standby:
+        args.append("--ignore-standby")
+    return args
+
+
 def launch_lh_detached(
     *,
     cycles: int = 2,
@@ -150,25 +185,17 @@ def launch_lh_detached(
             time.sleep(1.0)
 
     py = resolve_python()
-    args: List[str] = [
+    args = supervisor_argv(
         py,
-        "-u",
         str(ROOT / "scripts" / "long_horizon_supervisor.py"),
-        "--cycles",
-        str(int(cycles)),
-        "--interval-min",
-        str(float(interval_min)),
-        "--max-ticks",
-        str(int(max_ticks)),
-        "--backup-every",
-        str(int(backup_every)),
-    ]
-    if continue_tick:
-        args.append("--continue-tick")
-    if once:
-        args.append("--once")
-    if clear_latches:
-        args.append("--ignore-standby")
+        cycles=cycles,
+        interval_min=interval_min,
+        max_ticks=max_ticks,
+        backup_every=backup_every,
+        continue_tick=continue_tick,
+        once=once,
+        ignore_standby=clear_latches,
+    )
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     out = LOGS / f"long_horizon_launch_{ts}.log"

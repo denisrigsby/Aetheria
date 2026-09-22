@@ -363,3 +363,173 @@ def test_recover_alone_applies_snapshot_once(tmp_path: Path, monkeypatch, capsys
     out = capsys.readouterr().out
     assert "single-flight" in out
     assert str(tmp_path) not in out
+
+
+def test_launcher_argv_is_accepted_by_supervisor():
+    from launch_lh_detached import supervisor_argv
+    from long_horizon_supervisor import make_parser
+
+    argv = supervisor_argv(
+        "python",
+        "scripts/long_horizon_supervisor.py",
+        cycles=2,
+        interval_min=30.0,
+        max_ticks=48,
+        backup_every=4,
+        continue_tick=True,
+        once=False,
+        ignore_standby=True,
+    )
+    args = make_parser().parse_args(argv[3:])
+    assert args.continue_tick is True
+    assert args.ignore_standby is True
+    assert args.cycles == 2
+    with pytest.raises(SystemExit):
+        make_parser().parse_args(argv[3:] + ["--not-a-supervisor-flag"])
+
+
+def test_continue_tick_and_standby_fail_closed(tmp_path: Path):
+    from long_horizon_supervisor import resolve_continue_tick, standby_blocks
+
+    assert resolve_continue_tick(tmp_path / "missing.json", True)["tick"] == 0
+    good = tmp_path / "state.json"
+    good.write_text(json.dumps({"tick": 4, "persisted_mom": 3}), encoding="utf-8")
+    got = resolve_continue_tick(good, True)
+    assert got["ok"] is True and got["tick"] == 4
+    bad = tmp_path / "bad.json"
+    bad.write_text("{", encoding="utf-8")
+    assert resolve_continue_tick(bad, True)["reason"] == "state_unreadable"
+    secret = tmp_path / "secret.json"
+    secret.write_text(json.dumps({"tick": 1, "api_key": "x"}), encoding="utf-8")
+    refused = resolve_continue_tick(secret, True)
+    assert refused["ok"] is False
+    assert refused["reason"] == "secret_field"
+    assert refused["prior"] == {}
+    standby = tmp_path / "long_horizon_STANDBY.json"
+    standby.write_text("{}", encoding="utf-8")
+    assert standby_blocks(standby, False) is True
+    assert standby_blocks(standby, True) is False
+
+
+def test_reused_pid_create_time_does_not_block_or_kill(tmp_path: Path):
+    claim = tmp_path / "claim.json"
+    claim.write_text(
+        json.dumps(
+            {
+                "schema": CLAIM_SCHEMA,
+                "role": "supervisor",
+                "state": "live",
+                "owner_pid": os.getpid(),
+                "worker_pid": os.getpid(),
+                "worker_create_time": "100",
+                "claim_id": "old",
+            }
+        ),
+        encoding="utf-8",
+    )
+    calls: list[int] = []
+    result = single_flight_spawn(
+        tmp_path / "lock",
+        claim,
+        role="supervisor",
+        role_alive=lambda: False,
+        spawn=lambda: calls.append(1) or {"ok": True, "pid": os.getpid()},
+        timeout_s=1.0,
+        pid_alive_fn=lambda _p: True,
+        create_time_fn=lambda _p: "200",
+    )
+    assert result["spawned"] is True
+    assert result["reason"] == "admitted"
+    assert calls == [1]
+
+
+def test_matching_or_unreadable_create_time_blocks(tmp_path: Path):
+    claim = tmp_path / "claim.json"
+    body = {
+        "schema": CLAIM_SCHEMA,
+        "role": "supervisor",
+        "state": "live",
+        "owner_pid": os.getpid(),
+        "worker_pid": os.getpid(),
+        "worker_create_time": "100",
+        "claim_id": "live",
+    }
+    claim.write_text(json.dumps(body), encoding="utf-8")
+    calls: list[int] = []
+
+    def spawn():
+        calls.append(1)
+        return {"ok": True, "pid": os.getpid()}
+
+    matched = single_flight_spawn(
+        tmp_path / "lock-a",
+        claim,
+        role="supervisor",
+        role_alive=lambda: False,
+        spawn=spawn,
+        timeout_s=1.0,
+        pid_alive_fn=lambda _p: True,
+        create_time_fn=lambda _p: "100",
+    )
+    assert matched["spawned"] is False and matched["reason"] == "claim_held"
+    unreadable = single_flight_spawn(
+        tmp_path / "lock-b",
+        claim,
+        role="supervisor",
+        role_alive=lambda: False,
+        spawn=spawn,
+        timeout_s=1.0,
+        pid_alive_fn=lambda _p: True,
+        create_time_fn=lambda _p: None,
+    )
+    assert unreadable["spawned"] is False and unreadable["reason"] == "claim_held"
+    assert calls == []
+
+
+def test_aetheria_start_flags_reach_resume(monkeypatch):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "aetheria_cli_under_test", ROOT / "scripts" / "aetheria.py"
+    )
+    cli = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(cli)
+    seen: dict = {}
+
+    def fake_resume(**kwargs):
+        seen.update(kwargs)
+        return 0
+
+    monkeypatch.setattr(pc, "resume", fake_resume)
+    assert cli.main(["start", "--cycles", "4", "--interval-min", "5", "--max-ticks", "9", "--fresh-segment"]) == 0
+    assert seen["cycles"] == 4
+    assert seen["interval_min"] == 5.0
+    assert seen["max_ticks"] == 9
+    assert seen["continue_tick"] is False
+    assert seen["with_watchdog"] is True
+    assert cli.main(["resume", "--not-a-flag"]) == 2
+    assert seen["cycles"] == 4
+
+
+def test_admit_launch_does_not_kill_from_pid_file():
+    kw = pc.admit_launch_kwargs(cycles=2, interval_min=30.0, max_ticks=48, continue_tick=True)
+    assert kw["stop_old"] is False
+
+
+def test_secret_state_field_does_not_spawn(tmp_path: Path, monkeypatch):
+    meas = _redirect(monkeypatch, tmp_path)
+    (meas / "long_horizon_state.json").write_text(
+        json.dumps({"tick": 1, "api_key": "do-not-copy"}),
+        encoding="utf-8",
+    )
+    launches: list[int] = []
+    monkeypatch.setattr(
+        pc,
+        "_launch_supervisor",
+        lambda **_k: launches.append(1) or {"ok": True, "pid": os.getpid(), "detail": "no"},
+    )
+    assert pc.resume(with_watchdog=False, cycles=1, interval_min=1.0, max_ticks=2) == 1
+    assert launches == []
+    kept = (meas / "long_horizon_state.json").read_text(encoding="utf-8")
+    assert "api_key" in kept

@@ -6,7 +6,7 @@
 |------|--------|-------|
 | Unrelated processes survive stale-PID recovery/stop | **PARTIAL** | Role/junk PID refusal tested; full creation-time reuse sim limited on Linux CI. Plant `gate_stale_pid_reuse_v1` does not claim OS PID-number reuse was observed. Portable pytest alone does not flip that gate. |
 | Interrupted write → old OR new valid state | **PARTIAL** | Atomic helper + tests; not all writers migrated |
-| Simultaneous start/recover → ≤1 worker | **PASS** | `tests/test_two_controller_concurrency.py` on both control-plane pytest jobs. Two processes race `plant_control.single_supervisor_critical` (start vs recover): exactly one spawn, critical-section overlap 1. Live role, live claim, lock timeout, and a corrupt claim refuse. Dead holder/claim can be reclaimed. Not this proof: Windows plant creation, watchdog relaunch, raw `launch_lh_detached.py`. |
+| Simultaneous start/recover → ≤1 worker | **PASS** | `tests/test_two_controller_concurrency.py` on both control-plane pytest jobs. Two processes race `plant_control.single_supervisor_critical` (start vs recover): exactly one spawn, critical-section overlap 1. Live role, live claim, lock timeout, and a corrupt claim refuse. A live claim whose create_time does not match is not treated as the worker and is not killed. Admit launch sets `stop_old=false` (no PID-file kill). Dead holder/claim can be reclaimed. Launcher argv is limited to flags `long_horizon_supervisor.make_parser` accepts (`--continue-tick`, `--ignore-standby`). Not this proof: Windows plant creation, watchdog relaunch, raw `launch_lh_detached.py` when called on its own. |
 | Corrupted / unknown-version state → HOLD | **PARTIAL** | Hash mismatch refuse tested; full HOLD wiring plant-side |
 | Clean stop ≠ crash | **PARTIAL** | Documented; needs explicit CI |
 | Localhost mutations require authorization | **PARTIAL** | Loopback-only; per-launch token tracked |
@@ -29,5 +29,5 @@ Historical notes from that slice. They are not the authoritative gate. The table
 
 | Gate | Status | Notes |
 |------|--------|-------|
-| Simultaneous start/recover → ≤1 worker | **FAIL→PASS** | Evidence is `tests/test_two_controller_concurrency.py` in `.github/workflows/ci.yml` (Ubuntu and Windows control-plane jobs). Property proved: contended start and recover admit at most one supervisor spawn. Still open, unchanged by this slice: atomic writer migration, corrupted/unknown-version → HOLD, clean-stop CI. No soft_ACCEPT. No L7 / LIVE_RSI. This tree is not the plant. |
+| Simultaneous start/recover → ≤1 worker | **FAIL→PASS** | Evidence is `tests/test_two_controller_concurrency.py` in `.github/workflows/ci.yml` (Ubuntu and Windows control-plane jobs). Property proved: contended start and recover admit at most one supervisor spawn. The start/recover state patch and the role claim use `atomic_write_json`. Other state writers stay **PARTIAL**. create_time on the claim is a reuse check for that admit, not `gate_stale_pid_reuse_v1` and not `gate_expected_create_time_call_sites_v1`. Still open: corrupted/unknown-version → HOLD, clean-stop CI. No soft_ACCEPT. No L7 / LIVE_RSI. This tree is not the plant. |
 

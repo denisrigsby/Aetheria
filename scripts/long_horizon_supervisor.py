@@ -45,7 +45,9 @@ sys.path.insert(0, str(ROOT))
 
 STATE_PATH = ROOT / "measurements" / "long_horizon_state.json"
 STOP_PATH = ROOT / "measurements" / "long_horizon_STOP"
+STANDBY_PATH = ROOT / "measurements" / "long_horizon_STANDBY.json"
 PID_PATH = ROOT / "measurements" / "long_horizon.pid"
+_SECRET_KEY = re.compile(r"(secret|password|api[_-]?key|token|credential|authorization)", re.I)
 LOG_JSONL = ROOT / "logs" / "long_horizon.jsonl"
 LOG_TXT = ROOT / "logs" / f"long_horizon_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
@@ -449,7 +451,8 @@ def should_stop() -> bool:
     return STOP_PATH.exists()
 
 
-def main() -> int:
+def make_parser() -> argparse.ArgumentParser:
+    """Flags the detached launcher is allowed to send. Unknown flags are a contract error."""
     ap = argparse.ArgumentParser(description="Long-horizon detached Aetheria supervisor")
     ap.add_argument("--cycles", type=int, default=2, help="Cycles per tick (default 2; use 6 for deeper)")
     ap.add_argument("--interval-min", type=float, default=30.0, help="Minutes between ticks after a run")
@@ -457,7 +460,57 @@ def main() -> int:
     ap.add_argument("--backup-every", type=int, default=4, help="Backup every N ticks (0=never)")
     ap.add_argument("--hygiene-every", type=int, default=8, help="Registry hygiene every N ticks (0=never)")
     ap.add_argument("--once", action="store_true", help="Single tick then exit (test)")
-    args = ap.parse_args()
+    ap.add_argument(
+        "--continue-tick",
+        action="store_true",
+        help="Resume the segment tick from long_horizon_state.json when that file exists",
+    )
+    ap.add_argument(
+        "--ignore-standby",
+        action="store_true",
+        help="Start even if long_horizon_STANDBY.json is present",
+    )
+    return ap
+
+
+def secret_field_names(doc: dict) -> list[str]:
+    return sorted(str(k) for k in doc if _SECRET_KEY.search(str(k)))
+
+
+def standby_blocks(standby_path: Path, ignore: bool) -> bool:
+    return standby_path.is_file() and not ignore
+
+
+def resolve_continue_tick(state_path: Path, enabled: bool) -> dict:
+    """Segment tick to resume. Unreadable or secret-bearing state fails closed."""
+    if not enabled or not state_path.is_file():
+        return {"ok": True, "tick": 0, "prior": {}}
+    try:
+        prior = json.loads(state_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "state_unreadable"}
+    if not isinstance(prior, dict):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "state_not_object"}
+    if secret_field_names(prior):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "secret_field"}
+    try:
+        tick = int(prior.get("tick") or 0)
+    except (TypeError, ValueError):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "tick_invalid"}
+    if tick < 0:
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "tick_invalid"}
+    return {"ok": True, "tick": tick, "prior": prior}
+
+
+def main() -> int:
+    args = make_parser().parse_args()
+    if standby_blocks(STANDBY_PATH, args.ignore_standby):
+        log("standby latch present; refuse start")
+        return 1
+    resolved = resolve_continue_tick(STATE_PATH, args.continue_tick)
+    if not resolved["ok"]:
+        log(f"continue-tick refused: {resolved.get('reason')}")
+        return 1
 
     ensure_env()
     (ROOT / "logs").mkdir(exist_ok=True)
@@ -467,17 +520,22 @@ def main() -> int:
 
     pid = os.getpid()
     PID_PATH.write_text(str(pid), encoding="utf-8")
-    state = {
-        "pid": pid,
-        "status": "starting",
-        "tick": 0,
-        "cycles_per_tick": args.cycles,
-        "interval_min": args.interval_min,
-        "max_ticks": args.max_ticks,
-        "log_txt": str(LOG_TXT),
-        "started_at": utc_now(),
-        "history": [],
-    }
+    prior = dict(resolved["prior"])
+    history = prior.get("history") if isinstance(prior.get("history"), list) else []
+    state = dict(prior)
+    state.update(
+        {
+            "pid": pid,
+            "status": "starting",
+            "tick": int(resolved["tick"]),
+            "cycles_per_tick": args.cycles,
+            "interval_min": args.interval_min,
+            "max_ticks": args.max_ticks,
+            "log_txt": str(LOG_TXT),
+            "started_at": prior.get("started_at") or utc_now(),
+            "history": history,
+        }
+    )
     write_state(state)
     write_resume(state)
     log(f"LONG HORIZON SUPERVISOR START pid={pid} cycles={args.cycles} interval={args.interval_min}m")
@@ -497,7 +555,7 @@ def main() -> int:
     except Exception:
         pass
 
-    tick = 0
+    tick = int(resolved["tick"])
     while True:
         if should_stop():
             log("STOP file detected — graceful exit")
