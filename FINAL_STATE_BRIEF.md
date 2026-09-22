@@ -1,111 +1,100 @@
-# Aetheria  final-state brief (evidence index)
+# Aetheria evidence index
 
-**Status:** Plant-side package BANKED. Local export STAGED on disk. Remote push held (Denis: stage only). Export is PRIVATE_AHEAD; publicplant.
+This page is the public index of what is real in this repo, what has a receipt, what is still open, and what is withheld.
 
-**One-liner:** Aetheria is a local plant clock for serious AI work on your own Windows PC  chat is a mouth you can open or close; the work clock is not the chat.
+**What it is.** Aetheria is a local supervisor for long-running AI work on one Windows PC. The chat window is optional. The work schedule (the plant clock) is a separate process plus files on disk. Closing the chat does not stop that schedule. **Plant clock ≠ chat.**
 
-## Latest sealed cut (2026-09-22)
+**Public export ≠ live plant.** Parity decision: **PRIVATE_AHEAD**. [docs/EXPORT_PARITY.md](docs/EXPORT_PARITY.md). Scrubbed copies: [measurements/public_index/](measurements/public_index/). Narrative tables: [docs/CLOSEOUT.md](docs/CLOSEOUT.md).
 
-Published index for the Talk Face seals. Plant source stays off this tree. Export parity stays PRIVATE_AHEAD. This cut does not dual-bank FULL_PROGRAM. Detail: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Receipts: [measurements/public_index/](measurements/public_index/).
+**P1–P5** are internal certification labels on the operator plant. They are not an outside audit. This index has no public receipt that turns them into one.
 
-**PASS:** Standby (not Degraded) for plant presence between ticks; Offline = mouth host unreachable; no visible `[MODEL_REASONING]` tag and absolute `/living/` cites rewritten or refused; direct-answer contract, Cover + Architect ACCEPT, `soft_ACCEPT=false`; canonical operator Desktop shortcut (single location; host path unpublished); windowed Edge launcher (taskbar + close), not a frameless `--app` black window.
+Words used below: **Cover** and **Architect** are two accept roles on a plant receipt. **dual_bank** means both roles accepted on that receipt. **soft_ACCEPT** false means the receipt was not waved through. **HOLD** means a fail-closed pause. **create_time** means the process start time used as an identity check.
 
-**LOCKED:** dual-bank FULL_PROGRAM; `soft_ACCEPT` / LIVE_RSI / L7; Copilot as plant mouth or through Plant Truth; federation / swarm / autonomy theater; widen spawn wrap.
+## Real (this repository)
 
-P1–P5 remains **internal certification** only. Earlier sections below are the prior index; this cut does not extend them.
+You can run these here. They do not re-prove the plant receipts below.
 
-## Sealed cut (2026-09-22 evening — kill / create_time plant seals)
+| Claim | Limit | Evidence |
+|-------|--------|----------|
+| This tree has a supervisor control plane and a mock worker | Clone smoke does not start the private plant | `python -u scripts/demo_local_smoke.py` · [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) |
+| A mock pulse keeps advancing after the reference mouth closes | Mock only. That is the public slice of plant clock ≠ chat | `python -u scripts/demo_continuity.py` · [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) |
+| Process identity rejects the wrong role or a junk PID | The assurance row "unrelated processes survive stale-PID recovery" is **PARTIAL** | CI: `tests/test_lh_process_identity.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Simultaneous start and recover admit one supervisor | Assurance row is **PASS**. Other state writers stay **PARTIAL**. This test is not the live plant. No `soft_ACCEPT`. No L7 / LIVE_RSI | CI: `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
 
-Second cut. Six plant gates are dual-banked (`dual_bank=true`, Cover ACCEPT, Architect ACCEPT, `soft_ACCEPT=false`). Talk Face mouth receipts above stay `dual_bank=false`. This cut does not dual-bank FULL_PROGRAM, does not unlock L7 or LIVE_RSI, and does not set public equal to plant. Export decision stays **PRIVATE_AHEAD**. Public CI on main after this evening-cut push is green. Detail: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Receipts: [measurements/public_index/](measurements/public_index/).
+Run path: [README.md](README.md).
 
-The items this cut moves into Proved are stated there with the receipt sentence and the exclusions beside it. `gate_control_plane_resume_stop_watchdog_v1` is dual-banked; its scrubbed receipt has `claim_wording` null and no CommandLine redact field, so no further operational sentence is claimed.
+## Proved (receipt in this repo)
 
-**Still locked on this cut:** L7; LIVE_RSI; second clock; autonomy; public=plant; OS PID-number reuse observation; every future kill site; publish sync without Denis GO; `soft_ACCEPT`; endurance beyond the `gate_endurance_v1` window; Job Object as the sole stop path; Toolhelp retired; create_time as sole identity.
+Accepted on the operator plant. Files here are scrubbed copies. This clone does not re-run them. `soft_ACCEPT` is false on these receipts.
 
-## What it is
+Talk Face mouth receipts record `dual_bank=false`. The evening plant receipts record `dual_bank=true`. Neither cut dual-banks a full program, and neither sets public equal to plant.
 
-Aetheria is a local, evidence-gated control plant: dual-banked recovery, fail-closed process control, an offline control plane and supervisor tick, sealed operational evidence, and supervised LoRA training and shadow deployment. Operational claims are earned through bounded proof; unproved capabilities remain explicitly locked.
+| Claim | Exclusion beside the claim | Receipt |
+|-------|----------------------------|---------|
+| Talk-face text has no visible `[MODEL_REASONING]` tag. Absolute `/living/` cites are rewritten or refused | Does not publish plant source. Copilot is not the mouth | [scrub_mouth_leak_v1.json](measurements/public_index/scrub_mouth_leak_v1.json), [gate_talkface_visible_tag_seal_v1.json](measurements/public_index/gate_talkface_visible_tag_seal_v1.json), [architect_accept_talkface_visible_tag_seal_v1.json](measurements/public_index/architect_accept_talkface_visible_tag_seal_v1.json) |
+| Direct-answer contract. Cover ACCEPT and Architect ACCEPT | No L7 / LIVE_RSI. `dual_bank=false` | [gate_direct_answer_contract_talk_face_v1.json](measurements/public_index/gate_direct_answer_contract_talk_face_v1.json), [architect_accept_direct_answer_contract_talk_face_v1.json](measurements/public_index/architect_accept_direct_answer_contract_talk_face_v1.json) |
+| Stale-PID refuse (`gate_stale_pid_reuse_v1`, revision `create_time_bind_v1`): a kill is refused when live start time disagrees with the bound value, even if the command line still matches | OS PID-number reuse was not observed. Not every call site. Start time is not the only identity. Tests in this repo do not flip this gate | [gate_stale_pid_reuse_v1_1412.json](measurements/public_index/gate_stale_pid_reuse_v1_1412.json), [cover](measurements/public_index/stale_pid_reuse_v1_cover_accept_2042.json), [architect](measurements/public_index/stale_pid_reuse_v1_architect_accept_15da.json) |
+| Named kill sites pass start time (`gate_expected_create_time_call_sites_v1`, revision `call_site_wire_v1`): `lh_watchdog.kill_pid`, `plant_control._kill_pid`, `lh_recover_reap.reap_orphan_probes`, `status_report.reap_orphans` | Not every future kill site. Start time is not sole identity | [gate_expected_create_time_call_sites_v1_930b.json](measurements/public_index/gate_expected_create_time_call_sites_v1_930b.json), [cover](measurements/public_index/expected_create_time_call_sites_v1_cover_accept_c2cd.json), [architect](measurements/public_index/expected_create_time_call_sites_v1_architect_accept_00ed.json) |
+| 30 minutes, mouth closed, tick advanced (`gate_endurance_v1`) | Longer than that window stays locked. This gate does not claim Job Object kill, stale-PID reuse, or the export-hash layer | [gate_endurance_v1_0440.json](measurements/public_index/gate_endurance_v1_0440.json) |
+| Job Object kill (`gate_job_object_kill_path_v1`): identity-checked `TerminateJobObject` stops an assigned tree (root and child dead) | Not the only stop path. Toolhelp (Windows process listing) is not retired. Linux CI does not re-prove it | [gate_job_object_kill_path_v1_a709.json](measurements/public_index/gate_job_object_kill_path_v1_a709.json) |
+| Export hash / parity layer (`gate_export_hash_parity_v1`): per-path hashes and a decision of `PARITY_PASS` or `PRIVATE_AHEAD`. Public equals plant only if the decision is `PARITY_PASS` | This receipt's decision is **PRIVATE_AHEAD** | [gate_export_hash_parity_v1_79b2.json](measurements/public_index/gate_export_hash_parity_v1_79b2.json) |
+| `gate_control_plane_resume_stop_watchdog_v1` is dual-banked (`DUAL_BANK_COMPLETE`) | `claim_wording` is null. No CommandLine redact field. No further operational sentence | [gate_control_plane_resume_stop_watchdog_v1_84f7.json](measurements/public_index/gate_control_plane_resume_stop_watchdog_v1_84f7.json) |
 
-## Claim
+Packet list for the evening gates (not an extra gate): [MANIFEST_f68b.json](measurements/public_index/MANIFEST_f68b.json).
 
-Dual-bank FULL_PROGRAM is locked on this index. No receipt for `gate_full_program_asset_class_v1` appears in [docs/CLOSEOUT.md](docs/CLOSEOUT.md), [docs/CLAIMS.md](docs/CLAIMS.md), or [measurements/public_index/](measurements/public_index/).
+**Operator notes with no gate file** (2026-09-22 Talk Face session). Same closeout, weaker receipt. Not re-run from this clone:
 
-The 2026-09-22 evening cut dual-banks only the six named gates, each as that gate's wording (`dual_bank=true`, Cover ACCEPT, Architect ACCEPT). Talk Face mouth receipts stay `dual_bank=false`. `soft_ACCEPT` stays false.
+| Note | Limit |
+|------|--------|
+| Between ticks the mouth shows Standby, not Degraded. Offline means the mouth host is unreachable | Mouth label only |
+| One desktop shortcut. Host path unpublished | No second shortcut location |
+| Launcher is a normal Edge window (taskbar and close), not a frameless `--app` window | The window is the mouth, not the plant clock |
 
-Exclusions: L7, LIVE_RSI, public=plant, autonomy, second clock. Export stays **PRIVATE_AHEAD**.
+## Pending
 
-## Authority
+| Item | Why it stays open |
+|------|-------------------|
+| Re-run of the proved seals inside this clone | Mouth and plant body are not in this tree. [docs/CLOSEOUT.md](docs/CLOSEOUT.md) |
+| Unrelated processes survive stale-PID recovery / stop | Assurance **PARTIAL**. [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Interrupted write leaves the old or the new valid state | Assurance **PARTIAL**. Not every writer is migrated |
+| Corrupted or unknown-version state ends in HOLD | Assurance **PARTIAL**. Hash mismatch refuse is tested; full HOLD wiring is plant-side |
+| Clean stop distinguished from a crash | Assurance **PARTIAL**. Needs an explicit CI proof |
+| Localhost mutations require authorization | Assurance **PARTIAL** |
+| Job Object containment in this repo's CI | Assurance **PARTIAL**. The plant receipt above does not flip this row |
 
-The package is **evidence-gated**, **Architect- and Cover-checked**, and **fail-closed**.
+Simultaneous start/recover is **PASS** on the assurance checklist. It is listed under Real. It is not pending.
 
-## Limits (outside this claim)
+## Locked
 
-- autonomy
-- live LoRA hot-swap
-- federation as a present fact
-- public equals live plant (decision remains **PRIVATE_AHEAD**)
-- second clock
-- L7 / LIVE_RSI
-- `soft_ACCEPT` (stays false)
-- OS PID-number reuse observation
-- every future kill site
-- endurance beyond the `gate_endurance_v1` window
-- Job Object as the sole plant stop path; Toolhelp retired
-- create_time as sole identity
-- publish sync without Denis GO
-- external accreditation of P1P5 (P1P5 is **internal certification** only)
+Withheld. Not claimed from this index.
 
-## Proved (plant evidence)
+| Item | Why it is locked |
+|------|------------------|
+| Public export equals the live plant | Decision is `PRIVATE_AHEAD`, not `PARITY_PASS` |
+| Dual-bank full program (`gate_full_program_asset_class_v1`) | No receipt in [docs/CLOSEOUT.md](docs/CLOSEOUT.md), [docs/CLAIMS.md](docs/CLAIMS.md), or [measurements/public_index/](measurements/public_index/) |
+| `soft_ACCEPT`, LIVE_RSI, L7 | `soft_ACCEPT` stays false. No unlock |
+| Copilot as the plant mouth, or Copilot through plant truth | Not claimed |
+| Federation, swarm, autonomy, self-healing | Not claimed as present fact |
+| Production-ready, enterprise | Assurance checklist is not all PASS. [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Second clock, automatic dispatch, live model hot-swap | Not claimed |
+| Endurance past the 30-minute window | The endurance receipt is that window only |
+| Job Object as the only stop path; Toolhelp retired | The Job Object receipt is one tree kill |
+| Start time as the only identity | Not claimed |
+| OS PID-number reuse was observed | Not observed |
+| Every future kill site | Named sites only |
+| Publish sync without an explicit operator GO | Not granted here |
+| Wider spawn wrap | Not published |
+| P1–P5 as external accreditation | Internal certification only |
 
-- identity-checked kill path
-- atomic dual start / recover writers; refuse dual-start when alive
-- offline control plane (mouth closed)
-- offline supervisor cold-start + tick asset
-- LoRA train (may_train)
-- LoRA shadow deploy (bind/unload; not live hot-swap)
-- internal P1P5 certification
-- Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role. Revision `create_time_bind_v1`. Exclusions: OS PID-number reuse not observed and not required; not every call site; create_time not sole identity; PID reuse not impossible; portable pytest alone does not flip the gate; wrong live PID mismatch alone does not flip the gate; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; Job Object not the sole stop path; Toolhelp not retired.
-- Live kill call sites lh_watchdog.kill_pid, plant_control._kill_pid, lh_recover_reap.reap_orphan_probes, and status_report.reap_orphans pass expected_create_time into kill_if_verified; wrong create_time refuses with create_time_mismatch and does not terminate. Revision `call_site_wire_v1` on `gate_expected_create_time_call_sites_v1`. Exclusions: OS PID-number reuse not observed; not every future kill site; create_time not sole identity; no L7, LIVE_RSI, second clock, autonomy, or public=plant.
-- continuous supervised plant clock 30 minutes, mouth closed, tick advanced; as defined by `gate_endurance_v1`. Exclusions: endurance beyond that window; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; this gate does not claim Job Object kill, stale-PID reuse, or the export-hash layer.
-- Job Object kill-path as defined by `gate_job_object_kill_path_v1`: identity-checked `TerminateJobObject` stops an assigned process tree (root and child dead). Exclusions: not the sole plant stop path; Toolhelp not retired; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; this gate does not claim stale-PID reuse or the export-hash layer; endurance beyond `gate_endurance_v1` stays locked.
-- Export hash/parity receipt layer as defined by `gate_export_hash_parity_v1`: fail-closed census of public export paths vs plant counterparts with per-path hashes and an explicit decision (`PARITY_PASS` or `PRIVATE_AHEAD`); `public_equals_plant` is true only when decision is `PARITY_PASS`. This decision is **PRIVATE_AHEAD**, so public≠plant. Exclusions: public=plant without `PARITY_PASS`; export is not the full plant; the full-program claim does not include export parity; no publish sync without Denis GO; no second clock, autonomy, LIVE_RSI, or L7.
-- `gate_control_plane_resume_stop_watchdog_v1`: dual-bank record only (`DUAL_BANK_COMPLETE`, `soft_ACCEPT=false`). Exclusions: `claim_wording` is null; no CommandLine redact field on the receipt; no further operational sentence.
+## Not listed as proved
 
-## Problems this addresses (proved path)
+An earlier draft of this index named items that have no receipt in this tree. They are not public claims:
 
-| Pain | Control-plane answer |
-|------|----------------------|
-| Work dies when chat/IDE closes | Detached supervisor + on-disk continuity |
-| Overnight babysitting | Rolling ticks / segments under a plant clock |
-| Unclear stop / zombie trees | Identity-checked stop; survivors reported |
-| Soft claims / theater | Fail-closed gates; dual-bank ACCEPT; claim flags stay false until proved |
-| Offline control needed | Mouth-closed status + supervisor tick without Live/autonomy/NIC dependence (as scoped) |
+- LoRA train (`may_train`) and LoRA shadow deploy
+- A generic "identity-checked kill path" beyond the Job Object receipt and the named call sites
+- A generic offline cold-start, beyond the 30-minute endurance receipt and the mock continuity demo
+- "Atomic dual start" as a plant seal. The public proof is the CI **PASS** under Real, scoped to that test
 
-Forward-looking benefits (federated / networked plant) are **not** claimed as present facts.
+## How to read a claim
 
-## Pending (visible)
-
-- ASSURANCE doc hygiene (NONCLAIM cards; overall may remain PARTIAL)
-- Public export sync: brief on main; parity remains PRIVATE_AHEAD (public≠plant)
-- Metadata bleach: operator absolute paths scrubbed from export tree (post-push pass)
-
-## Locked (fail-closed)
-
-autonomy_proven, second clock, auto-dispatch, live LoRA hot-swap, federation-as-present, public=plant, LIVE_RSI, L7, `soft_ACCEPT`, OS PID-number reuse observation, every future kill site, publish sync without Denis GO, endurance beyond `gate_endurance_v1` (offline endurance inside full-program v1 stays outside that gate), Job Object as sole plant stop path, Toolhelp retired, create_time as sole identity.
-
-## Restrained voice
-
-- State only what the gate proves
-- Name exclusions beside the claim
-- Call P1P5 **internal certification**
-- Public materials = **evidence index**, not a pitch deck
-- Keep pending work visibly pending
-- Avoid: autonomous, self-healing, production-ready, enterprise-grade, revolutionary  unless separately proved and scoped
-
-## Demo posture
-
-Demo proves the control-plane contract (status / stop / smoke) while protecting private cycle body and plant guts. Clone alone = Job #1 smoke; full multi-hour plant needs a complete local operator root.
-
-## Export parity note
-
-Live plant and public export **do not** match (PRIVATE_AHEAD). Do not read the public tree as the live plant.
+State the receipt. Keep the exclusion beside it. Leave pending rows pending. Prefer a weaker label when a file and a sentence disagree. [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md).

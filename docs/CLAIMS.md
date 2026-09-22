@@ -30,6 +30,6 @@ L7, LIVE_RSI, second clock, autonomy, and public=plant stay locked.
 
 Discovery doctrine: searchable popular language is allowed only when bound to a proveable fact. See README.
 
-## Public fault-injection (CI)
+## Public fault-injection (local test)
 
-See 	ests/test_fault_injection_public.py for stale heartbeat, STOP idempotence, hash-mismatched snapshot refusal, wrong-role PID rejection, duplicate-supervisor role detection, interrupted checkpoint .tmp, and dirty last_ok → HOLD policy. These are control-plane proofs with a mock/reference worker — not the private plant.
+See [tests/test_fault_injection_public.py](../tests/test_fault_injection_public.py) for stale heartbeat, STOP idempotence, hash-mismatched snapshot refusal, wrong-role PID rejection, duplicate-supervisor role detection, interrupted checkpoint .tmp, and dirty last_ok → HOLD policy. These are control-plane checks with a mock/reference worker. The CI workflow on main does not run this file. This is not the private plant.

@@ -1,6 +1,10 @@
 # Release gate — assurance (auditor checklist)
 
-**Status:** Aetheria is **not** described as production-ready until items below are CI **PASS**.
+**Status:** The first table is the status on main. Later sections are history. They do not override the first table.
+
+Simultaneous start/recover is **PASS** in that table (control-plane test, both CI jobs). That row does not change the **PARTIAL** rows, and it does not make this tree the live plant.
+
+This checklist is not a production-ready claim. Several rows are still **PARTIAL**. Front labels: **PASS** here is **Real** in the [README](../README.md); **PARTIAL** stays **Pending**.
 
 | Gate | Status | Notes |
 |------|--------|-------|

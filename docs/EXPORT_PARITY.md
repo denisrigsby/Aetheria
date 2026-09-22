@@ -14,7 +14,7 @@ This receipt's decision is **PRIVATE_AHEAD**. `public_equals_plant` stays false.
 Exclusions beside that claim: `public_equals_plant` without `PARITY_PASS`; the export is not the full plant; the full-program claim does not include export parity; publish sync without Denis GO; second clock; autonomy; LIVE_RSI; L7.
 
 - Do not claim the GitHub tree equals the live plant.
-- Full program asset-class claim (as defined by `gate_full_program_asset_class_v1`) lives on plant evidence; export parity is outside that claim.
+- No receipt for `gate_full_program_asset_class_v1` is in this index. That name is not a public proof. Export parity is the receipt above, and its decision is **PRIVATE_AHEAD**.
 - Remote push of a plant sync requires a separate Denis GO. This index does not grant that GO.
 
 Receipt: [gate_export_hash_parity_v1_79b2.json](../measurements/public_index/gate_export_hash_parity_v1_79b2.json).
