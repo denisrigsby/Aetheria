@@ -17,7 +17,8 @@ Durable intent: measurements/long_horizon_STANDBY.json
 
 Stop contract (ordinary stop):
   - signal long_horizon_STOP then watchdog_STOP
-  - if supervisor still alive, kill its process tree (/T) only when cmdline identity matches
+  - wait on process-table presence only (pid_exists); the wait does not kill
+  - kill a still-present PID only through kill_if_verified (claimed role)
   - kill recorded probe_pid only when identity is probe
   - reject PID-only matches
   - print any remaining allowlisted descendants; exit 1 if any remain
@@ -49,7 +50,6 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from atomic_state import atomic_write_json  # noqa: E402
 from campaign_lock import single_flight_spawn  # noqa: E402
-from atomic_state import atomic_write_json  # noqa: E402
 from lh_process_identity import (  # noqa: E402
     ROLE_PROBE,
     ROLE_SUPERVISOR,
@@ -110,24 +110,6 @@ def write_json(path: Path, obj: dict) -> None:
     atomic_write_json(path, obj, default=str)
 
 
-def pid_alive(pid: Any) -> bool:
-    """Process-table presence for wait loops. Not an identity check and not a kill."""
-    try:
-        return pid_exists(pid)
-    except Exception:
-        try:
-            p = int(pid)
-        except Exception:
-            return False
-        if p <= 0:
-            return False
-        try:
-            os.kill(p, 0)
-            return True
-        except Exception:
-            return False
-
-
 def read_pid(path: Path) -> Optional[int]:
     if not path.exists():
         return None
@@ -140,6 +122,7 @@ def read_pid(path: Path) -> Optional[int]:
 def plant_snap() -> Dict[str, Any]:
     st = read_json(STATE_PATH)
     pid = st.get("pid") or read_pid(LH_PID)
+    identity_ok = bool(pid) and verified_role(pid, ROLE_SUPERVISOR)
     return {
         "status": st.get("status"),
         "tick": st.get("tick"),
@@ -147,9 +130,9 @@ def plant_snap() -> Dict[str, Any]:
         "last_ok": st.get("last_ok"),
         "mom": st.get("last_final_mom") or st.get("persisted_mom"),
         "pid": pid,
-        "alive": bool(pid) and verified_role(pid, ROLE_SUPERVISOR),
-        "pid_exists": bool(pid) and pid_alive(pid),
-        "identity_ok": bool(pid) and verified_role(pid, ROLE_SUPERVISOR),
+        "alive": identity_ok,
+        "pid_exists": bool(pid) and pid_exists(pid),
+        "identity_ok": identity_ok,
         "cycles_per_tick": st.get("cycles_per_tick"),
         "interval_min": st.get("interval_min"),
         "history_len": len(st.get("history") or []) if isinstance(st.get("history"), list) else 0,
@@ -159,11 +142,12 @@ def plant_snap() -> Dict[str, Any]:
 def wd_snap() -> Dict[str, Any]:
     st = read_json(WD_STATUS)
     pid = st.get("watchdog_pid") or read_pid(WD_PID)
+    identity_ok = bool(pid) and verified_role(pid, ROLE_WATCHDOG)
     return {
         "pid": pid,
-        "alive": bool(pid) and verified_role(pid, ROLE_WATCHDOG),
-        "pid_exists": bool(pid) and pid_alive(pid),
-        "identity_ok": bool(pid) and verified_role(pid, ROLE_WATCHDOG),
+        "alive": identity_ok,
+        "pid_exists": bool(pid) and pid_exists(pid),
+        "identity_ok": identity_ok,
         "updated_at": st.get("updated_at"),
         "last_action": (st.get("last_applied") or {}).get("action")
         if isinstance(st.get("last_applied"), dict)
@@ -317,10 +301,10 @@ def enter_standby(
         print("  signaled long_horizon_STOP (graceful)")
         deadline = time.time() + max(15.0, force_kill_after_s)
         while time.time() < deadline:
-            if not pid_alive(pl0.get("pid")):
+            if not pid_exists(pl0.get("pid")):
                 break
             time.sleep(2)
-        if pid_alive(pl0.get("pid")):
+        if pid_exists(pl0.get("pid")):
             print("  graceful wait timed out — force kill LH tree (identity)")
             _kill_pid(pl0.get("pid"), "lh", ROLE_SUPERVISOR)
     else:
@@ -330,7 +314,7 @@ def enter_standby(
 
     # Patch state if process already gone
     st2 = read_json(STATE_PATH)
-    if st2 and not pid_alive(st2.get("pid") or pl0.get("pid")):
+    if st2 and not pid_exists(st2.get("pid") or pl0.get("pid")):
         st2["status"] = "standby"
         st2["standby"] = True
         st2["standby_reason"] = intent["reason"]
@@ -345,10 +329,10 @@ def enter_standby(
         if wd.get("alive"):
             deadline = time.time() + 45
             while time.time() < deadline:
-                if not pid_alive(wd.get("pid")):
+                if not pid_exists(wd.get("pid")):
                     break
                 time.sleep(1)
-            if pid_alive(wd.get("pid")):
+            if pid_exists(wd.get("pid")):
                 _kill_pid(wd.get("pid"), "watchdog", ROLE_WATCHDOG)
     else:
         print("  watchdog left running (will respect STANDBY — no relaunch)")
@@ -386,10 +370,10 @@ def cmd_stop(*, reason: str = "operator_stop") -> int:
     if pl0.get("pid"):
         deadline = time.time() + 90
         while time.time() < deadline:
-            if not pid_alive(pl0.get("pid")):
+            if not pid_exists(pl0.get("pid")):
                 break
             time.sleep(2)
-        if pid_alive(pl0.get("pid")):
+        if pid_exists(pl0.get("pid")):
             print("  graceful wait timed out — kill supervisor tree while still alive")
             _kill_pid(pl0.get("pid"), "lh", ROLE_SUPERVISOR)
         else:
@@ -402,10 +386,10 @@ def cmd_stop(*, reason: str = "operator_stop") -> int:
     if wd.get("pid"):
         deadline = time.time() + 45
         while time.time() < deadline:
-            if not pid_alive(wd.get("pid")):
+            if not pid_exists(wd.get("pid")):
                 break
             time.sleep(1)
-        if pid_alive(wd.get("pid")):
+        if pid_exists(wd.get("pid")):
             _kill_pid(wd.get("pid"), "watchdog", ROLE_WATCHDOG)
     for row in list_allowlisted():
         role = row.get("role")
