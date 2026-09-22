@@ -263,10 +263,16 @@ def test_launch_stop_old_does_not_kill_wrong_cmdline(tmp_path: Path, monkeypatch
 
         monkeypatch.setattr(ld, "kill_if_verified", wrapped)
 
-        def _no_popen(*_a, **_k):
-            raise AssertionError("stop_old continued to spawn after an unverified pid")
+        # subprocess.run (tasklist, cmdline) calls Popen. Block only the supervisor relaunch.
+        real_popen = subprocess.Popen
 
-        monkeypatch.setattr(subprocess, "Popen", _no_popen)
+        def _guard_popen(args, *a, **k):
+            argv = args if isinstance(args, (list, tuple)) else [args]
+            if any("long_horizon_supervisor.py" in str(part) for part in argv):
+                raise AssertionError("stop_old continued to spawn after an unverified pid")
+            return real_popen(args, *a, **k)
+
+        monkeypatch.setattr(subprocess, "Popen", _guard_popen)
         ok, detail, pid = ld.launch_lh_detached(stop_old=True, clear_latches=True, poll_s=1.0)
         assert ok is False
         assert pid is None
