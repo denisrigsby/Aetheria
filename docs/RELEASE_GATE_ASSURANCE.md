@@ -6,7 +6,7 @@
 |------|--------|-------|
 | Unrelated processes survive stale-PID recovery/stop | **PARTIAL** | Role/junk PID refusal tested; full creation-time reuse sim limited on Linux CI. Plant `gate_stale_pid_reuse_v1` does not claim OS PID-number reuse was observed. Portable pytest alone does not flip that gate. |
 | Interrupted write → old OR new valid state | **PARTIAL** | Atomic helper + tests; not all writers migrated |
-| Simultaneous start/recover → ≤1 worker | **FAIL** | Not sealed. Ubuntu control-plane pytest is green. Windows launcher job failed on `6f7d7be` (claim `/Date/` treated as a path, dead-PID helper, status subprocess ban). This head fixes those four tests. **PASS** waits until the Windows launcher job and the Ubuntu job are both green on the same SHA. Linux proof alone does not seal this row. |
+| Simultaneous start/recover → ≤1 worker | **PASS** | Sealed after both control-plane pytest jobs passed on `424b52d` (run 35692278176): Ubuntu "Control plane checks" and Windows "Windows launcher and process tests". Evidence is `tests/test_two_controller_concurrency.py` on both jobs. Two processes race start vs recover: exactly one spawn. Live role, live claim, lock timeout, and a corrupt claim refuse. Windows `/Date(ms)/` create_time is stored as `ms:<digits>` and is not a host path. A create_time mismatch is not killed. Admit launch sets `stop_old=false`. Not this proof: a live Windows plant dual-launch, watchdog relaunch, or raw `launch_lh_detached.py` outside this admit. |
 | Corrupted / unknown-version state → HOLD | **PARTIAL** | Hash mismatch refuse tested; full HOLD wiring plant-side |
 | Clean stop ≠ crash | **PARTIAL** | Documented; needs explicit CI |
 | Localhost mutations require authorization | **PARTIAL** | Loopback-only; per-launch token tracked |
@@ -29,5 +29,5 @@ Historical notes from that slice. They are not the authoritative gate. The table
 
 | Gate | Status | Notes |
 |------|--------|-------|
-| Simultaneous start/recover → ≤1 worker | **not sealed** | Ubuntu job green. Windows job red on `6f7d7be`. Primary row stays **FAIL** until both control-plane pytest jobs are green on one SHA. create_time on the claim is a reuse check for that admit, not `gate_stale_pid_reuse_v1` and not `gate_expected_create_time_call_sites_v1`. Other state writers stay **PARTIAL**. Still open: corrupted/unknown-version → HOLD, clean-stop CI. No soft_ACCEPT. No L7 / LIVE_RSI. This tree is not the plant. |
+| Simultaneous start/recover → ≤1 worker | **FAIL→PASS** | Sealed when Ubuntu and Windows control-plane jobs both passed on `424b52d` (run 35692278176). `6f7d7be` Windows failures were the `/Date/` claim assertion, the dead-PID helper, and the status subprocess ban. create_time on the claim is a reuse check for that admit, not `gate_stale_pid_reuse_v1` and not `gate_expected_create_time_call_sites_v1`. Other state writers stay **PARTIAL**. Still open: corrupted/unknown-version → HOLD, clean-stop CI. No soft_ACCEPT. No L7 / LIVE_RSI. This tree is not the plant. |
 
