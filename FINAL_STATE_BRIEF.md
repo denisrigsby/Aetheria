@@ -19,7 +19,8 @@ You can run these here. They do not re-prove the plant receipts below.
 | This tree has a supervisor control plane and a mock worker | Clone smoke does not start the private plant | `python -u scripts/demo_local_smoke.py` · [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) |
 | A mock pulse keeps advancing after the reference mouth closes | Mock only. That is the public slice of plant clock ≠ chat | `python -u scripts/demo_continuity.py` · [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) |
 | Process identity rejects the wrong role or a junk PID | The assurance row "unrelated processes survive stale-PID recovery" is **PARTIAL** | CI: `tests/test_lh_process_identity.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
-| Simultaneous start and recover admit one supervisor | Assurance row is **PASS**. Other state writers stay **PARTIAL**. This test is not the live plant. No `soft_ACCEPT`. No L7 / LIVE_RSI | CI: `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Simultaneous start and recover admit one supervisor | Assurance row is **PASS**. Corrupted / unknown-version → HOLD and clean stop ≠ crash stay **PARTIAL**. This test is not the live plant. No `soft_ACCEPT`. No L7 / LIVE_RSI | CI: `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| An interrupted JSON state write leaves the previous valid document or the new one | Assurance row is **PASS**. Private plant ≠ this tree. No L7 / LIVE_RSI. No soft_ACCEPT. PID and STOP files are short in-place text. Append-only JSONL is out of scope. `research/` artifacts are out of scope. Not an operator-plant receipt | CI on `395643e` (run 35695450920): `tests/test_atomic_state_writes.py`, `tests/test_interrupted_state_writes.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
 
 Run path: [README.md](README.md).
 
@@ -56,13 +57,14 @@ Packet list for the evening gates (not an extra gate): [MANIFEST_f68b.json](meas
 |------|-------------------|
 | Re-run of the proved seals inside this clone | Mouth and plant body are not in this tree. [docs/CLOSEOUT.md](docs/CLOSEOUT.md) |
 | Unrelated processes survive stale-PID recovery / stop | Assurance **PARTIAL**. [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
-| Interrupted write leaves the old or the new valid state | Assurance **PARTIAL**. Not every writer is migrated |
 | Corrupted or unknown-version state ends in HOLD | Assurance **PARTIAL**. Hash mismatch refuse is tested; full HOLD wiring is plant-side |
 | Clean stop distinguished from a crash | Assurance **PARTIAL**. Needs an explicit CI proof |
 | Localhost mutations require authorization | Assurance **PARTIAL** |
 | Job Object containment in this repo's CI | Assurance **PARTIAL**. The plant receipt above does not flip this row |
 
 Simultaneous start/recover is **PASS** on the assurance checklist. It is listed under Real. It is not pending.
+
+Interrupted write → old or new valid state is **PASS**. It is listed under Real. It is not pending. The receipt is the two control-plane CI jobs on `395643e`, not an operator-plant receipt, so it is not in the Proved table above.
 
 ## Locked
 

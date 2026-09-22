@@ -32,7 +32,7 @@ When in doubt, prefer the weaker label.
 | Unrelated processes survive stale-PID recovery | **Pending** | **Untested** | Assurance row is **PARTIAL** |
 | Stale-PID start-time refuse on the operator plant | **Proved** | **Private** | `gate_stale_pid_reuse_v1` receipt. OS PID-number reuse was not observed. Portable pytest does not flip that gate |
 | Job Object tree kill on the operator plant | **Proved** | **Private** | `gate_job_object_kill_path_v1`. Not the only stop path. This repo's CI row stays **PARTIAL** |
-| Interrupted write leaves old or new valid state | **Pending** | **Untested** | Assurance **PARTIAL**. `tests/test_atomic_state_writes.py` is not the whole writer set and is not in the CI command |
+| Interrupted write leaves old or new valid state | **Real** | **Tests** | **PASS** in [RELEASE_GATE_ASSURANCE.md](RELEASE_GATE_ASSURANCE.md). Both control-plane jobs green on `395643e` (run 35695450920). CI runs `tests/test_atomic_state_writes.py` and `tests/test_interrupted_state_writes.py`. Private plant ≠ this tree. No L7 / LIVE_RSI. No soft_ACCEPT. PID/STOP text and append-only JSONL are out of scope. `research/` artifacts are out of scope |
 | Snapshot digest is an authenticity signature (HMAC) | **Locked** | **Private** | Public digests are integrity checksums only |
 | Live plant, living memory, Forge, real cycle body | **Locked** | **Private** | Not shipped. Public export ≠ live plant (**PRIVATE_AHEAD**) |
 | Dual-bank full program | **Locked** | — | No receipt for `gate_full_program_asset_class_v1` in this repo |
