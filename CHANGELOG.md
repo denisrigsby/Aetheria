@@ -5,6 +5,10 @@ All notable changes to the **public control plane** are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- **Claim scope** ([FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md)): dual-bank FULL_PROGRAM is locked on this index. No receipt for `gate_full_program_asset_class_v1` appears in CLOSEOUT, CLAIMS, or `measurements/public_index/`. The evening cut dual-banks only the six named gates as their wording. `soft_ACCEPT` stays false. Exclusions: L7, LIVE_RSI, public=plant, autonomy, second clock. Export stays **PRIVATE_AHEAD**. Stale pending line "verify public CI green on main after bleach push" stays removed; public CI on main for that evening cut is green.
+
 ### Added
 
 - **Public closeout 2026-09-22 evening** ([docs/CLOSEOUT.md](docs/CLOSEOUT.md)): second sealed cut for dual-banked plant gates (`dual_bank=true`, `soft_ACCEPT=false`). PASS as receipt wording: `gate_stale_pid_reuse_v1` (`create_time_bind_v1`); `gate_expected_create_time_call_sites_v1` (`call_site_wire_v1`); `gate_endurance_v1` (30 minutes, mouth closed, tick advanced); `gate_job_object_kill_path_v1` (identity-checked `TerminateJobObject` on an assigned tree; not the sole stop path; Toolhelp not retired); `gate_export_hash_parity_v1` (fail-closed receipt layer; decision stays **PRIVATE_AHEAD**); `gate_control_plane_resume_stop_watchdog_v1` (dual-bank record; `claim_wording` null; no CommandLine redact field). LOCKED: L7, LIVE_RSI, second clock, autonomy, public=plant, OS PID-number reuse observation, every future kill site, endurance beyond that window, publish sync without Denis GO, `soft_ACCEPT`. Scrubbed receipts in `measurements/public_index/`.
