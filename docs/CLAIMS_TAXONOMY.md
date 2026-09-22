@@ -18,7 +18,8 @@ Every public claim about Aetheria must be labeled exactly one of:
 | Continuity: pulse advances after mouth closes | **Mock** | `scripts/demo_continuity.py` |
 | Crash→resume multi-step with verified checkpoints | **Mock** / plant-private prove | Public slice is mock-safe; full plant prove is **Private** |
 | Process identity rejects wrong role / junk PID | **Tests** | `tests/test_lh_process_identity.py`, `tests/test_process_identity_adversarial.py` |
-| Stale-PID never kills unrelated process | **Tests** (partial) | Adversarial tests; Job Objects still **Untested** / aspirational |
+| Stale-PID never kills unrelated process | **Tests** (partial) in this repo; plant receipt is separate | Adversarial tests here. Plant `gate_stale_pid_reuse_v1` (`create_time_bind_v1`) refuses `create_time_mismatch` and does not terminate. OS PID-number reuse was not observed. Portable pytest alone does not flip that gate. |
+| Job Object tree kill | **Private** receipt; **PARTIAL** on this repo's CI | Plant `gate_job_object_kill_path_v1`: identity-checked `TerminateJobObject` stops an assigned tree. Not the sole stop path. Toolhelp not retired. Linux CI does not re-prove it. |
 | Atomic measurements writes (temp→replace) | **Tests** (partial) | `tests/test_atomic_state_writes.py` |
 | Snapshot digest authenticity (HMAC) | **Private** / not claimed | Public digests are **integrity checksums only** |
 | Real multi-hour cycle body / living memory / Forge | **Private** | Not shipped |

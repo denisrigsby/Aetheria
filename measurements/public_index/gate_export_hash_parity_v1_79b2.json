@@ -1,0 +1,26 @@
+{
+  "schema": "aetheria_public_gate_receipt_v1",
+  "gate": "gate_export_hash_parity_v1",
+  "status": "DUAL_BANK_COMPLETE",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "revision": null,
+  "claim_wording": "Export hash/parity receipt layer as defined by gate_export_hash_parity_v1: fail-closed census of public export paths vs plant counterparts with per-path hashes and an explicit decision (PARITY_PASS or PRIVATE_AHEAD); public_equals_plant is true only when decision is PARITY_PASS.",
+  "locked": [
+    "public_equals_plant_without_parity_pass",
+    "export_is_full_plant",
+    "full_program_claim_includes_export_parity",
+    "publish_sync_without_denis_go",
+    "second_clock",
+    "autonomy_proven",
+    "LIVE_RSI",
+    "L7"
+  ],
+  "ts_utc": "2026-09-22T04:36:11.163755+00:00",
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as gate wording.",
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "may_claim_export_hash_parity_v1": true
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "aetheria_architect_accept_v1",
+  "gate": "gate_stale_pid_reuse_v1",
+  "revision": "create_time_bind_v1",
+  "verdict": "ACCEPT",
+  "soft_ACCEPT": false,
+  "by": "Aetheria Architect",
+  "ts_utc": "2026-09-22T04:52:19.015703+00:00",
+  "claim_wording": "Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role.",
+  "note": "Scrubbed public accept. No plant paths."
+}

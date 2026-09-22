@@ -14,6 +14,14 @@ Published index for the Talk Face seals. Plant source stays off this tree. Expor
 
 P1–P5 remains **internal certification** only. Earlier sections below are the prior index; this cut does not extend them.
 
+## Sealed cut (2026-09-22 evening — kill / create_time plant seals)
+
+Second cut. Six plant gates are dual-banked (`dual_bank=true`, Cover ACCEPT, Architect ACCEPT, `soft_ACCEPT=false`). Talk Face mouth receipts above stay `dual_bank=false`. This cut does not dual-bank FULL_PROGRAM, does not unlock L7 or LIVE_RSI, and does not set public equal to plant. Export decision stays **PRIVATE_AHEAD**. Detail: [CLOSEOUT.md](CLOSEOUT.md). Receipts: [../measurements/public_index/](../measurements/public_index/).
+
+The items this cut moves into Proved are stated there with the receipt sentence and the exclusions beside it. `gate_control_plane_resume_stop_watchdog_v1` is dual-banked; its scrubbed receipt has `claim_wording` null and no CommandLine redact field, so no further operational sentence is claimed.
+
+**Still locked on this cut:** L7; LIVE_RSI; second clock; autonomy; public=plant; OS PID-number reuse observation; every future kill site; publish sync without Denis GO; `soft_ACCEPT`; endurance beyond the `gate_endurance_v1` window; Job Object as the sole stop path; Toolhelp retired; create_time as sole identity.
+
 ## What it is
 
 Aetheria is a local, evidence-gated control plant: dual-banked recovery, fail-closed process control, an offline control plane and supervisor tick, sealed operational evidence, and supervised LoRA training and shadow deployment. Operational claims are earned through bounded proof; unproved capabilities remain explicitly locked.
@@ -30,13 +38,19 @@ The package is **evidence-gated**, **Architect- and Cover-checked**, and **fail-
 
 ## Limits (outside this claim)
 
-- endurance (separate gate later)
 - autonomy
 - live LoRA hot-swap
 - federation as a present fact
-- public equals live plant
-- Job Objects as a claimed kill path
-- export parity (decision: **PRIVATE_AHEAD**)
+- public equals live plant (decision remains **PRIVATE_AHEAD**)
+- second clock
+- L7 / LIVE_RSI
+- `soft_ACCEPT` (stays false)
+- OS PID-number reuse observation
+- every future kill site
+- endurance beyond the `gate_endurance_v1` window
+- Job Object as the sole plant stop path; Toolhelp retired
+- create_time as sole identity
+- publish sync without Denis GO
 - external accreditation of P1P5 (P1P5 is **internal certification** only)
 
 ## Proved (plant evidence)
@@ -49,6 +63,12 @@ The package is **evidence-gated**, **Architect- and Cover-checked**, and **fail-
 - LoRA shadow deploy (bind/unload; not live hot-swap)
 - internal P1P5 certification
 - full program asset-class **as defined by** gate_full_program_asset_class_v1
+- Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role. Revision `create_time_bind_v1`. Exclusions: OS PID-number reuse not observed and not required; not every call site; create_time not sole identity; PID reuse not impossible; portable pytest alone does not flip the gate; wrong live PID mismatch alone does not flip the gate; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; Job Object not the sole stop path; Toolhelp not retired.
+- Live kill call sites lh_watchdog.kill_pid, plant_control._kill_pid, lh_recover_reap.reap_orphan_probes, and status_report.reap_orphans pass expected_create_time into kill_if_verified; wrong create_time refuses with create_time_mismatch and does not terminate. Revision `call_site_wire_v1` on `gate_expected_create_time_call_sites_v1`. Exclusions: OS PID-number reuse not observed; not every future kill site; create_time not sole identity; no L7, LIVE_RSI, second clock, autonomy, or public=plant.
+- continuous supervised plant clock 30 minutes, mouth closed, tick advanced; as defined by `gate_endurance_v1`. Exclusions: endurance beyond that window; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; this gate does not claim Job Object kill, stale-PID reuse, or the export-hash layer.
+- Job Object kill-path as defined by `gate_job_object_kill_path_v1`: identity-checked `TerminateJobObject` stops an assigned process tree (root and child dead). Exclusions: not the sole plant stop path; Toolhelp not retired; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; this gate does not claim stale-PID reuse or the export-hash layer; endurance beyond `gate_endurance_v1` stays locked.
+- Export hash/parity receipt layer as defined by `gate_export_hash_parity_v1`: fail-closed census of public export paths vs plant counterparts with per-path hashes and an explicit decision (`PARITY_PASS` or `PRIVATE_AHEAD`); `public_equals_plant` is true only when decision is `PARITY_PASS`. This decision is **PRIVATE_AHEAD**, so public≠plant. Exclusions: public=plant without `PARITY_PASS`; export is not the full plant; the full-program claim does not include export parity; no publish sync without Denis GO; no second clock, autonomy, LIVE_RSI, or L7.
+- `gate_control_plane_resume_stop_watchdog_v1`: dual-bank record only (`DUAL_BANK_COMPLETE`, `soft_ACCEPT=false`). Exclusions: `claim_wording` is null; no CommandLine redact field on the receipt; no further operational sentence.
 
 ## Problems this addresses (proved path)
 
@@ -71,7 +91,7 @@ Forward-looking benefits (federated / networked plant) are **not** claimed as pr
 
 ## Locked (fail-closed)
 
-autonomy_proven, second clock, auto-dispatch, live LoRA hot-swap, federation-as-present, public=plant, offline endurance inside full-program v1, Job Objects as claimed kill path.
+autonomy_proven, second clock, auto-dispatch, live LoRA hot-swap, federation-as-present, public=plant, LIVE_RSI, L7, `soft_ACCEPT`, OS PID-number reuse observation, every future kill site, publish sync without Denis GO, endurance beyond `gate_endurance_v1` (offline endurance inside full-program v1 stays outside that gate), Job Object as sole plant stop path, Toolhelp retired, create_time as sole identity.
 
 ## Restrained voice
 

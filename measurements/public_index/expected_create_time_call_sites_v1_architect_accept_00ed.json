@@ -1,0 +1,11 @@
+{
+  "schema": "aetheria_architect_accept_v1",
+  "gate": "gate_expected_create_time_call_sites_v1",
+  "revision": "call_site_wire_v1",
+  "verdict": "ACCEPT",
+  "soft_ACCEPT": false,
+  "by": "Aetheria Architect",
+  "ts_utc": "2026-09-22T05:03:16.151979+00:00",
+  "claim_wording": "Live kill call sites lh_watchdog.kill_pid, plant_control._kill_pid, lh_recover_reap.reap_orphan_probes, and status_report.reap_orphans pass expected_create_time into kill_if_verified; wrong create_time refuses with create_time_mismatch and does not terminate.",
+  "note": "Scrubbed public accept. No plant paths."
+}

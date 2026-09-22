@@ -51,3 +51,67 @@ Withheld. Not claimed by this cut.
 - No private measurement trees.
 - No credentials.
 - No spawn-wrap widen.
+
+---
+
+# Closeout — 2026-09-22 evening (kill / create_time plant seals)
+
+Second sealed cut. Evidence index for dual-banked plant gates. Receipts only.
+
+The Talk Face cut above is unchanged. Those mouth receipts still record `dual_bank=false`. This cut does not rewrite them and does not dual-bank FULL_PROGRAM.
+
+Scrubbed receipts: [measurements/public_index/](../measurements/public_index/). Plant source paths, operator home paths, credentials, and agent IDs are omitted. `soft_ACCEPT` is false on every receipt in this cut. `dual_bank` is true on the six gate receipts below.
+
+Export parity stays **PRIVATE_AHEAD**. This tree is not the live plant. `public_equals_plant` is false. It would be true only if `gate_export_hash_parity_v1` recorded decision `PARITY_PASS`. It does not.
+
+P1–P5, where the prior brief names it, remains **internal certification** only.
+
+Packet list (gate names, not a seventh gate): [MANIFEST_f68b.json](../measurements/public_index/MANIFEST_f68b.json).
+
+## PASS
+
+Proved on the operator plant (Cover ACCEPT + Architect ACCEPT). Claim only the receipt `claim_wording`. `dual_bank=true`. `soft_ACCEPT=false`.
+
+| # | Claim | Exclusion beside the claim | Receipt |
+|---|-------|----------------------------|---------|
+| 1 | Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role. Revision `create_time_bind_v1`. | OS PID-number reuse was not observed and is not required. Not every call site. create_time is not sole identity. PID reuse is not impossible. Portable pytest alone does not flip the gate. A wrong live PID mismatch alone does not flip the gate. No second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant. Job Object is not the sole stop path. Toolhelp is not retired. | [gate_stale_pid_reuse_v1_1412.json](../measurements/public_index/gate_stale_pid_reuse_v1_1412.json), [stale_pid_reuse_v1_architect_accept_15da.json](../measurements/public_index/stale_pid_reuse_v1_architect_accept_15da.json), [stale_pid_reuse_v1_cover_accept_2042.json](../measurements/public_index/stale_pid_reuse_v1_cover_accept_2042.json) |
+| 2 | Live kill call sites `lh_watchdog.kill_pid`, `plant_control._kill_pid`, `lh_recover_reap.reap_orphan_probes`, and `status_report.reap_orphans` pass `expected_create_time` into `kill_if_verified`; wrong create_time refuses with `create_time_mismatch` and does not terminate. Revision `call_site_wire_v1` on `gate_expected_create_time_call_sites_v1`. | OS PID-number reuse was not observed. Not every future kill site. create_time is not sole identity. No L7, LIVE_RSI, second clock, autonomy, or public=plant. | [gate_expected_create_time_call_sites_v1_930b.json](../measurements/public_index/gate_expected_create_time_call_sites_v1_930b.json), [expected_create_time_call_sites_v1_architect_accept_00ed.json](../measurements/public_index/expected_create_time_call_sites_v1_architect_accept_00ed.json), [expected_create_time_call_sites_v1_cover_accept_c2cd.json](../measurements/public_index/expected_create_time_call_sites_v1_cover_accept_c2cd.json) |
+| 3 | continuous supervised plant clock 30 minutes, mouth closed, tick advanced; as defined by `gate_endurance_v1`. | Endurance beyond that window stays locked. No second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant. This gate does not claim Job Object kill, stale-PID reuse, or the export-hash layer. | [gate_endurance_v1_0440.json](../measurements/public_index/gate_endurance_v1_0440.json) |
+| 4 | Job Object kill-path as defined by `gate_job_object_kill_path_v1`: identity-checked `TerminateJobObject` stops an assigned process tree (root and child dead). | Job Object is not the sole plant stop path. Toolhelp is not retired. No second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant. This gate does not claim stale-PID reuse or the export-hash layer. Endurance beyond `gate_endurance_v1` stays locked. | [gate_job_object_kill_path_v1_a709.json](../measurements/public_index/gate_job_object_kill_path_v1_a709.json) |
+| 5 | Export hash/parity receipt layer as defined by `gate_export_hash_parity_v1`: fail-closed census of public export paths vs plant counterparts with per-path hashes and an explicit decision (`PARITY_PASS` or `PRIVATE_AHEAD`); `public_equals_plant` is true only when decision is `PARITY_PASS`. | This receipt's decision is **PRIVATE_AHEAD**, so public≠plant. Export is not the full plant. The full-program claim does not include export parity. No publish sync without Denis GO. No second clock, autonomy, LIVE_RSI, or L7. | [gate_export_hash_parity_v1_79b2.json](../measurements/public_index/gate_export_hash_parity_v1_79b2.json) |
+| 6 | `gate_control_plane_resume_stop_watchdog_v1` records `DUAL_BANK_COMPLETE`, Cover ACCEPT, Architect ACCEPT, `dual_bank=true`, `soft_ACCEPT=false`. | `claim_wording` is null and `locked` is empty on the scrubbed receipt. No CommandLine redact field is present. No further operational sentence is claimed. | [gate_control_plane_resume_stop_watchdog_v1_84f7.json](../measurements/public_index/gate_control_plane_resume_stop_watchdog_v1_84f7.json) |
+
+## PENDING
+
+| Item | Why it stays pending |
+|------|----------------------|
+| Re-run of these seals inside this public clone | Plant implementation is not in this tree. PASS above is the operator receipt, not a CI re-proof here. Portable pytest alone does not flip `gate_stale_pid_reuse_v1`. |
+| Export parity (public equals live plant) | Decision stays **PRIVATE_AHEAD**. `PUBLIC_EQUALS_PLANT` only if the decision were `PARITY_PASS`. |
+
+## LOCKED
+
+Withheld. Not claimed by this cut.
+
+| Item | Beside the claims |
+|------|-------------------|
+| L7 / LIVE_RSI | No unlock. |
+| `soft_ACCEPT` | Stays false on every receipt. |
+| Second clock | Not claimed. |
+| Autonomy / `autonomy_proven` / auto-dispatch | Not claimed. |
+| public = plant | Decision is `PRIVATE_AHEAD`. Not `PARITY_PASS`. |
+| OS PID-number reuse observation | Not observed. Not required by `gate_stale_pid_reuse_v1`. |
+| Every future kill site | Named sites in row 2 only. |
+| Endurance beyond the 30-minute window | Row 3 is that window only. |
+| Job Object as the sole plant stop path; Toolhelp retired | Row 4 is one identity-checked tree kill. |
+| create_time as sole identity | Not claimed. |
+| Publish sync without Denis GO | Not claimed. |
+| Dual-bank FULL_PROGRAM | These six gates do not bank it. |
+| Federation / swarm / autonomy theater | Not claimed as present fact. |
+| Live LoRA hot-swap | Not claimed. |
+
+## Publication limits
+
+- No plant loop or RSI source.
+- No private measurement trees.
+- No credentials, agent IDs, or operator home paths.
+- No spawn-wrap widen.

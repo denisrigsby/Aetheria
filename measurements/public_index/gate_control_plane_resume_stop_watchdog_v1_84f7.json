@@ -1,0 +1,16 @@
+{
+  "schema": "aetheria_public_gate_receipt_v1",
+  "gate": "gate_control_plane_resume_stop_watchdog_v1",
+  "status": "DUAL_BANK_COMPLETE",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "revision": null,
+  "claim_wording": null,
+  "locked": [],
+  "ts_utc": "2026-09-22T04:24:37.399546+00:00",
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as gate wording.",
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false
+}
