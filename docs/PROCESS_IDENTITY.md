@@ -26,8 +26,8 @@ An identity match for supervisor / watchdog / probe roles SHOULD bind:
 ## Current public implementation
 
 - Role classification from cmdline: `scripts/lh_process_identity.py` (**Tests**)
-- Creation-time + exe binding: extended helpers + adversarial tests in this repo (**Tests** / partial on non-Windows CI). Portable pytest alone does not flip `gate_stale_pid_reuse_v1`.
-- Windows Job Objects for tree kill: plant `gate_job_object_kill_path_v1` is dual-banked for an identity-checked `TerminateJobObject` on an assigned tree (root and child dead). Not the sole stop path. Toolhelp is not retired. Linux CI in this clone does not re-prove that gate.
+- Creation-time + exe binding: extended helpers + adversarial tests in this repo (**Tests** / partial on non-Windows CI). Pytest in this clone does not flip `gate_stale_pid_reuse_v1`. That pytest is not a tree-kill.
+- Windows Job Objects for tree kill: plant `gate_job_object_kill_path_v1` is dual-banked for an identity-checked `TerminateJobObject` on an assigned tree (root and child dead). **Proved on Windows**. **Locked on non-Windows**. Not the sole stop path. Toolhelp is not retired. Linux CI in this clone does not re-prove that gate. Role matching on Ubuntu CI is not this stop.
 
 ## Plant receipts (create_time)
 

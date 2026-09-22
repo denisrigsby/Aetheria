@@ -15,7 +15,7 @@ Aetheria (full install) is a **versioned, auditable process-continuity layer** f
 | Cycle body / probe internals | Security-sensitive runtime + unpublished research |
 | Credentials, host paths | Deployment-specific |
 
-From this tree you can run the public scripts and the CI tests named in the [README](../README.md). That does not pass the **PARTIAL** assurance rows, and it does not include the private plant. Identity-checked plant kill stays the scoped Job Object and create_time receipts in [CLOSEOUT.md](CLOSEOUT.md).
+From this tree you can run the public scripts and the CI tests named in the [README](../README.md). That does not pass the **PARTIAL** assurance rows, and it does not include the private plant. Identity-checked plant kill is the Windows Job Object receipt and the create_time refuse receipts in [CLOSEOUT.md](CLOSEOUT.md). **Proved on Windows** for that Job Object wording. **Locked on non-Windows**. Not a portable control plane.
 
 ## Supported product
 
@@ -54,4 +54,6 @@ Each command prints the root, Python interpreter, state directory, and backend (
 
 ## Stop contract (Windows)
 
-The supervisor honors `long_horizon_STOP` and may exit before force-kill. Tree-kill (`taskkill /PID /F /T` on Windows) runs only if a **verified live** supervisor still exists after the wait. Dead parent `/T` is not success. Remaining allowlisted supervisor/watchdog/probe identities are then killed by role. Probe kill requires probe identity. Watchdog STOP is always written. Exit 1 if allowlisted processes remain. Stale PID files are removed after verified reconciliation (see STATE_MODEL).
+The supervisor honors `long_horizon_STOP` and may exit before force-kill. Tree-kill (`taskkill /PID /F /T`) runs only if a **verified live** supervisor still exists after the wait. Dead parent `/T` is not success. Remaining allowlisted supervisor/watchdog/probe identities are then killed by role. Probe kill requires probe identity. Watchdog STOP is always written. Exit 1 if allowlisted processes remain. Stale PID files are removed after verified reconciliation (see STATE_MODEL).
+
+**Proved on Windows** only for the Job Object receipt in [JOB_OBJECTS.md](JOB_OBJECTS.md). **Locked on non-Windows** for tree-kill and Job Object stop. A single-PID SIGTERM in `kill_if_verified` is not that stop and is **Pending** (no receipt). Watchdog relaunch is **Pending** on non-Windows.

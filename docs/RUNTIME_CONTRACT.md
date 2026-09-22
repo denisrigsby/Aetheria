@@ -15,7 +15,7 @@ This document names the protocol the scripts implement. It does not invent a sec
 | Cycle body / probe internals | Security-sensitive runtime + unpublished research. |
 | Credentials, host paths, `/link` folders | Deployment-specific. Never in the public repo. |
 
-From this tree you can read the scripts and run the CI tests named in the [README](../README.md): start, heartbeat, checkpoint, and STOP files are in the tree. Identity-checked kill on the operator plant is the scoped Job Object and create_time receipts. Those receipts do not make the CI Job Object row PASS.
+From this tree you can read the scripts and run the CI tests named in the [README](../README.md): start, heartbeat, checkpoint, and STOP files are in the tree. Identity-checked kill on the operator plant is the Windows Job Object receipt and the create_time refuse receipts. **Proved on Windows** for that Job Object wording. **Locked on non-Windows**. Those receipts do not make the CI Job Object row PASS, and they are not a portable relaunch.
 
 ## Working directory and env
 
@@ -46,7 +46,7 @@ Runtime protocol v1
 
 | Exit | Meaning |
 |------|---------|
-| 0 | Command completed (stop with no allowlisted survivors; status ok) |
+| 0 | Command completed. On Windows, stop means no allowlisted survivors. That survivor list is not a non-Windows tree-kill |
 | 1 | Stop left survivors, recover refused a bad snapshot, or diagnose failed closed |
 | 2 | Usage / missing root |
 

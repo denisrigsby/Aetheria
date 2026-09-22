@@ -4,7 +4,7 @@
 
 | Item | Notes |
 |------|--------|
-| OS | Windows is the reference platform (PowerShell launchers) |
+| OS | Windows is the reference platform. Tree-kill, Job Object stop, and relaunch are not claimed off Windows |
 | Python | 3.10+ |
 | PowerShell | 5.1+; PowerShell 7+ recommended |
 | Full install | Orchestrator, registry, and cycle probe modules (not in this repo) |

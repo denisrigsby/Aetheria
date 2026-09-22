@@ -13,7 +13,7 @@ This is the intended model. Corrupted / unknown-version → HOLD and clean stop 
 | `CHECKPOINTED` | Last successful tick recorded; heartbeat fresh |
 | `STALE` | Heartbeat older than policy window |
 | `HOLD` | Fail-closed pause after dirty death / unsafe condition; needs operator |
-| `STOPPING` | STOP file present; tree termination in progress |
+| `STOPPING` | STOP file present. Tree termination is the Windows tree-kill / Job Object path. **Locked on non-Windows** |
 | `STOPPED` | Verified stop; PID caches reconciled |
 
 ## Valid transitions

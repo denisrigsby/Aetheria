@@ -2,7 +2,7 @@
 
 A local supervisor for long-running AI work on one Windows PC. The chat window (the mouth, also called Talk-face) is optional. The work schedule (the plant clock) is a separate process plus files on disk. Closing the chat does not stop that schedule. **Plant clock ≠ chat.**
 
-This repository publishes the **control plane**: supervisor, watchdog, stop and recover scripts, and documentation. It is a public export. It is not the live operator plant. Parity decision: **PRIVATE_AHEAD**. [EXPORT_PARITY.md](docs/EXPORT_PARITY.md).
+This repository publishes the **control plane**: supervisor, watchdog, stop and recover scripts, and documentation. Stop that ends a process tree is Windows tree-kill or a Windows Job Object. **Proved on Windows** only for `gate_job_object_kill_path_v1`. **Locked on non-Windows**. It is not a portable control plane. It is a public export. It is not the live operator plant. Parity decision: **PRIVATE_AHEAD**. [EXPORT_PARITY.md](docs/EXPORT_PARITY.md).
 
 What is real, proved, pending, and locked, with receipts beside the claims: [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md). P1–P5 are internal certification on the operator plant, not an outside audit.
 

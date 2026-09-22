@@ -29,7 +29,7 @@ A **control plane** in the spirit of process supervisors (supervisor, pm2):
 
 1. **Detached supervisor** — ticks of bounded multi-cycle work
 2. **On-disk status** — long-horizon / watchdog JSON
-3. **Watchdog** — HOLD after dirty death; green interruption may ensure a dispatcher
+3. **Watchdog** — HOLD after dirty death is the intent (that row stays **PARTIAL**). A green interruption may ensure a dispatcher on Windows. Tree-kill and Job Object stop are **Locked on non-Windows**. Relaunch is **Pending** and is not portable
 4. **Conservation defaults** — light manage, selective heavy health
 5. **Rolling segments** — a process is a worker (e.g. 48 ticks), not the whole campaign
 6. **Restart-resilient green-tick accounting** — change gates do not forget progress when a PID dies

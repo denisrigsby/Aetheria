@@ -13,7 +13,7 @@ local AI agent · Windows · long-running · persistent · background · watchdo
 | local AI agent / Windows | Operator plant on Windows, plus this public control-plane export. This tree is **PRIVATE_AHEAD** |
 | long-running / overnight | `gate_endurance_v1`: 30 minutes, mouth closed, tick advanced. Longer than that window is **Locked** |
 | survives when chat closes | Mock: `scripts/demo_continuity.py`. Plant: the same 30-minute receipt. Not a standing PASS beyond that window |
-| watchdog | Process supervision docs. Unrelated-process survival and clean stop ≠ crash stay **Pending** |
+| watchdog | Process supervision docs. Unrelated-process survival and clean stop ≠ crash stay **Pending**. Tree-kill and Job Object stop are **Proved on Windows** only for the Job Object receipt, and **Locked on non-Windows**. Relaunch is not portable |
 | persistent | On-disk control-plane files in this repo |
 | restart-safe | **Pending**. Clean stop ≠ crash is **PARTIAL** on [RELEASE_GATE_ASSURANCE.md](RELEASE_GATE_ASSURANCE.md) |
 
