@@ -8,19 +8,19 @@
     "api_turn_uses_stamp_turn_out": true,
     "busy_badge_js": true,
     "smoke_no_MODEL_REASONING_tag": true,
-    "smoke_no_Right_here_with_you": true
+    "smoke_no_warm_ack_filler": true
   },
   "fail_keys": [],
   "operator_note": "Hard-refresh Talk-face (Ctrl+F5) so the Busy badge loads; old chat bubbles keep prior tagged text.",
   "bank": "COVER_ACCEPT_ARCHITECT_PENDING",
   "cover_accept": "ACCEPT",
-  "cover_by": "Aetheria Architect Cover",
+  "cover_by": "Cover",
   "cover_ts": "2026-09-22T02:46:25.915704+00:00",
   "dual_bank": false,
   "accepts_pending": [],
   "architect_accept": "ACCEPT",
-  "architect_by": "Aetheria Architect",
+  "architect_by": "Architect",
   "architect_ts": "2026-09-22T02:47:07.973367+00:00",
   "public_copy": true,
-  "redacted": ["private_measurement_bank_path"]
+  "redacted": ["private_measurement_bank_path", "role_display_names", "warm_ack_ban_phrase"]
 }

@@ -10,13 +10,13 @@
   "note": "Talk-face / plant-mouth prompt+scrub+router only. No unlock. Cover+Architect ACCEPT from disk.",
   "bank": "COVER_ACCEPT_ARCHITECT_PENDING",
   "cover_accept": "ACCEPT",
-  "cover_by": "Aetheria Architect Cover",
+  "cover_by": "Cover",
   "cover_ts": "2026-09-22T02:44:19.524581+00:00",
   "accepts_pending": [],
   "cover_extend": true,
   "architect_accept": "ACCEPT",
-  "architect_by": "Aetheria Architect",
+  "architect_by": "Architect",
   "architect_ts": "2026-09-22T02:47:07.973367+00:00",
   "public_copy": true,
-  "redacted": ["plant_source_paths", "private_measurement_bank_path"]
+  "redacted": ["plant_source_paths", "private_measurement_bank_path", "role_display_names"]
 }

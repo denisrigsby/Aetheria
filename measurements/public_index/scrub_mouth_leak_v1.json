@@ -1,7 +1,7 @@
 {
   "schema": "aetheria_scrub_mouth_leak_v1",
   "ts": "2026-09-22T02:40:08.393218+00:00",
-  "by": "Aetheria Architect",
+  "by": "Architect",
   "go": "scrub-mouth-leak",
   "changes": [
     "Talk Face provenance stamp render_tag=False + strip visible [CLASS] tags",
@@ -14,5 +14,5 @@
   },
   "soft_ACCEPT": false,
   "public_copy": true,
-  "redacted": ["plant_source_paths"]
+  "redacted": ["plant_source_paths", "role_display_names"]
 }
