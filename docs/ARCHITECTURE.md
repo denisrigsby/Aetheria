@@ -61,7 +61,7 @@ flowchart TB
 | Session tooling | Implement / repair while available | Detached tick schedule |
 | Control plane | Process life cycle, status files, change gates | Private memory contents |
 | Private runtime | Cycles, registry, living streams | Public GitHub distribution |
-| Optional private companion | Interactive steers / local generate | Plant tick schedule, residual self-mod |
+| Optional private companion | Interactive steers / local generate | Plant tick schedule. Gated self-modification is locked |
 
 ## Plant clock ≠ chat session
 
@@ -102,13 +102,13 @@ Separate process. Monitors:
 - Stuck `running_tick` beyond a threshold  
 - Clean exit after max ticks (optional relaunch)  
 
-Default after unexpected death or segment end: **manual-start latch** (no thrash relaunch) unless `long_horizon_AUTORUN.enable` is present. Kill/relaunch of a supervisor PID requires **command-line identity** (`long_horizon_supervisor.py`), not PID-only. Writes `measurements/watchdog_status.json`.
+Default after unexpected death or segment end: **manual-start latch** (no thrash relaunch) unless `long_horizon_AUTORUN.enable` is present. Kill/relaunch of a supervisor PID requires **command-line identity** (`long_horizon_supervisor.py`), not PID-only. Writes `measurements/watchdog_status.json`. Relaunch has no gate file (**Pending**). It is not claimed on non-Windows.
 
 ### `plant_control`
 
-Operator stop/standby/halt/resume. Ordinary **stop** writes supervisor and watchdog STOP files, tree-kills a **still-alive** verified supervisor (`taskkill /PID /F /T` on Windows), kills a recorded probe only if identity is probe, and lists remaining allowlisted processes. Success = none remain (exit 0). `/T` after the parent is already dead does not reap children — that is why the probe PID is killed separately.
+Operator stop/standby/halt/resume. Ordinary **stop** writes supervisor and watchdog STOP files, then on Windows tree-kills a **still-alive** verified supervisor (`taskkill /PID /F /T`), kills a recorded probe only if identity is probe, and lists remaining allowlisted processes. Success = none remain (exit 0). `/T` after the parent is already dead does not reap children — that is why the probe PID is killed separately.
 
-Tree-kill is **Windows-specific**. Identity matching is portable.
+Tree-kill and Job Object stop are **Proved on Windows** only where [JOB_OBJECTS.md](JOB_OBJECTS.md) cites the plant receipt, and **Locked on non-Windows**. Role-matching tests on Ubuntu CI are a role check. They are not a stop and not a relaunch. This tree is not a portable control plane.
 
 ### `aetheria_hope_path`
 

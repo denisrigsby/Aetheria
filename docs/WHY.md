@@ -19,9 +19,9 @@ When that happens, the usual failure modes are:
 | Talk as a runtime dependency | If chat is closed, the worker must still tick |
 | AUTORUN after dirty last_ok | HOLD; resume when stable |
 | Unbounded full-manage every cycle | Observed multi-hour stall ridge |
-| Publishing private memory/registries | Control plane ≠ whole organism |
+| Publishing private memory/registries | Control plane ≠ the private plant |
 | Publishing optional private companion / local generate / train stacks | Depth stays offline; public surface stays auditable and thin |
-| Multi-tenant SaaS orchestration | This design optimizes for a **sovereign local owner** |
+| Multi-tenant SaaS orchestration | This design is for one local operator (Denis Rigsby on the operator machine) |
 
 ## What we build instead
 
@@ -29,7 +29,7 @@ A **control plane** in the spirit of process supervisors (supervisor, pm2):
 
 1. **Detached supervisor** — ticks of bounded multi-cycle work
 2. **On-disk status** — long-horizon / watchdog JSON
-3. **Watchdog** — HOLD after dirty death; green interruption may ensure a dispatcher
+3. **Watchdog** — HOLD after dirty death is the intent (that row stays **PARTIAL**). A green interruption may ensure a dispatcher on Windows. Tree-kill and Job Object stop are **Locked on non-Windows**. Relaunch is **Pending** and is not portable
 4. **Conservation defaults** — light manage, selective heavy health
 5. **Rolling segments** — a process is a worker (e.g. 48 ticks), not the whole campaign
 6. **Restart-resilient green-tick accounting** — change gates do not forget progress when a PID dies
@@ -44,11 +44,13 @@ Process supervision is the **bones**. The muscle is **agent continuity**:
 - Momentum and status that survive restarts
 - Measured short runs (`aetheria_hope_path`) vs long detached campaigns
 - Optional change-control gate (enough green work since last change)
-- Explicit split: **public control plane** vs **private organism depth**
+- Explicit split: **public control plane** vs **private plant**
 
 If you only need to keep a static web server up, use pm2. If you need **local multi-cycle agent work that outlives chat**, you need something shaped like this.
 
 ## Success for the intended user
+
+These rows are the operator outcome the design aims at. They are not a public PASS. The indexed plant window with the mouth closed is 30 minutes (`gate_endurance_v1`). Clean stop ≠ crash stays pending.
 
 | Role | Success looks like |
 |------|---------------------|

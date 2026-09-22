@@ -1,6 +1,6 @@
 {
   "schema": "status_snapshot_v1",
-  "note": "Example only; not live host state.",
+  "note": "Example shape only. Not live host state. Not a Real, Proved, or PASS claim. Component values below are placeholders.",
   "schedule": {
     "cycles_per_tick": 2,
     "interval_min": 30,
@@ -8,12 +8,12 @@
     "model": "rolling_segments"
   },
   "components": {
-    "light_multicycle": "stable",
-    "watchdog": "stable",
-    "status_files": "stable",
-    "durable_green_tick_log": "stable",
-    "watchdog_relaunch_pid_truth": "stable",
-    "sandbox_guarded_edit": "demonstrated",
-    "broad_auto_edit": "incomplete"
+    "light_multicycle": "example",
+    "watchdog": "example",
+    "status_files": "example",
+    "durable_green_tick_log": "example",
+    "watchdog_relaunch_pid_truth": "example",
+    "sandbox_guarded_edit": "example",
+    "broad_auto_edit": "not_claimed"
   }
 }

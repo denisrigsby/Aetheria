@@ -1,10 +1,10 @@
 # Runtime contract v1
 
-Aetheria’s **public** product is a versioned process-continuity layer. Compatibility is promised at this protocol, not at an unpublished agent.
+Aetheria’s **public** product is a versioned process-continuity layer. Compatibility is described at this protocol, not at an unpublished agent. This page is the contract text. A behavior line is **Real** or **Proved** only when [FINAL_STATE_BRIEF.md](../FINAL_STATE_BRIEF.md) cites a test or a gate for that line.
 
-The **private** install (mouth, living, GPU plant, credentials) is an extension of this contract, not a missing GitHub file. Chat is a mirror of the ledger. It is not a parent of the runtime. If the chat window is closed, the worker still ticks.
+The **private** install (mouth, living, GPU plant, credentials) is an extension of this contract, not a missing GitHub file. Chat is a mirror of the ledger. It is not a parent of the runtime. Mouth-closed continuity in this repo is the mock continuity demo, plus `gate_endurance_v1` (30 minutes). Longer than that window is locked.
 
-This document names the protocol **this tree already runs**. It does not invent a second clock or a dummy `--cycle-id` CLI.
+This document names the protocol the scripts implement. It does not invent a second clock or a dummy `--cycle-id` CLI. It is not a production-ready claim.
 
 ## Why some of it stays private
 
@@ -15,7 +15,7 @@ This document names the protocol **this tree already runs**. It does not invent 
 | Cycle body / probe internals | Security-sensitive runtime + unpublished research. |
 | Credentials, host paths, `/link` folders | Deployment-specific. Never in the public repo. |
 
-Public GitHub stays evaluable as **infrastructure**: start, heartbeat, checkpoint, STOP, recover, identity-checked kill.
+From this tree you can read the scripts and run the CI tests named in the [README](../README.md): start, heartbeat, checkpoint, and STOP files are in the tree. Identity-checked kill on the operator plant is the Windows Job Object receipt and the create_time refuse receipts. **Proved on Windows** for that Job Object wording. **Locked on non-Windows**. Those receipts do not make the CI Job Object row PASS, and they are not a portable relaunch.
 
 ## Working directory and env
 
@@ -36,9 +36,8 @@ Runtime protocol v1
 - STOP: presence of measurements/long_horizon_STOP and watchdog_STOP.
 - Standby: measurements/long_horizon_STANDBY.json.
 - Manual-start latch: measurements/long_horizon_MANUAL_START.json.
-- Identity: alive = PID exists AND cmdline is the claimed role. PID file alone is not truth.
-- Watchdog: HOLD after dirty last_ok. Green interruption may ensure_dispatcher.
-  No AUTORUN after dirty death.
+- Identity (public tests): role/junk PID refusal, and Windows tasklist liveness on the PID column. PID file alone is not truth. Unrelated-process survival stays **PARTIAL**. OS PID-number reuse was not observed.
+- Watchdog intent: HOLD after dirty last_ok, and no AUTORUN after dirty death. Clean stop ≠ crash and full HOLD wiring stay **PARTIAL**.
 - recover loads measurements/campaign_snapshot_v1.json only when the supervisor is identity-dead.
   Schema/hash fail → exit 1, no spawn. recover is not start.
 ```
@@ -47,7 +46,7 @@ Runtime protocol v1
 
 | Exit | Meaning |
 |------|---------|
-| 0 | Command completed (stop with no allowlisted survivors; status ok) |
+| 0 | Command completed. On Windows, stop means no allowlisted survivors. That survivor list is not a non-Windows tree-kill |
 | 1 | Stop left survivors, recover refused a bad snapshot, or diagnose failed closed |
 | 2 | Usage / missing root |
 

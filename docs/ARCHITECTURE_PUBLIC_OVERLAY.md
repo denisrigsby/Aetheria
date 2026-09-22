@@ -30,7 +30,7 @@ flowchart LR
 
 | Piece | Shipping status |
 |-------|-----------------|
-| Supervisor / watchdog / STOP / heartbeat files | **Public, real** |
+| Supervisor / watchdog / STOP / heartbeat files | **Real** as files in this tree. Tree-kill and Job Object stop are **Proved on Windows** only for the Job Object receipt. **Locked on non-Windows**. The relaunch arrow is **Pending** |
 | Talk-face reference mouth | **Public, mock spine** |
 | Continuity demo pulse | **Public, mock** |
 | Forge + living memory + real cycle body | **Private local install** |

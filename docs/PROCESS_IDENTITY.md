@@ -1,6 +1,6 @@
 # Process identity protocol (public)
 
-**Purpose:** Never kill, resume, or adopt a Windows process on PID alone (PIDs are reused).
+**Purpose:** Design rule — do not kill, resume, or adopt a Windows process on PID number alone. OS PID-number reuse was not observed (`gate_stale_pid_reuse_v1` does not claim it). The assurance row "unrelated processes survive stale-PID recovery" stays **PARTIAL**.
 
 ## Binding tuple (required fields)
 
@@ -19,15 +19,15 @@ An identity match for supervisor / watchdog / probe roles SHOULD bind:
 |-------------|--------|
 | PID missing / dead | Do not kill; reconcile PID files; treat as not alive |
 | PID alive, role cmdline mismatch | **Refuse** kill / resume / adopt |
-| PID alive, creation time mismatch vs recorded | **Refuse** (likely PID reuse) |
+| PID alive, creation time mismatch vs recorded | **Refuse** (`create_time_mismatch`). The plant receipt covers `kill_if_verified` with `expected_create_time`. It does not record that an OS PID number was reused |
 | PID alive, exe path unexpected | **Refuse** |
 | All bound fields match recorded identity | Allow role-scoped operations only |
 
 ## Current public implementation
 
 - Role classification from cmdline: `scripts/lh_process_identity.py` (**Tests**)
-- Creation-time + exe binding: extended helpers + adversarial tests in this repo (**Tests** / partial on non-Windows CI). Portable pytest alone does not flip `gate_stale_pid_reuse_v1`.
-- Windows Job Objects for tree kill: plant `gate_job_object_kill_path_v1` is dual-banked for an identity-checked `TerminateJobObject` on an assigned tree (root and child dead). Not the sole stop path. Toolhelp is not retired. Linux CI in this clone does not re-prove that gate.
+- Creation-time + exe binding: extended helpers + adversarial tests in this repo (**Tests** / partial on non-Windows CI). Pytest in this clone does not flip `gate_stale_pid_reuse_v1`. That pytest is not a tree-kill.
+- Windows Job Objects for tree kill: plant `gate_job_object_kill_path_v1` is dual-banked for an identity-checked `TerminateJobObject` on an assigned tree (root and child dead). **Proved on Windows**. **Locked on non-Windows**. Not the sole stop path. Toolhelp is not retired. Linux CI in this clone does not re-prove that gate. Role matching on Ubuntu CI is not this stop.
 
 ## Plant receipts (create_time)
 

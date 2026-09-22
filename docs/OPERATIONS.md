@@ -47,6 +47,8 @@ A segment ending (`completed_max_ticks`) is normal. The watchdog **latches manua
 
 ### Stop
 
+Tree-kill (`taskkill /PID /F /T`) and Job Object stop are Windows-specific. **Proved on Windows** only where [JOB_OBJECTS.md](JOB_OBJECTS.md) cites `gate_job_object_kill_path_v1`. **Locked on non-Windows**. This page does not describe a portable control plane.
+
 Preferred (Windows):
 
 ```powershell
@@ -61,7 +63,7 @@ Contract:
 - Success = no remaining processes whose command line matches supervisor, watchdog, `grok_supervised_12_probe`, or `_lh_probe_`. Exit code 1 lists survivors.
 - STOP files alone are a graceful request; they are not a process-tree guarantee.
 
-Portable (non-Windows): STOP files plus SIGTERM of a **verified** PID; tree-kill is Windows-specific.
+Non-Windows: tree-kill and Job Object stop are **Locked**. Stop and relaunch of a process tree are **Pending** (no receipt). `kill_if_verified` can send SIGTERM to one verified PID. That single signal is not a tree stop and not a relaunch.
 
 ## After host restart
 
@@ -71,7 +73,9 @@ Portable (non-Windows): STOP files plus SIGTERM of a **verified** PID; tree-kill
 4. Prefer **restore-and-continue** over configuration experiments while recovering.  
 5. Expect the **tick counter** to restart on a new process; momentum and durable green-tick logs can continue.
 
-### Reliable relaunch (preferred)
+### Relaunch (Windows reference)
+
+Watchdog relaunch is **Pending** (no gate file). The commands below are the Windows reference. **Pending on non-Windows**. They are not a portable relaunch.
 
 Windows Store `python` shims and some PowerShell `Start-Process` paths can hang. Use the detached launcher:
 

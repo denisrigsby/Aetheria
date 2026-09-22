@@ -2,16 +2,18 @@
 
 Operator-facing detail for a full local deployment. Complements the public scripts; does not include private state.
 
-## Working definition of “healthy”
+## Working definition of “healthy” (full-install intent)
 
-- Supervisor completes light multi-cycle ticks without multi-hour stalls  
-- Watchdog can relaunch after death, stale heartbeat, or stuck `running_tick`  
-- Status files under `measurements/` update with phase and last outcomes  
-- Momentum can persist across process restarts  
-- Durable green-tick log grows on successful ticks  
-- Sandbox guarded edit has produced a real disk change at least once  
+This list is what a full local deployment aims at. It is not a public PASS.
 
-**Not claimed complete:** broad autonomous editing of production modules under load.
+- Supervisor completes light multi-cycle ticks without multi-hour stalls
+- Watchdog relaunch after death, stale heartbeat, or stuck `running_tick` is the full-install intent. It is **Pending** (no gate file). **Pending on non-Windows**. Clean stop ≠ crash stays **PARTIAL**. Tree-kill is **Locked on non-Windows**
+- Status files under `measurements/` update with phase and last outcomes
+- Momentum can persist across process restarts
+- Durable green-tick log grows on successful ticks
+- A sandbox guarded edit is a local target in this tree. A "produced a real disk change" event has no indexed receipt
+
+**Locked:** broad self-modification of production modules under load. Not claimed.
 
 ## Expected tree (full install)
 
@@ -35,7 +37,7 @@ Optional continuity templates (examples in `templates/`):
 
 1. `launch_long_horizon.ps1` starts `long_horizon_supervisor.py` and writes a pid file  
 2. Each tick: health → N-cycle probe → record completion/momentum → durable green tick → sleep  
-3. `lh_watchdog.py` polls pid and heartbeat; relaunches through the launch script when needed  
+3. `lh_watchdog.py` polls pid and heartbeat. A relaunch, when the latch allows it, goes through the Windows detached launcher. **Pending** as a proved relaunch. **Locked** as a non-Windows tree-kill  
 4. Interactive sessions **read** status files; they do **not** parent the long loop  
 
 Recommended segment parameters: `--cycles 2 --interval-min 30 --max-ticks 48`.
