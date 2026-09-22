@@ -1,40 +1,305 @@
-"""Cross-process campaign lock (best-effort single writer)."""
+"""Cross-process single-flight lock for one campaign role.
+
+Fail-closed: a controller that does not acquire the lock, or that observes a
+live role or a live claim, must not spawn. O_EXCL is the atomic claim.
+A dead holder's lock file may be reclaimed. A live holder is never stolen.
+"""
 from __future__ import annotations
 
+import errno
+import json
 import os
+import sys
 import time
+from collections.abc import Callable, Mapping
 from pathlib import Path
+from typing import Any
+
+CLAIM_SCHEMA = "aetheria_campaign_role_claim_v1"
+_EMPTY_LOCK_GRACE_S = 1.0
+
+
+def pid_alive(pid: Any) -> bool:
+    """Process-table presence. Does not treat signal 0 as a Windows kill."""
+    try:
+        p = int(pid)
+    except (TypeError, ValueError):
+        return False
+    if p <= 0:
+        return False
+    if sys.platform == "win32":
+        import ctypes
+
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        handle = kernel.OpenProcess(0x1000, False, p)  # PROCESS_QUERY_LIMITED_INFORMATION
+        if handle:
+            kernel.CloseHandle(handle)
+            return True
+        # ERROR_ACCESS_DENIED: the pid exists but this token cannot open it.
+        return ctypes.get_last_error() == 5
+    try:
+        os.kill(p, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+
+def _read_holder(path: Path) -> tuple[str, int | None]:
+    try:
+        raw = path.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        return "missing", None
+    except OSError:
+        return "unreadable", None
+    if not raw:
+        return "empty", None
+    tok = raw.split()[0]
+    try:
+        return "pid", int(tok)
+    except ValueError:
+        return "unreadable", None
 
 
 class CampaignLock:
     def __init__(self, path: Path, timeout_s: float = 2.0):
         self.path = Path(path)
         self.timeout_s = timeout_s
-        self._fd = None
+        self._fd: int | None = None
         self.acquired = False
 
-    def __enter__(self):
+    def __enter__(self) -> bool:
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        deadline = time.time() + self.timeout_s
-        while time.time() < deadline:
-            try:
-                self._fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                os.write(self._fd, str(os.getpid()).encode())
-                self.acquired = True
+        deadline = time.time() + max(0.0, float(self.timeout_s))
+        while True:
+            if self._try_acquire():
                 return True
-            except FileExistsError:
-                time.sleep(0.01)
-        return False
+            if time.time() >= deadline:
+                return False
+            time.sleep(0.01)
 
-    def __exit__(self, exc_type, exc, tb):
-        if self._fd is not None:
+    def __exit__(self, exc_type, exc, tb) -> bool:
+        fd = self._fd
+        self._fd = None
+        if fd is not None:
             try:
-                os.close(self._fd)
+                os.close(fd)
             except OSError:
                 pass
-        if self.acquired:
+        if self.acquired and _read_holder(self.path)[1] == os.getpid():
             try:
                 self.path.unlink()
             except OSError:
                 pass
+        self.acquired = False
         return False
+
+    def _try_acquire(self) -> bool:
+        try:
+            fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            self._steal_if_stale()
+            return False
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+            self._steal_if_stale()
+            return False
+        try:
+            os.write(fd, f"{os.getpid()}\n".encode())
+            try:
+                os.fsync(fd)
+            except OSError:
+                pass
+        except OSError:
+            self._abort_open(fd)
+            return False
+        if _read_holder(self.path)[1] != os.getpid():
+            self._abort_open(fd)
+            return False
+        self._fd = fd
+        self.acquired = True
+        return True
+
+    def _abort_open(self, fd: int) -> None:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        kind, pid = _read_holder(self.path)
+        if kind == "missing":
+            return
+        if pid == os.getpid() or kind == "empty":
+            try:
+                self.path.unlink()
+            except OSError:
+                pass
+
+    def _steal_if_stale(self) -> None:
+        kind, pid = _read_holder(self.path)
+        if kind == "missing":
+            return
+        if kind == "pid":
+            if pid is not None and pid_alive(pid):
+                return
+        elif kind == "empty":
+            try:
+                age = time.time() - self.path.stat().st_mtime
+            except OSError:
+                return
+            if age < _EMPTY_LOCK_GRACE_S:
+                return
+        else:
+            # Unreadable holder: fail closed. Do not steal.
+            return
+        stale = self.path.with_name(
+            self.path.name + f".stale.{os.getpid()}.{time.time_ns()}"
+        )
+        try:
+            os.replace(self.path, stale)
+        except (FileNotFoundError, OSError):
+            return
+        try:
+            stale.unlink()
+        except OSError:
+            pass
+
+
+def _as_pid(value: Any) -> int | None:
+    try:
+        p = int(value)
+    except (TypeError, ValueError):
+        return None
+    if p <= 0:
+        return None
+    return p
+
+
+def _read_claim(path: Path) -> dict | None:
+    if not path.exists():
+        return None
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"_corrupt": True}
+    if not isinstance(doc, dict) or doc.get("schema") != CLAIM_SCHEMA:
+        return {"_corrupt": True}
+    return doc
+
+
+def _write_claim(path: Path, doc: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
+    tmp.write_text(json.dumps(dict(doc), sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def _claim_blocks(doc: dict | None, *, alive: Callable[[int], bool]) -> bool:
+    if doc is None:
+        return False
+    if doc.get("_corrupt"):
+        return True
+    state = doc.get("state")
+    if state == "spawning":
+        owner = _as_pid(doc.get("owner_pid"))
+        if owner is None:
+            return True
+        return alive(owner)
+    if state == "live":
+        worker = _as_pid(doc.get("worker_pid"))
+        if worker is None:
+            return True
+        return alive(worker)
+    return True
+
+
+def _clear_claim(path: Path, token: str) -> None:
+    doc = _read_claim(path)
+    if not doc or doc.get("_corrupt") or doc.get("token") != token:
+        return
+    try:
+        path.unlink()
+    except OSError:
+        pass
+
+
+def single_flight_spawn(
+    lock_path: Path,
+    claim_path: Path,
+    *,
+    role: str,
+    role_alive: Callable[[], bool],
+    spawn: Callable[[], Mapping[str, Any]],
+    timeout_s: float = 2.0,
+    pid_alive_fn: Callable[[int], bool] | None = None,
+) -> dict[str, Any]:
+    """Admit at most one spawn for ``role`` across processes.
+
+    The lock is held across the role check, the claim publish, and ``spawn``.
+    A caller that loses the lock or sees a live role/claim does not call ``spawn``.
+    """
+    alive = pid_alive_fn or pid_alive
+    lock_path = Path(lock_path)
+    claim_path = Path(claim_path)
+    refused = {
+        "spawned": False,
+        "role": role,
+        "pid": None,
+        "detail": None,
+    }
+    with CampaignLock(lock_path, timeout_s=timeout_s) as acquired:
+        if not acquired:
+            return {**refused, "reason": "lock_timeout"}
+        try:
+            busy = bool(role_alive())
+        except Exception:
+            return {**refused, "reason": "role_check_error"}
+        if busy:
+            return {**refused, "reason": "role_alive"}
+        if _claim_blocks(_read_claim(claim_path), alive=alive):
+            return {**refused, "reason": "claim_held"}
+        token = f"{os.getpid()}-{time.time_ns()}"
+        _write_claim(
+            claim_path,
+            {
+                "schema": CLAIM_SCHEMA,
+                "role": role,
+                "state": "spawning",
+                "owner_pid": os.getpid(),
+                "worker_pid": None,
+                "token": token,
+            },
+        )
+        try:
+            result = spawn()
+        except Exception as e:
+            _clear_claim(claim_path, token)
+            return {**refused, "reason": "spawn_error", "detail": type(e).__name__}
+        if not isinstance(result, Mapping) or not result.get("ok"):
+            _clear_claim(claim_path, token)
+            detail = None
+            if isinstance(result, Mapping):
+                detail = result.get("detail")
+            return {**refused, "reason": "spawn_failed", "detail": detail}
+        worker = _as_pid(result.get("pid"))
+        _write_claim(
+            claim_path,
+            {
+                "schema": CLAIM_SCHEMA,
+                "role": role,
+                "state": "live",
+                "owner_pid": os.getpid(),
+                "worker_pid": worker,
+                "token": token,
+            },
+        )
+        return {
+            "spawned": True,
+            "reason": "admitted",
+            "role": role,
+            "pid": worker,
+            "detail": result.get("detail"),
+        }

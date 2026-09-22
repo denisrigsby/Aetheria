@@ -33,6 +33,9 @@ measurements/demo_heartbeat.json
 measurements/demo_checkpoint.json
 measurements/demo_green_ticks.jsonl
 measurements/campaign_snapshot_v1.json
+measurements/campaign_supervisor.lock
+measurements/campaign_supervisor.lock.stale.*
+measurements/campaign_supervisor_claim.json
 
 # Editor / OS
 .DS_Store
