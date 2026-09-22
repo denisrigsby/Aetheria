@@ -2,7 +2,7 @@
 
 | Document | Audience | Description |
 |----------|----------|-------------|
-| [CLOSEOUT.md](CLOSEOUT.md) | Reviewers | 2026-09-22 Talk Face evidence index (PASS / PENDING / LOCKED) |
+| [CLOSEOUT.md](CLOSEOUT.md) | Reviewers | 2026-09-22 Talk Face cut, plus 2026-09-22 evening plant seals (PASS / PENDING / LOCKED) |
 | [SANITIZED_DEMO.md](SANITIZED_DEMO.md) | New readers | Rough sitting demo (public picture, no private dump) |
 | [PUBLIC_DEMO.md](PUBLIC_DEMO.md) | Clones | Control-plane smoke |
 | [WHY.md](WHY.md) | New readers | Problem, non-goals, success criteria |

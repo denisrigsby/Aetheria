@@ -1,0 +1,26 @@
+{
+  "schema": "aetheria_public_gate_receipt_v1",
+  "gate": "gate_expected_create_time_call_sites_v1",
+  "status": "DUAL_BANK_COMPLETE",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "revision": "call_site_wire_v1",
+  "claim_wording": "Live kill call sites lh_watchdog.kill_pid, plant_control._kill_pid, lh_recover_reap.reap_orphan_probes, and status_report.reap_orphans pass expected_create_time into kill_if_verified; wrong create_time refuses with create_time_mismatch and does not terminate.",
+  "locked": [
+    "os_pid_number_reuse_observed",
+    "L7",
+    "LIVE_RSI",
+    "second_clock",
+    "autonomy_proven",
+    "public_equals_plant",
+    "every_future_kill_site",
+    "create_time_as_sole_identity"
+  ],
+  "ts_utc": "2026-09-22T05:03:05.730434+00:00",
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as gate wording.",
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "may_claim_expected_create_time_call_sites_v1": true
+}

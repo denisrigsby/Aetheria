@@ -1,0 +1,30 @@
+{
+  "schema": "aetheria_public_gate_receipt_v1",
+  "gate": "gate_job_object_kill_path_v1",
+  "status": "DUAL_BANK_COMPLETE",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "revision": null,
+  "claim_wording": "Job Object kill-path as defined by gate_job_object_kill_path_v1: identity-checked TerminateJobObject stops an assigned process tree (root and child dead).",
+  "locked": [
+    "job_object_sole_plant_stop_path",
+    "toolhelp_retired",
+    "second_clock",
+    "autonomy_proven",
+    "may_auto_dispatch",
+    "live_lora_hot_swap",
+    "LIVE_RSI",
+    "L7",
+    "stale_pid_reuse",
+    "export_hash",
+    "public_equals_plant",
+    "endurance_beyond_gate_endurance_v1"
+  ],
+  "ts_utc": "2026-09-22T04:30:47.757224+00:00",
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as gate wording.",
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "may_claim_job_object_kill_path_v1": true
+}

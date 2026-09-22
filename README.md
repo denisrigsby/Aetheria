@@ -19,6 +19,14 @@ Talk Face seals are Architect-ACCEPTed. Index: [docs/CLOSEOUT.md](docs/CLOSEOUT.
 
 P1–P5 remains **internal certification** only.
 
+## Plant seals (2026-09-22 evening)
+
+Dual-banked operator receipts (`dual_bank=true`, `soft_ACCEPT=false`). Index: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Scrubbed copies: [measurements/public_index/](measurements/public_index/). Export stays **PRIVATE_AHEAD** (public ≠ plant). This cut does not claim L7, LIVE_RSI, or public=plant. Talk Face mouth receipts above stay `dual_bank=false`.
+
+**PASS, as each gate's wording:** stale-PID create_time bind (`gate_stale_pid_reuse_v1`, revision `create_time_bind_v1`); named kill call sites pass `expected_create_time` (`gate_expected_create_time_call_sites_v1`, revision `call_site_wire_v1`); continuous supervised plant clock 30 minutes, mouth closed, tick advanced (`gate_endurance_v1`); identity-checked `TerminateJobObject` on an assigned tree (`gate_job_object_kill_path_v1`); fail-closed export hash/parity receipt layer (`gate_export_hash_parity_v1`, decision remains `PRIVATE_AHEAD`); `gate_control_plane_resume_stop_watchdog_v1` is dual-banked and its scrubbed receipt has no `claim_wording` and no CommandLine redact field.
+
+**Beside those claims:** OS PID-number reuse was not observed; not every future kill site; create_time is not sole identity; endurance beyond that window stays locked; Job Object is not the sole stop path; Toolhelp is not retired; `public_equals_plant` only if the parity decision were `PARITY_PASS` (this decision is `PRIVATE_AHEAD`).
+
 **Aetheria is a local plant clock for serious AI work on your Windows PC.**
 Chat is a mouth you can open or close. **The work clock is not the chat.**
 

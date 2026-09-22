@@ -26,8 +26,20 @@ An identity match for supervisor / watchdog / probe roles SHOULD bind:
 ## Current public implementation
 
 - Role classification from cmdline: `scripts/lh_process_identity.py` (**Tests**)
-- Creation-time + exe binding: extended helpers + adversarial tests in this PR (**Tests** / partial on non-Windows CI)
-- Windows Job Objects for tree kill: **Untested** aspirational — do not claim until coded + CI-proven
+- Creation-time + exe binding: extended helpers + adversarial tests in this repo (**Tests** / partial on non-Windows CI). Portable pytest alone does not flip `gate_stale_pid_reuse_v1`.
+- Windows Job Objects for tree kill: plant `gate_job_object_kill_path_v1` is dual-banked for an identity-checked `TerminateJobObject` on an assigned tree (root and child dead). Not the sole stop path. Toolhelp is not retired. Linux CI in this clone does not re-prove that gate.
+
+## Plant receipts (create_time)
+
+`gate_stale_pid_reuse_v1` revision `create_time_bind_v1` (`dual_bank=true`, `soft_ACCEPT=false`): `kill_if_verified` with `expected_create_time` refuses `create_time_mismatch` (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role.
+
+Exclusions: OS PID-number reuse was not observed and is not required. Not every call site. create_time is not sole identity. PID reuse is not impossible. A wrong live PID mismatch alone does not flip the gate. No second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant. Job Object is not the sole stop path. Toolhelp is not retired.
+
+`gate_expected_create_time_call_sites_v1` revision `call_site_wire_v1` (`dual_bank=true`, `soft_ACCEPT=false`): live kill call sites `lh_watchdog.kill_pid`, `plant_control._kill_pid`, `lh_recover_reap.reap_orphan_probes`, and `status_report.reap_orphans` pass `expected_create_time` into `kill_if_verified`; wrong create_time refuses with `create_time_mismatch` and does not terminate.
+
+Exclusions: OS PID-number reuse was not observed. Not every future kill site. create_time is not sole identity. No L7, LIVE_RSI, second clock, autonomy, or public=plant.
+
+Index: [CLOSEOUT.md](CLOSEOUT.md).
 
 ## Mismatch policy
 

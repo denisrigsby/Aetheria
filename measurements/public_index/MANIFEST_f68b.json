@@ -1,0 +1,42 @@
+{
+  "cut": "public_truth_2026-09-22_kill_ctime",
+  "ts_utc": "2026-09-22T05:07:46.213021+00:00",
+  "receipts": [
+    {
+      "file": "gate_stale_pid_reuse_v1.json",
+      "gate": "gate_stale_pid_reuse_v1",
+      "status": "DUAL_BANK_COMPLETE",
+      "dual_bank": true
+    },
+    {
+      "file": "gate_expected_create_time_call_sites_v1.json",
+      "gate": "gate_expected_create_time_call_sites_v1",
+      "status": "DUAL_BANK_COMPLETE",
+      "dual_bank": true
+    },
+    {
+      "file": "gate_endurance_v1.json",
+      "gate": "gate_endurance_v1",
+      "status": "DUAL_BANK_COMPLETE",
+      "dual_bank": true
+    },
+    {
+      "file": "gate_job_object_kill_path_v1.json",
+      "gate": "gate_job_object_kill_path_v1",
+      "status": "DUAL_BANK_COMPLETE",
+      "dual_bank": true
+    },
+    {
+      "file": "gate_export_hash_parity_v1.json",
+      "gate": "gate_export_hash_parity_v1",
+      "status": "DUAL_BANK_COMPLETE",
+      "dual_bank": true
+    },
+    {
+      "file": "gate_control_plane_resume_stop_watchdog_v1.json",
+      "gate": "gate_control_plane_resume_stop_watchdog_v1",
+      "status": "DUAL_BANK_COMPLETE",
+      "dual_bank": true
+    }
+  ]
+}
