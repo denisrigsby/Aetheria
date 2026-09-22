@@ -1,8 +1,7 @@
 """Start vs recover single-flight: at most one supervisor spawn.
 
-Linux CI proof for the release gate "Simultaneous start/recover → ≤1 worker".
-Does not launch the Windows plant. Raw detached launch and the watchdog are
-outside this test.
+Both control-plane CI jobs run this file. It does not launch the Windows plant.
+Raw detached launch and the watchdog are outside this test.
 """
 from __future__ import annotations
 
@@ -33,7 +32,11 @@ from campaign_lock import (  # noqa: E402
 
 
 def _release_popen(proc: subprocess.Popen) -> None:
-    """Drop the process handle so a dead PID is not still queryable."""
+    """Close stdio pipes. Leave the process handle to Popen.
+
+    A manual CloseHandle races Popen's Handle destructor and raises
+    WinError 6 on Windows. Dead-PID checks use the process exit code.
+    """
     for stream in (proc.stdout, proc.stderr, proc.stdin):
         if stream is None:
             continue
@@ -41,13 +44,6 @@ def _release_popen(proc: subprocess.Popen) -> None:
             stream.close()
         except OSError:
             pass
-    if sys.platform == "win32":
-        handle = getattr(proc, "_handle", None)
-        if handle:
-            import ctypes
-
-            ctypes.windll.kernel32.CloseHandle(handle)
-            proc._handle = None
 
 
 def _dead_pid() -> int:
@@ -199,8 +195,10 @@ def test_contended_start_and_recover_admit_one_spawn(tmp_path: Path):
         )
         proc.start()
         procs.append(proc)
+    # The child records create_time after it drops the admit lock. On Windows
+    # that is two CIM queries (8s timeout each) plus process startup.
     for proc in procs:
-        proc.join(20)
+        proc.join(40)
     assert all(proc.exitcode == 0 for proc in procs), [p.exitcode for p in procs]
     rows = [queue.get(timeout=5) for _ in procs]
     spawned = [row for row in rows if row.get("spawned")]
@@ -222,6 +220,81 @@ def test_contended_start_and_recover_admit_one_spawn(tmp_path: Path):
         if val is not None:
             assert "/" not in str(val)
             assert "\\" not in str(val)
+
+
+def test_create_time_probe_does_not_hold_the_admit_lock(tmp_path: Path):
+    """A blocked create-time probe must not make the other controller time out.
+
+    Windows run 35697613441 refused the loser with lock_timeout. CIM create-time
+    reads were inside the exclusive hold, longer than this race's wait. The
+    waiter has to observe role_alive or claim_held, and still only one spawn.
+    """
+    alive = tmp_path / "alive"
+    lock_path = tmp_path / "campaign.lock"
+    claim_path = tmp_path / "claim.json"
+    barrier = threading.Barrier(2)
+    probe_entered = threading.Event()
+    probe_release = threading.Event()
+    results: list[dict] = []
+    gate = threading.Lock()
+    spawns: list[int] = []
+
+    def ctime(_pid: int) -> str:
+        probe_entered.set()
+        probe_release.wait(5.0)
+        return "boot:9"
+
+    def spawn():
+        spawns.append(1)
+        alive.write_text("up", encoding="utf-8")
+        return {"ok": True, "pid": os.getpid()}
+
+    def run():
+        barrier.wait(3)
+        result = single_flight_spawn(
+            lock_path,
+            claim_path,
+            role="supervisor",
+            role_alive=lambda: alive.is_file(),
+            spawn=spawn,
+            timeout_s=1.0,
+            create_time_fn=ctime,
+            pid_alive_fn=lambda _p: True,
+        )
+        with gate:
+            results.append(result)
+
+    threads = [threading.Thread(target=run) for _ in range(2)]
+    for thread in threads:
+        thread.start()
+    try:
+        assert probe_entered.wait(3.0)
+        deadline = time.time() + 2.0
+        while time.time() < deadline:
+            with gate:
+                refused = [row for row in results if not row.get("spawned")]
+            if refused:
+                break
+            time.sleep(0.01)
+        with gate:
+            refused = [row for row in results if not row.get("spawned")]
+        assert refused, "admit waiter blocked behind the create-time probe"
+        assert refused[0]["reason"] in {"role_alive", "claim_held"}
+    finally:
+        probe_release.set()
+    for thread in threads:
+        thread.join(3)
+    assert all(not thread.is_alive() for thread in threads)
+    assert spawns == [1]
+    with gate:
+        assert len(results) == 2
+        assert sum(1 for row in results if row.get("spawned")) == 1
+    claim = json.loads(claim_path.read_text(encoding="utf-8"))
+    assert claim["state"] == "live"
+    assert claim["owner_create_time"] == "boot:9"
+    assert claim["worker_create_time"] == "boot:9"
+    assert "/" not in json.dumps(claim)
+    assert "\\" not in json.dumps(claim)
 
 
 def test_single_flight_timeout_does_not_spawn(tmp_path: Path):

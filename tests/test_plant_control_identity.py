@@ -285,3 +285,72 @@ def test_launch_stop_old_does_not_kill_wrong_cmdline(tmp_path: Path, monkeypatch
     finally:
         proc.kill()
         proc.wait(timeout=5)
+
+
+class _ProbePopen:
+    """Enough of Popen for subprocess.run(capture_output=True) to read stdout."""
+
+    def __init__(self, args, stdout: str):
+        self.args = args
+        self.pid = 1
+        self.returncode = 0
+        self.stdin = None
+        self.stdout = None
+        self.stderr = None
+        self._out = stdout
+
+    def communicate(self, input=None, timeout=None):
+        return self._out, ""
+
+    def poll(self):
+        return self.returncode
+
+    def wait(self, timeout=None):
+        return self.returncode
+
+    def kill(self):
+        return None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+def test_stop_old_windows_pid_probe_returns_identity_mismatch(tmp_path: Path, monkeypatch):
+    """tasklist presence goes through Popen. That probe is not a supervisor spawn.
+
+    Windows run 35699729432 got stop_old_refused:pid_check:AssertionError because
+    a spawn guard raised on every Popen, including the liveness probe. The
+    refusal for a live non-supervisor pid is identity_mismatch.
+    """
+    pid = 424242
+    meas = tmp_path / "measurements"
+    logs = tmp_path / "logs"
+    meas.mkdir()
+    logs.mkdir()
+    monkeypatch.setattr(ld, "MEAS", meas)
+    monkeypatch.setattr(ld, "LOGS", logs)
+    monkeypatch.setattr(ld, "LH_PID", meas / "long_horizon.pid")
+    monkeypatch.setattr(ld, "LH_STOP", meas / "long_horizon_STOP")
+    monkeypatch.setattr(ld, "STANDBY", meas / "long_horizon_STANDBY.json")
+    monkeypatch.setattr(ld, "MANUAL", meas / "long_horizon_MANUAL_START.json")
+    ld.LH_PID.write_text(f"{pid}\n", encoding="utf-8")
+    monkeypatch.setattr(sys, "platform", "win32")
+    _cmdline(monkeypatch, pid, "python -u lh_watchdog.py --interval-sec 60")
+
+    def guard_popen(args, *a, **k):
+        argv = list(args) if isinstance(args, (list, tuple)) else [args]
+        if argv and str(argv[0]).lower() == "tasklist":
+            return _ProbePopen(argv, f'"python.exe","{pid}","Console","1","100 K"\n')
+        if any("long_horizon_supervisor.py" in str(part) for part in argv):
+            raise AssertionError("stop_old continued to spawn after an unverified pid")
+        raise AssertionError(f"unexpected popen: {argv}")
+
+    monkeypatch.setattr(subprocess, "Popen", guard_popen)
+    ok, detail, out_pid = ld.launch_lh_detached(stop_old=True, clear_latches=True, poll_s=1.0)
+    assert ok is False
+    assert out_pid is None
+    assert detail == "stop_old_refused:identity_mismatch"
+    assert not ld.LH_PID.exists()
