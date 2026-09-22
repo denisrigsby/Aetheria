@@ -9,6 +9,7 @@ from __future__ import annotations
 import errno
 import json
 import os
+import re
 import sys
 import time
 from collections.abc import Callable, Mapping
@@ -19,6 +20,9 @@ from atomic_state import atomic_write_json
 
 CLAIM_SCHEMA = "aetheria_campaign_role_claim_v1"
 _EMPTY_LOCK_GRACE_S = 1.0
+_STILL_ACTIVE = 259
+_DATE_MS = re.compile(r"/Date\((-?\d+)\)/")
+_WMI_CREATE = re.compile(r"^(\d{14})\.(\d+)([+-]\d+)?$")
 
 
 def pid_alive(pid: Any) -> bool:
@@ -35,7 +39,13 @@ def pid_alive(pid: Any) -> bool:
         kernel = ctypes.WinDLL("kernel32", use_last_error=True)
         handle = kernel.OpenProcess(0x1000, False, p)  # PROCESS_QUERY_LIMITED_INFORMATION
         if handle:
+            code = ctypes.c_ulong()
+            queried = bool(kernel.GetExitCodeProcess(handle, ctypes.byref(code)))
             kernel.CloseHandle(handle)
+            # An exited process can still be opened while a handle remains.
+            # STILL_ACTIVE (259) is the running code; any other code is dead.
+            if queried and int(code.value) != _STILL_ACTIVE:
+                return False
             return True
         # ERROR_ACCESS_DENIED: the pid exists but this token cannot open it.
         return ctypes.get_last_error() == 5
@@ -192,6 +202,33 @@ def _read_claim(path: Path) -> dict | None:
     return doc
 
 
+def normalize_create_time(raw: Any) -> str | None:
+    """Slash-free create_time token. The same raw value always normalizes the same way.
+
+    Windows CIM JSON often yields ``/Date(milliseconds)/``. That is not a host path.
+    Path-shaped values are dropped (None) so a claim cannot store them.
+    """
+    if raw is None:
+        return None
+    text = str(raw).strip().strip('"')
+    if not text or text.lower() == "none":
+        return None
+    text = text.replace("\\/", "/")
+    dated = _DATE_MS.search(text)
+    if dated:
+        return "ms:" + dated.group(1)
+    wmi = _WMI_CREATE.fullmatch(text)
+    if wmi:
+        return "wmi:" + wmi.group(1) + wmi.group(2)
+    if text.startswith(("ms:", "wmi:", "boot:")) and "/" not in text and "\\" not in text:
+        return text
+    if "/" in text or "\\" in text or re.search(r"[A-Za-z]:[\\/]", text):
+        return None
+    if text.isdigit():
+        return "boot:" + text
+    return text
+
+
 def process_create_time(pid: int) -> str | None:
     """Stable process start token. Not a path. None when the OS does not provide one."""
     try:
@@ -208,7 +245,7 @@ def process_create_time(pid: int) -> str | None:
         binding = windows_binding(p)
         if binding is None or not binding.creation_time:
             return None
-        return str(binding.creation_time)
+        return normalize_create_time(binding.creation_time)
     stat_path = Path(f"/proc/{p}/stat")
     try:
         text = stat_path.read_text(encoding="utf-8")
@@ -221,7 +258,7 @@ def process_create_time(pid: int) -> str | None:
     # proc(5) field 22 starttime is index 19 after the comm field.
     if len(fields) < 20 or not fields[19].isdigit():
         return None
-    return fields[19]
+    return normalize_create_time(fields[19])
 
 
 def _write_claim(path: Path, doc: Mapping[str, Any]) -> None:

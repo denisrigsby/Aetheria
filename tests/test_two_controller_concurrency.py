@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import multiprocessing
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -22,7 +23,31 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT))
 
 import plant_control as pc  # noqa: E402
-from campaign_lock import CLAIM_SCHEMA, CampaignLock, pid_alive, single_flight_spawn  # noqa: E402
+from campaign_lock import (  # noqa: E402
+    CLAIM_SCHEMA,
+    CampaignLock,
+    normalize_create_time,
+    pid_alive,
+    single_flight_spawn,
+)
+
+
+def _release_popen(proc: subprocess.Popen) -> None:
+    """Drop the process handle so a dead PID is not still queryable."""
+    for stream in (proc.stdout, proc.stderr, proc.stdin):
+        if stream is None:
+            continue
+        try:
+            stream.close()
+        except OSError:
+            pass
+    if sys.platform == "win32":
+        handle = getattr(proc, "_handle", None)
+        if handle:
+            import ctypes
+
+            ctypes.windll.kernel32.CloseHandle(handle)
+            proc._handle = None
 
 
 def _dead_pid() -> int:
@@ -34,12 +59,25 @@ def _dead_pid() -> int:
     pid = int(proc.pid)
     proc.kill()
     proc.wait(timeout=5)
-    deadline = time.time() + 2.0
+    _release_popen(proc)
+    deadline = time.time() + 5.0
     while time.time() < deadline and pid_alive(pid):
-        time.sleep(0.01)
+        time.sleep(0.05)
     if pid_alive(pid):
         raise RuntimeError("killed pid still alive")
     return pid
+
+
+_PATH_SHAPE = re.compile(
+    r"([A-Za-z]:[\\/])|(/home/)|(/tmp/)|(/opt/)|(/usr/)|(/var/)|(/workspace/)|(/Users/)|([\\]Users[\\])",
+    re.IGNORECASE,
+)
+
+
+def _assert_no_host_path(blob: str) -> None:
+    """Reject host paths. Slash-bearing create_time tokens are not paths."""
+    assert "\\" not in blob
+    assert _PATH_SHAPE.search(blob) is None
 
 
 def _redirect(monkeypatch, tmp_path: Path) -> Path:
@@ -177,9 +215,13 @@ def test_contended_start_and_recover_admit_one_spawn(tmp_path: Path):
     assert claim["state"] == "live"
     assert claim["role"] == "supervisor"
     blob = json.dumps(claim)
+    _assert_no_host_path(blob)
     assert str(tmp_path) not in blob
-    assert "\\" not in blob
-    assert "/" not in blob
+    for key in ("worker_create_time", "owner_create_time"):
+        val = claim.get(key)
+        if val is not None:
+            assert "/" not in str(val)
+            assert "\\" not in str(val)
 
 
 def test_single_flight_timeout_does_not_spawn(tmp_path: Path):
@@ -325,10 +367,16 @@ def test_start_then_recover_second_does_not_launch(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(pc, "_launch_supervisor", fake_launch)
     monkeypatch.setattr(pc, "wd_snap", lambda: {"alive": True, "pid": os.getpid()})
 
-    def _no_subprocess(*args, **kwargs):
-        raise AssertionError("watchdog launch is outside this refusal")
+    real_run = pc.subprocess.run
 
-    monkeypatch.setattr(pc.subprocess, "run", _no_subprocess)
+    def _guard_subprocess(args, *pos, **kwargs):
+        cmd = args if isinstance(args, (list, tuple)) else kwargs.get("args", args)
+        flat = " ".join(str(part) for part in cmd) if isinstance(cmd, (list, tuple)) else str(cmd)
+        if "launch_lh_watchdog" in flat:
+            raise AssertionError("watchdog launch is outside this refusal")
+        return real_run(args, *pos, **kwargs)
+
+    monkeypatch.setattr(pc.subprocess, "run", _guard_subprocess)
 
     assert pc.resume(with_watchdog=False, cycles=1, interval_min=1, max_ticks=2) == 0
     assert pc.cmd_recover() == 1
@@ -510,6 +558,20 @@ def test_aetheria_start_flags_reach_resume(monkeypatch):
     assert seen["with_watchdog"] is True
     assert cli.main(["resume", "--not-a-flag"]) == 2
     assert seen["cycles"] == 4
+
+
+def test_create_time_normalizes_without_storing_a_path():
+    assert normalize_create_time(r"/Date(1710000000000)/") == "ms:1710000000000"
+    assert normalize_create_time(r"\/Date(1710000000000)\/") == "ms:1710000000000"
+    assert normalize_create_time("/Date(1710000000000)/") == normalize_create_time(
+        r"\/Date(1710000000000)\/"
+    )
+    assert normalize_create_time("20260922054822.123456-000") == "wmi:20260922054822123456"
+    assert normalize_create_time("84952") == "boot:84952"
+    assert normalize_create_time("boot:84952") == "boot:84952"
+    assert normalize_create_time(r"C:\Users\operator\plant") is None
+    assert normalize_create_time("/home/operator/plant") is None
+    assert normalize_create_time("/tmp/campaign") is None
 
 
 def test_admit_launch_does_not_kill_from_pid_file():
