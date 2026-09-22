@@ -25,6 +25,10 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+from lh_process_identity import pid_exists  # noqa: E402
+
 MEAS = ROOT / "measurements"
 LOGS = ROOT / "logs"
 LH_PID = MEAS / "long_horizon.pid"
@@ -49,19 +53,11 @@ def resolve_python() -> str:
 
 
 def pid_alive(pid: Optional[int]) -> bool:
+    """Process-table presence for launch polling. Not an identity check and not a kill."""
     if not pid:
         return False
     try:
-        if sys.platform == "win32":
-            r = subprocess.run(
-                ["tasklist", "/FI", f"PID eq {int(pid)}"],
-                capture_output=True,
-                text=True,
-                timeout=15,
-            )
-            return str(pid) in (r.stdout or "")
-        os.kill(int(pid), 0)
-        return True
+        return pid_exists(pid)
     except Exception:
         return False
 
