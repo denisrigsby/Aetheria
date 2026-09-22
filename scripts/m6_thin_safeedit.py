@@ -21,6 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import atomic_write_json  # noqa: E402
 
 SANDBOX = ROOT / "living" / "m6_sandbox_target.py"
 OLD = 'M6_SANDBOX_VERSION = "1"'
@@ -70,9 +72,7 @@ def main() -> int:
         else:
             print("old_string not found; sandbox drifted")
             out = {"ok": False, "error": "old_string_missing", "ts": utc()}
-            (ROOT / "measurements" / "m6_thin_safeedit_latest.json").write_text(
-                json.dumps(out, indent=2), encoding="utf-8"
-            )
+            atomic_write_json(ROOT / "measurements" / "m6_thin_safeedit_latest.json", out)
             return 1
     else:
         os.environ.setdefault("AETHERIA_LIGHT_MANAGE", "1")
@@ -122,7 +122,7 @@ def main() -> int:
 
     meas = ROOT / "measurements"
     meas.mkdir(exist_ok=True)
-    (meas / "m6_thin_safeedit_latest.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
+    atomic_write_json(meas / "m6_thin_safeedit_latest.json", out)
 
     try:
         from living.aetheria_canon import write_hope_status, append_session_living

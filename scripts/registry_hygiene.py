@@ -24,10 +24,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
 os_chdir = ROOT
 import os
 
 os.chdir(ROOT)
+from atomic_state import atomic_write_json  # noqa: E402
 
 
 def main():
@@ -141,7 +143,7 @@ def main():
     }
 
     # Write with skip-replay load friendly: keep assets snapshot primary
-    reg_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
+    atomic_write_json(reg_path, data, default=str)
     print("Hygiene done:", data["_hygiene"])
     print("Sample dropped:", dropped[:8])
 

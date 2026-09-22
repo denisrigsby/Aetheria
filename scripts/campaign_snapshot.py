@@ -10,9 +10,15 @@ import hashlib
 import json
 import os
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from atomic_state import atomic_write_json  # noqa: E402
 
 SCHEMA = "aetheria_campaign_snapshot_v1"
 SNAP_NAME = "campaign_snapshot_v1.json"
@@ -106,9 +112,7 @@ def write_after_green_tick(state: dict, r: Optional[Path] = None) -> Dict[str, A
         "probe_contract": "lh_probe_summary_v1",
     }
     dest = snap_path(r)
-    tmp = dest.with_suffix(".tmp")
-    tmp.write_text(json.dumps(rec, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(dest)
+    atomic_write_json(dest, rec)
     backup_measurements_set(r)
     return {"ok": True, "written": True, "path": str(dest.relative_to(r)), "reason": "green"}
 

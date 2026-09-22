@@ -19,4 +19,6 @@ Do not describe digests as a security boundary unless an HMAC with a protected l
 
 ## Tests
 
-See `tests/test_atomic_state_writes.py`.
+`tests/test_atomic_state_writes.py` and `tests/test_interrupted_state_writes.py` are on both control-plane pytest jobs (Ubuntu and Windows). An interrupted write leaves the previous valid document or the new valid document. A torn temporary file is not the canonical path.
+
+JSON document writers in `scripts/` and `living/aetheria_canon.py` call `atomic_write_json` (the gate-A log trim and raw file copies use the same replace body). PID files, STOP files, and append-only JSONL are not that replacement. `research/` experiment artifacts are outside this control plane. The private plant is not this tree.

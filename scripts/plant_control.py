@@ -49,6 +49,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from atomic_state import atomic_write_json  # noqa: E402
 from campaign_lock import single_flight_spawn  # noqa: E402
+from atomic_state import atomic_write_json  # noqa: E402
 from lh_process_identity import (  # noqa: E402
     ROLE_PROBE,
     ROLE_SUPERVISOR,
@@ -105,10 +106,7 @@ def _reject_secret_fields(doc: dict) -> None:
 
 
 def write_json(path: Path, obj: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(obj, indent=2, default=str), encoding="utf-8")
-    tmp.replace(path)
+    atomic_write_json(path, obj, default=str)
 
 
 def pid_alive(pid: Any) -> bool:

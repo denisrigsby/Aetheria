@@ -15,9 +15,15 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+_SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from atomic_state import atomic_write_json  # noqa: E402
 
 
 def bin_root() -> Path:
@@ -71,9 +77,7 @@ def write_hope_status(update: Dict[str, Any], merge: bool = True) -> Path:
             cur = {}
     cur.update(update or {})
     cur["updated_at"] = datetime.now(timezone.utc).isoformat()
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(cur, indent=2, default=str), encoding="utf-8")
-    tmp.replace(path)
+    atomic_write_json(path, cur, default=str)
     return path
 
 

@@ -44,6 +44,7 @@ All notable changes to the **public control plane** are documented here.
 
 ### Changed
 
+- Public control-plane JSON state documents go through `scripts/atomic_state.atomic_write_json` (same-directory temp, fsync, replace). Interrupted-write tests are on both control-plane CI jobs. The assurance row stays **PARTIAL** until those jobs are green on the SHA that claims **PASS**.
 - Stop contract: identity-checked `taskkill /PID /F /T` while supervisor is alive; recorded probe killed by probe identity; PID-only matches rejected; incomplete stop if allowlisted descendants remain
 - Watchdog `diagnose`/`kill_pid` use verified supervisor identity (not PID-only)
 - `status_report` orphan matcher includes `_lh_probe_` wrappers via the unified probe contract

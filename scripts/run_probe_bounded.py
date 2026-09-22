@@ -21,6 +21,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import atomic_write_json  # noqa: E402
 
 
 def utc() -> str:
@@ -120,7 +122,7 @@ def main() -> int:
         except Exception:
             pass
     out = ROOT / "measurements" / "bounded_probe_latest.json"
-    out.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    atomic_write_json(out, summary)
     print(json.dumps(summary, indent=2), flush=True)
     ok = rc in (0, None) and (summary.get("contract") or {}).get("ok") is True
     return 0 if ok else 1
