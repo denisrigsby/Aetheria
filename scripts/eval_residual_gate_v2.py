@@ -13,6 +13,8 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
 GATE_A_LOG = ROOT / "measurements" / "gate_a_green_ticks.jsonl"
 GATE_A_SNAP = ROOT / "measurements" / "gate_a_progress.json"
 LH_STATE = ROOT / "measurements" / "long_horizon_state.json"
@@ -55,7 +57,7 @@ def record_green_tick(ts: str, tick, ok: bool, pid=None) -> None:
     try:
         lines = GATE_A_LOG.read_text(encoding="utf-8").splitlines()
         if len(lines) > 800:
-            GATE_A_LOG.write_text("\n".join(lines[-500:]) + "\n", encoding="utf-8")
+            _atomic_replace_text(GATE_A_LOG, "\n".join(lines[-500:]) + "\n")
     except Exception:
         pass
 
@@ -155,20 +157,17 @@ def main():
 
     # Snapshot for operators / restart debugging
     try:
-        GATE_A_SNAP.write_text(
-            json.dumps(
-                {
-                    "schema": "gate_a_progress_v1",
-                    "last_residual_ts": last_ts,
-                    "post_residual_green_ticks": since,
-                    "needed": 4,
-                    "durable_log": str(GATE_A_LOG.relative_to(ROOT)),
-                    "sources": "history_union_durable_jsonl",
-                    "tail": items[-8:],
-                },
-                indent=2,
-            ),
-            encoding="utf-8",
+        atomic_write_json(
+            GATE_A_SNAP,
+            {
+                "schema": "gate_a_progress_v1",
+                "last_residual_ts": last_ts,
+                "post_residual_green_ticks": since,
+                "needed": 4,
+                "durable_log": str(GATE_A_LOG.relative_to(ROOT)),
+                "sources": "history_union_durable_jsonl",
+                "tail": items[-8:],
+            },
         )
     except Exception:
         pass
@@ -192,7 +191,7 @@ def main():
         "mode": "residual_allowed" if (A and B and C) else "hold",
     }
     print(json.dumps(out, indent=2))
-    (ROOT / "measurements/gate_v2_eval_latest.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
+    atomic_write_json(ROOT / "measurements" / "gate_v2_eval_latest.json", out)
     return 0 if out["OPEN"] else 1
 
 

@@ -42,8 +42,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
 
 STATE_PATH = ROOT / "measurements" / "long_horizon_state.json"
+RESUME_PATH = ROOT / "RESUME_STATE.json"
 STOP_PATH = ROOT / "measurements" / "long_horizon_STOP"
 STANDBY_PATH = ROOT / "measurements" / "long_horizon_STANDBY.json"
 PID_PATH = ROOT / "measurements" / "long_horizon.pid"
@@ -77,12 +80,9 @@ def append_jsonl(obj: dict) -> None:
 
 
 def write_state(state: dict) -> None:
-    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     state = dict(state)
     state["updated_at"] = utc_now()
-    tmp = STATE_PATH.with_suffix(".tmp")
-    tmp.write_text(json.dumps(state, indent=2, default=str), encoding="utf-8")
-    tmp.replace(STATE_PATH)
+    atomic_write_json(STATE_PATH, state, default=str)
     try:
         from living.aetheria_canon import write_hope_status
 
@@ -148,7 +148,7 @@ def write_resume(state: dict) -> None:
             "Do not redesign; maintain conservation; intervene only on failures."
         ),
     }
-    (ROOT / "RESUME_STATE.json").write_text(json.dumps(resume, indent=2), encoding="utf-8")
+    atomic_write_json(RESUME_PATH, resume)
 
 
 def ensure_env() -> None:
@@ -400,7 +400,7 @@ def run_probe_cycles(cycles: int, tick: int, *, probe_script: Path | None = None
                 "notes": [summary.get("note")] if summary.get("note") else [],
                 "tick": tick,
             }
-            contract_path.write_text(json.dumps(parent_view, indent=2), encoding="utf-8")
+            atomic_write_json(contract_path, parent_view)
         except Exception:
             pass
     except Exception as e:
@@ -415,8 +415,9 @@ def run_probe_cycles(cycles: int, tick: int, *, probe_script: Path | None = None
                 pass
         defaults = ROOT / "next_interventions.defaults.json"
         if defaults.exists():
-            (ROOT / "next_interventions.json").write_text(
-                defaults.read_text(encoding="utf-8"), encoding="utf-8"
+            _atomic_replace_text(
+                ROOT / "next_interventions.json",
+                defaults.read_text(encoding="utf-8"),
             )
     return summary
 
@@ -653,12 +654,13 @@ def main() -> int:
             mom = summary.get("final_mom")
             if mom is not None:
                 mp = ROOT / "measurements" / "guidance_momentum.json"
-                mp.write_text(
-                    json.dumps(
-                        {"guidance_momentum": float(mom), "updated_at": utc_now(), "from_tick": tick},
-                        indent=2,
-                    ),
-                    encoding="utf-8",
+                atomic_write_json(
+                    mp,
+                    {
+                        "guidance_momentum": float(mom),
+                        "updated_at": utc_now(),
+                        "from_tick": tick,
+                    },
                 )
                 state["persisted_mom"] = float(mom)
         except Exception as e:

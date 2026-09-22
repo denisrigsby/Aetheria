@@ -21,6 +21,11 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from atomic_state import atomic_write_json  # noqa: E402
+
 PULSE = ROOT / "measurements" / "continuity_pulse.json"
 HOST, FACE_PORT, PULSE_PORT = "127.0.0.1", 8765, 8766
 FACE_URL = f"http://{HOST}:{FACE_PORT}/"
@@ -32,17 +37,18 @@ def utc() -> str:
 
 
 def write_pulse(tick: int, mouth_open: bool) -> None:
-    PULSE.parent.mkdir(parents=True, exist_ok=True)
-    doc = {
-        "schema": "aetheria_continuity_pulse_v1",
-        "public_reference": True,
-        "private_plant": False,
-        "tick": tick,
-        "mouth_open": mouth_open,
-        "fact": "plant_clock_neq_chat",
-        "updated_at": utc(),
-    }
-    PULSE.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
+    atomic_write_json(
+        PULSE,
+        {
+            "schema": "aetheria_continuity_pulse_v1",
+            "public_reference": True,
+            "private_plant": False,
+            "tick": tick,
+            "mouth_open": mouth_open,
+            "fact": "plant_clock_neq_chat",
+            "updated_at": utc(),
+        },
+    )
 
 
 def listening(port: int) -> bool:

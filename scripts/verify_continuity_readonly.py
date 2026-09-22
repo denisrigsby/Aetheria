@@ -20,6 +20,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import atomic_write_json  # noqa: E402
+
 OUT = ROOT / "measurements" / "CONTINUITY_VERIFY_latest.json"
 OUT_MD = ROOT / "measurements" / "CONTINUITY_VERIFY_latest.md"
 
@@ -230,8 +233,7 @@ def main() -> int:
         ]
     )
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    atomic_write_json(OUT, report)
 
     lines = [
         "# Continuity verify (read-only safe zone)",

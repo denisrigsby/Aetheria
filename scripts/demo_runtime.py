@@ -16,9 +16,15 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from atomic_state import atomic_write_json  # noqa: E402
 
 ROOT = Path(os.environ.get("AETHERIA_ROOT") or Path(__file__).resolve().parents[1])
 MEAS = ROOT / "measurements"
@@ -29,10 +35,7 @@ def utc() -> str:
 
 
 def _write(path: Path, obj: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(path)
+    atomic_write_json(path, obj)
 
 
 def _cycles() -> int:

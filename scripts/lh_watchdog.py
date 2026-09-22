@@ -34,6 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
 from lh_process_identity import ROLE_SUPERVISOR, kill_if_verified, verified_role  # noqa: E402
 
 MEAS = ROOT / "measurements"
@@ -102,10 +103,7 @@ def log(msg: str) -> None:
 
 
 def write_json(path: Path, obj: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(obj, indent=2, default=str), encoding="utf-8")
-    tmp.replace(path)
+    atomic_write_json(path, obj, default=str)
 
 
 def read_state() -> Dict[str, Any]:
@@ -407,7 +405,7 @@ def apply_action(diag: Dict[str, Any]) -> Dict[str, Any]:
             try:
                 # archive then clear
                 arch = MEAS / "red_helix_relaunch_request_last.json"
-                arch.write_text(RH_RELAUNCH_REQ.read_text(encoding="utf-8"), encoding="utf-8")
+                _atomic_replace_text(arch, RH_RELAUNCH_REQ.read_text(encoding="utf-8"))
                 RH_RELAUNCH_REQ.unlink()
             except Exception as e:
                 log(f"rh request clear note: {e}")
