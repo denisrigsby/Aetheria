@@ -7,7 +7,7 @@ All notable changes to the **public control plane** are documented here.
 
 ### Changed
 
-- **Claim scope** ([FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md)): top-level Claim is the asset-class **as defined by** `gate_full_program_asset_class_v1` only. Dual-bank FULL_PROGRAM stays locked. The 2026-09-22 evening cut did not extend it. `soft_ACCEPT` stays false. Not claimed: L7, LIVE_RSI, public=plant, autonomy, second clock. Stale pending line "verify public CI green on main after bleach push" removed; public CI on main for that evening cut is green.
+- **Claim scope** ([FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md)): dual-bank FULL_PROGRAM is locked on this index. No receipt for `gate_full_program_asset_class_v1` appears in CLOSEOUT, CLAIMS, or `measurements/public_index/`. The evening cut dual-banks only the six named gates as their wording. `soft_ACCEPT` stays false. Exclusions: L7, LIVE_RSI, public=plant, autonomy, second clock. Export stays **PRIVATE_AHEAD**. Stale pending line "verify public CI green on main after bleach push" stays removed; public CI on main for that evening cut is green.
 
 ### Added
 

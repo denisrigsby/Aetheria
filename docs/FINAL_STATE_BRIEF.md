@@ -28,13 +28,11 @@ Aetheria is a local, evidence-gated control plant: dual-banked recovery, fail-cl
 
 ## Claim
 
-**Asset-class as defined by `gate_full_program_asset_class_v1` only.** Not dual-bank FULL_PROGRAM. The 2026-09-22 evening cut did not extend it.
+Dual-bank FULL_PROGRAM is locked on this index. No receipt for `gate_full_program_asset_class_v1` appears in [CLOSEOUT.md](CLOSEOUT.md), [CLAIMS.md](CLAIMS.md), or [../measurements/public_index/](../measurements/public_index/).
 
-[CLOSEOUT.md](CLOSEOUT.md), [CLAIMS.md](CLAIMS.md), and [../measurements/public_index/](../measurements/public_index/) do not carry a receipt for that gate. Both sealed cuts leave dual-bank FULL_PROGRAM locked. `soft_ACCEPT` stays false.
+The 2026-09-22 evening cut dual-banks only the six named gates, each as that gate's wording (`dual_bank=true`, Cover ACCEPT, Architect ACCEPT). Talk Face mouth receipts stay `dual_bank=false`. `soft_ACCEPT` stays false.
 
-Dual-bank on this index is the six evening gates, each only as that gate's wording (`dual_bank=true`, Cover ACCEPT, Architect ACCEPT). Talk Face mouth receipts stay `dual_bank=false`.
-
-Exclusions beside this claim: L7, LIVE_RSI, public=plant, autonomy, second clock. Export parity stays **PRIVATE_AHEAD**. Not every plant capability is included.
+Exclusions: L7, LIVE_RSI, public=plant, autonomy, second clock. Export stays **PRIVATE_AHEAD**.
 
 ## Authority
 
@@ -66,7 +64,6 @@ The package is **evidence-gated**, **Architect- and Cover-checked**, and **fail-
 - LoRA train (may_train)
 - LoRA shadow deploy (bind/unload; not live hot-swap)
 - internal P1P5 certification
-- asset-class **as defined by** `gate_full_program_asset_class_v1` only. Not dual-bank FULL_PROGRAM. No receipt for that gate is in this index. The evening cut did not extend it. Exclusions: `soft_ACCEPT` stays false; not L7, LIVE_RSI, public=plant, autonomy, or second clock.
 - Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role. Revision `create_time_bind_v1`. Exclusions: OS PID-number reuse not observed and not required; not every call site; create_time not sole identity; PID reuse not impossible; portable pytest alone does not flip the gate; wrong live PID mismatch alone does not flip the gate; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; Job Object not the sole stop path; Toolhelp not retired.
 - Live kill call sites lh_watchdog.kill_pid, plant_control._kill_pid, lh_recover_reap.reap_orphan_probes, and status_report.reap_orphans pass expected_create_time into kill_if_verified; wrong create_time refuses with create_time_mismatch and does not terminate. Revision `call_site_wire_v1` on `gate_expected_create_time_call_sites_v1`. Exclusions: OS PID-number reuse not observed; not every future kill site; create_time not sole identity; no L7, LIVE_RSI, second clock, autonomy, or public=plant.
 - continuous supervised plant clock 30 minutes, mouth closed, tick advanced; as defined by `gate_endurance_v1`. Exclusions: endurance beyond that window; no second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant; this gate does not claim Job Object kill, stale-PID reuse, or the export-hash layer.
