@@ -7,6 +7,7 @@ All notable changes to the **public control plane** are documented here.
 
 ### Changed
 
+- **Public face** ([README.md](README.md), [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md)): front page leads with what this repo is, then Real / Proved / Pending / Locked with receipts beside claims. Unreceipted items (LoRA train, LoRA shadow deploy, generic cold-start, generic kill path) are not listed as proved. Simultaneous start/recover stays **PASS** only because [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) on main already says PASS. P1–P5 stays internal certification. Public export stays **PRIVATE_AHEAD**.
 - **Claim scope** ([FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md)): dual-bank FULL_PROGRAM is locked on this index. No receipt for `gate_full_program_asset_class_v1` appears in CLOSEOUT, CLAIMS, or `measurements/public_index/`. The evening cut dual-banks only the six named gates as their wording. `soft_ACCEPT` stays false. Exclusions: L7, LIVE_RSI, public=plant, autonomy, second clock. Export stays **PRIVATE_AHEAD**. Stale pending line "verify public CI green on main after bleach push" stays removed; public CI on main for that evening cut is green.
 
 ### Added

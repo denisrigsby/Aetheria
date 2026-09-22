@@ -5,197 +5,124 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria)](https://github.com/denisrigsby/Aetheria/releases)
 
-> **Evidence index:** [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md) · [docs/EXPORT_PARITY.md](docs/EXPORT_PARITY.md)  
-> **Voice:** claim only what gates prove; P1–P5 = internal certification; pending stays visible.  
-> **Parity:** public export ≠ live plant (PRIVATE_AHEAD). Full program asset-class only as defined by `gate_full_program_asset_class_v1`.
+A local supervisor for long-running AI work on one Windows PC. The chat window is optional. The work schedule is a separate process plus files on disk.
 
-## Latest sealed cut (2026-09-22)
+**Plant clock ≠ chat.** "Plant clock" means that schedule. "Chat" (also called the mouth, or Talk-face) does not own it. Closing the chat does not stop the schedule.
 
-Talk Face seals are Architect-ACCEPTed. Index: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Scrubbed receipts: [measurements/public_index/](measurements/public_index/). This cut does not publish plant source.
+This repository is a public control-plane export. It is **not** the live operator plant. The parity label is **PRIVATE_AHEAD** (public export ≠ live plant): [docs/EXPORT_PARITY.md](docs/EXPORT_PARITY.md).
 
-**PASS:** plant presence between ticks shows Standby (not Degraded); Offline means the mouth host is unreachable; no visible `[MODEL_REASONING]` tag, and absolute `/living/` cites are rewritten to plant-relative form or refused; direct-answer contract with Cover + Architect ACCEPT and `soft_ACCEPT=false`; canonical operator Desktop shortcut (single location; host path unpublished); launcher is windowed Edge (taskbar + close), not a frameless `--app` black window.
+P1–P5 are internal certification labels used on the operator plant. They are not an outside audit, and this repo does not treat them as one.
 
-**LOCKED:** dual-bank FULL_PROGRAM; `soft_ACCEPT` / LIVE_RSI / L7; Copilot as plant mouth or through Plant Truth; federation / swarm / autonomy theater; widen spawn wrap.
+## This repo and the private plant
 
-P1–P5 remains **internal certification** only.
+| In this GitHub repo | On the private operator machine |
+|---------------------|----------------------------------|
+| Supervisor, watchdog, stop and recover scripts, docs | Live plant, Forge console, living memory, real cycle body |
+| A mock / reference worker you can run | Host paths, credentials, private measurements |
+| Scrubbed receipt copies under [measurements/public_index/](measurements/public_index/) | The mouth and plant code those receipts describe |
 
-## Plant seals (2026-09-22 evening)
+Cloning this repo does not give you the live plant. A full multi-hour run needs a complete local operator root. That root is private by design.
 
-Dual-banked operator receipts (`dual_bank=true`, `soft_ACCEPT=false`). Index: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Scrubbed copies: [measurements/public_index/](measurements/public_index/). Export stays **PRIVATE_AHEAD** (public ≠ plant). This cut does not claim L7, LIVE_RSI, or public=plant. Talk Face mouth receipts above stay `dual_bank=false`.
+## Real, proved, pending, locked
 
-**PASS, as each gate's wording:** stale-PID create_time bind (`gate_stale_pid_reuse_v1`, revision `create_time_bind_v1`); named kill call sites pass `expected_create_time` (`gate_expected_create_time_call_sites_v1`, revision `call_site_wire_v1`); continuous supervised plant clock 30 minutes, mouth closed, tick advanced (`gate_endurance_v1`); identity-checked `TerminateJobObject` on an assigned tree (`gate_job_object_kill_path_v1`); fail-closed export hash/parity receipt layer (`gate_export_hash_parity_v1`, decision remains `PRIVATE_AHEAD`); `gate_control_plane_resume_stop_watchdog_v1` is dual-banked and its scrubbed receipt has no `claim_wording` and no CommandLine redact field.
+Finer labels (Tests, Mock, Untested, Private) live in [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md). The four words below are the ones that matter on this page. Receipts and limits sit next to each claim. The evidence index is [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md).
 
-**Beside those claims:** OS PID-number reuse was not observed; not every future kill site; create_time is not sole identity; endurance beyond that window stays locked; Job Object is not the sole stop path; Toolhelp is not retired; `public_equals_plant` only if the parity decision were `PARITY_PASS` (this decision is `PRIVATE_AHEAD`).
+### Real (you can run it here)
 
-**Aetheria is a local plant clock for serious AI work on your Windows PC.**
-Chat is a mouth you can open or close. **The work clock is not the chat.**
+| What | Limit | Evidence |
+|------|--------|----------|
+| Layout and compile of this tree | Does not start the private plant | `python -u scripts/demo_local_smoke.py` · [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) |
+| Reference mouth closes; a mock pulse keeps advancing | Mock worker. This is the public slice of plant clock ≠ chat | `python -u scripts/demo_continuity.py` · [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) |
+| Process identity rejects the wrong role or a junk PID | "Unrelated processes survive stale-PID recovery" is still **PARTIAL** | CI runs `tests/test_lh_process_identity.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| A raced start and recover admit one supervisor | **PASS** on the assurance checklist. Other state writers stay **PARTIAL**. The test is not the live plant | CI runs `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
 
-**Literal subtitle:** A Windows-local, fail-closed supervisor for long-running AI work loops.
+### Proved (a receipt is in this repo)
 
-> **Scope (read this):** Windows-first · local-only · reference implementation.  
-> This public repo ships a **real supervisor control plane** and a **mock / reference worker**.  
-> The private operator plant (Forge console, living memory, real cycle body) is **not** included.
+These were accepted on the operator plant. The JSON files are scrubbed copies. Cloning does not re-run them. Exclusions in full: [docs/CLOSEOUT.md](docs/CLOSEOUT.md).
 
-People need AI work that keeps going when the chat dies — overnight, after a crash, without babysitting a fragile window.
+| Claim, in plain language | What it does not prove | Receipt |
+|--------------------------|------------------------|---------|
+| Talk-face text has no visible `[MODEL_REASONING]` tag. Absolute `/living/` cites are rewritten or refused | Does not publish plant source. Copilot is not the mouth | [scrub](measurements/public_index/scrub_mouth_leak_v1.json), [gate](measurements/public_index/gate_talkface_visible_tag_seal_v1.json), [accept](measurements/public_index/architect_accept_talkface_visible_tag_seal_v1.json) |
+| Direct-answer contract accepted by Cover and Architect. `soft_ACCEPT` is false. `dual_bank` is false | Does not unlock L7 or LIVE_RSI | [gate](measurements/public_index/gate_direct_answer_contract_talk_face_v1.json), [accept](measurements/public_index/architect_accept_direct_answer_contract_talk_face_v1.json) |
+| A kill is refused when the process start time does not match, even if the command line still looks right | OS PID-number reuse was not observed. Tests in this repo do not flip that plant gate | [gate](measurements/public_index/gate_stale_pid_reuse_v1_1412.json) |
+| Four named kill sites pass that start time and refuse a mismatch | Not every future kill site. Start time is not the only identity check | [gate](measurements/public_index/gate_expected_create_time_call_sites_v1_930b.json) |
+| Supervised clock ran 30 minutes with the mouth closed and the tick advanced | Longer runs stay locked | [gate](measurements/public_index/gate_endurance_v1_0440.json) |
+| An identity-checked Windows Job Object stop ended an assigned process tree | Not the only stop path. Linux CI does not re-prove it | [gate](measurements/public_index/gate_job_object_kill_path_v1_a709.json) |
+| Export hash census, with an explicit parity decision | The decision on the receipt is **PRIVATE_AHEAD**, so public ≠ plant | [gate](measurements/public_index/gate_export_hash_parity_v1_79b2.json) |
+| Resume / stop / watchdog record is dual-banked | The receipt has no claim sentence (`claim_wording` is null). No further behavior is claimed | [gate](measurements/public_index/gate_control_plane_resume_stop_watchdog_v1_84f7.json) |
 
-### 30-second scenario
+Same session, **no gate file** in this repo (operator note only, not re-run from this clone): Standby vs Offline labels, one desktop shortcut, windowed Edge instead of a frameless app window. [docs/CLOSEOUT.md](docs/CLOSEOUT.md).
 
-Start a long job → close the UI → kill the worker mid-cycle → see heartbeat go stale and land in **HOLD** (fail-closed) → recover only through an identity-checked path (not blind PID reuse).  
-Runnable public slice: `python -u scripts/demo_continuity.py` (UI closed, pulse continues). Full narrative: [docs/SCENARIO_30S.md](docs/SCENARIO_30S.md).
+### Pending (not PASS on main)
 
-### Glossary
+- Re-run of the receipts above inside this clone. The mouth and the plant body are not in this tree. [docs/CLOSEOUT.md](docs/CLOSEOUT.md)
+- Assurance rows that are still **PARTIAL**: unrelated processes surviving stale-PID recovery; an interrupted write leaving either the old or the new valid state; corrupted or unknown-version state ending in HOLD; clean stop distinguished from a crash; localhost mutations requiring authorization. [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md)
+- Job Object containment on this repo's CI (**PARTIAL**). The plant receipt above is the scoped proof. It does not make the CI row PASS.
 
-| Aetheria term | Plain technical equivalent |
-|---------------|----------------------------|
-| Plant clock | Detached supervised job runtime |
-| Mouth / Talk-face | Optional local chat or operator UI |
-| Forge | Private operator console |
-| Tick / cycle | One bounded unit of agent work |
-| HOLD | Fail-closed paused state pending operator action |
+### Locked (not claimed)
 
-More: [docs/GLOSSARY.md](docs/GLOSSARY.md) · Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/ARCHITECTURE_PUBLIC_OVERLAY.md](docs/ARCHITECTURE_PUBLIC_OVERLAY.md) · States: [docs/STATE_TRANSITIONS.md](docs/STATE_TRANSITIONS.md)
+- This tree equals the live plant
+- Dual-bank full program. No receipt for `gate_full_program_asset_class_v1` is in this repo
+- `soft_ACCEPT`, LIVE_RSI, L7
+- Copilot as the plant mouth
+- Federation, swarm, autonomy, self-healing
+- Production-ready or enterprise
+- A second clock, automatic dispatch, live model hot-swap
+- Endurance past the 30-minute receipt
+- Job Object as the only stop path
+- A wider spawn wrap
+- P1–P5 as external accreditation
 
-Origin: solo human–AI collaboration on a real Windows operator machine. See [docs/ORIGIN.md](docs/ORIGIN.md) · [docs/DEFINITION.md](docs/DEFINITION.md).
+## Run, test, verify
 
-
-## Assurance (read before production claims)
-
-This repository is **not production-audited** for supervising valuable or security-sensitive work yet.
-
-- Claims labels: [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md) — **Tests / Mock / Untested / Private**
-- Process identity: [docs/PROCESS_IDENTITY.md](docs/PROCESS_IDENTITY.md)
-- Atomic state: [docs/ATOMIC_STATE.md](docs/ATOMIC_STATE.md)
-- Threat model: [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md)
-- Release gate checklist: [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) (honest PASS/PARTIAL/FAIL)
-- Snapshot digests are **integrity checksums**, not authentication.
-
-**Conventional terms:** supervisor (plant clock), worker (tick/cycle), UI mouth (Talk-face), operator console (Forge), paused state (HOLD).
-
-## Continuity proof (run this)
-
-```powershell
-python -u scripts/demo_continuity.py
-# or: Demo-Continuity.bat
-```
-
-Public reference only (mock pulse + Talk-face reference mouth). Close Talk-face; the pulse file keeps advancing. That is **plant clock ≠ chat**, runnable.
-Docs: [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) · Claims: [docs/CLAIMS.md](docs/CLAIMS.md)
-
-Talk-face only:
-
-```powershell
-python -u scripts/talk_face_ref_demo.py
-```
-
-## One plant, two surfaces
-
-| Surface | Role |
-|---------|------|
-| **Talk-face** | Scrubbed localhost safety mouth |
-| **Forge** | Industrial operator console (private plant) |
-
-Same plant underneath. Surfaces do not own the clock. See [docs/DUAL_FACE.md](docs/DUAL_FACE.md).
-
-## Discovery posts
-
-Paste-ready Show HN / Reddit text: [docs/DISCOVERY_POST.md](docs/DISCOVERY_POST.md).
-
-The private install — **mouth** (local admin / architect) + **plant** (detached ticks) + living memory — is an **extension**, not a missing GitHub file. Chat never parents the clock. Talk is a mirror of the ledger, not a dependency: if the chat window is closed, the worker still ticks. Dirty `last_ok` **HOLDs**. There is **no AUTORUN** after a dirty death.
-
-**Plant clock ≠ chat.**
-
-Protocol: [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) · boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · operator walkthrough: [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)
-
-Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose|demo`
-
-`recover` is not `start`. Recover loads `measurements/campaign_snapshot_v1.json` only when the supervisor is identity-dead. Hash mismatch → no spawn.
-
-> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not a multi-agent framework and not a chat UI.
-
-### The pain this targets
-
-| Common AI complaint | Control plane answer |
-|---------------------|----------------------|
-| Dies when chat/IDE closes | Detached supervisor + on-disk state |
-| Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
-| “Is it still working?” | `status_report` + measurements JSON |
-| Overnight babysitting | Rolling ticks / segments + watchdog |
-| Thrash restart after power flap | HOLD after dirty `last_ok`; resume when stable |
-| Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
-| Crash vs green stop | Dirty `last_ok=false` HOLDs; green interruptions may guardian-start |
-
-### Job #1 — local campaign runner
-
-| Step | What you prove |
-|------|----------------|
-| 1 | `python -u scripts/demo_local_smoke.py` — control plane layout + compile (no private sauce) |
-| 2 | (Full operator root) launch supervisor + watchdog — detached ticks |
-| 3 | `status_report` / measurements — still alive? |
-| 4 | `python -u scripts/plant_control.py stop` — STOP files + identity-checked tree kill; survivors reported |
-
-**Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
-
-## Verify the supervisor (no LLM, no GPU)
-
-```powershell
-python -m aetheria demo --cycles 3
-# or:
-python -u scripts/aetheria.py demo --cycles 3
-python -u scripts/demo_local_smoke.py
-```
-
-The **supervisor** (real code) starts a **mock runtime** (sleep + print + ledger files). That is heartbeat, checkpoint, and `lh_probe_summary_v1` without private keys, Ollama, or the private cycle body.
-
-## Why public vs private
-
-| Stays private | Why |
-|---------------|-----|
-| Living memory / session traces | User-specific; merge/concat forbidden |
-| Mouth (Forge, local models) | Operator chair; must not parent the clock |
-| Cycle body / probe internals | Security-sensitive runtime + unpublished research |
-| Credentials, host paths | Deployment-specific |
-
-This repo stays fully evaluable as infrastructure. See [docs/WHY.md](docs/WHY.md).
-
-## Quick start
+Python 3.10+. Windows is the reference OS. The Python commands are the same on other systems.
 
 ```powershell
 git clone https://github.com/denisrigsby/Aetheria.git
 cd Aetheria
+
+# 1. Run — layout and compile. No private plant.
 python -u scripts/demo_local_smoke.py
+
+# 2. Test — reference mouth closes; the mock pulse still advances.
+python -u scripts/demo_continuity.py
+
+# 3. Verify — identity, single-flight start/recover, and local fault injection.
+python -m pip install pytest
+python -m pytest tests/test_lh_process_identity.py tests/test_two_controller_concurrency.py tests/test_fault_injection_public.py -q
 ```
 
-**Status (read-only):**
+Windows wrappers for steps 1 and 2: `Demo-Local.bat`, `Demo-Continuity.bat`.
 
-```powershell
-python -u scripts/status_report.py
-```
+[CI](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml) runs the identity test and `tests/test_two_controller_concurrency.py` (among other files listed in `.github/workflows/ci.yml`). It does not run `demo_continuity.py` or `tests/test_fault_injection_public.py`. Those two are local checks.
 
-**Stop (full install):**
+On a full local root, read-only status is `python -u scripts/status_report.py`. Stop is `python -u scripts/aetheria.py stop`. Recover is a different command from start: [docs/OPERATIONS.md](docs/OPERATIONS.md).
 
-```powershell
-python -u scripts/aetheria.py stop --reason "operator"
-```
+## Read next
 
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) | **Protocol v1** (heartbeat, STOP, recover, exits) |
-| [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) | Product boundary |
-| [docs/STATE_MODEL.md](docs/STATE_MODEL.md) | Authoritative files |
-| [docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md) | Sitting picture (no private dump) |
+| Doc | Why |
+|-----|-----|
+| [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md) | Evidence index (real / proved / pending / locked) |
+| [docs/CLOSEOUT.md](docs/CLOSEOUT.md) | Receipt tables and exclusions |
+| [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md) | Front labels and finer labels |
+| [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) | PASS / PARTIAL / FAIL |
+| [docs/GLOSSARY.md](docs/GLOSSARY.md) | Plant clock, mouth, HOLD, Forge |
 | [docs/WHY.md](docs/WHY.md) | Problem and non-goals |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layers |
-| [docs/OPERATIONS.md](docs/OPERATIONS.md) | Start / stop / recover |
+| [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) | Heartbeat, STOP, recover |
+| [SETUP.md](SETUP.md) | What a full local root still needs |
+| [docs/SCENARIO_30S.md](docs/SCENARIO_30S.md) | The crash-and-hold picture, and what this clone can show |
 
-## What this repository is not
+### Glossary (short)
 
-- Not a hosted multi-tenant agent cloud
-- Not a dump of private memory, registries, or host paths
-- Not a chat UI or “digital employee” with a general shell
-- Not “chat as the long-run parent”
-- Not AUTORUN after a dirty death
+| Term | Plain meaning |
+|------|----------------|
+| Plant clock | Detached supervised job runtime |
+| Mouth / Talk-face | Optional local chat or operator UI |
+| Forge | Private operator console |
+| Tick / cycle | One bounded unit of work |
+| HOLD | Fail-closed pause until an operator acts |
+| Cover / Architect | Two accept roles on a plant receipt. Both accepted means the receipt says so. It is not an outside audit |
 
 ## License
 
