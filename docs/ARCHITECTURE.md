@@ -61,7 +61,7 @@ flowchart TB
 | Session tooling | Implement / repair while available | Detached tick schedule |
 | Control plane | Process life cycle, status files, change gates | Private memory contents |
 | Private runtime | Cycles, registry, living streams | Public GitHub distribution |
-| Optional private companion | Interactive steers / local generate | Plant tick schedule, residual self-mod |
+| Optional private companion | Interactive steers / local generate | Plant tick schedule. Gated self-modification is locked |
 
 ## Plant clock ≠ chat session
 

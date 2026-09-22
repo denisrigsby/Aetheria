@@ -2,6 +2,8 @@
 
 Executable companion to [STATE_MODEL.md](STATE_MODEL.md). Authority remains on-disk under `measurements/` (see that doc).
 
+This is the intended model. Corrupted / unknown-version → HOLD and clean stop ≠ crash stay **PARTIAL** on [RELEASE_GATE_ASSURANCE.md](RELEASE_GATE_ASSURANCE.md). The diagram does not flip those rows.
+
 ## States
 
 | State | Meaning |
@@ -42,4 +44,4 @@ Invalid / refused (public policy):
 
 ## Invariant checks (tests)
 
-See `tests/test_fault_injection_public.py` and `tests/test_lh_process_identity.py`.
+`tests/test_lh_process_identity.py` is in CI. `tests/test_fault_injection_public.py` is a local file. The CI workflow on main does not run it.

@@ -1,17 +1,19 @@
-# Proven claims
+# Claim register
 
-Updated: `2026-09-19T22:08:39.940577+00:00`
+Labels revised 2026-09-22. This revision does not add a proof. Front labels are **Real**, **Proved**, **Pending**, and **Locked** ([CLAIMS_TAXONOMY.md](CLAIMS_TAXONOMY.md)). A row here is not proved because an older copy of this file said PASS.
 
-Origin: solo human–AI collaboration on **Windows**. See [ORIGIN.md](ORIGIN.md) and [DEFINITION.md](DEFINITION.md).
+Origin: solo human–AI collaboration on **Windows** (Denis Rigsby). See [ORIGIN.md](ORIGIN.md) and [DEFINITION.md](DEFINITION.md).
 
-| ID | Claim | Status | How to verify in this repo |
-|----|-------|--------|----------------------------|
-| C1 | Plant clock ≠ chat — mouth down does not own the clock | PASS (operator plant) | Doctrine + Talk-face ref does not host a plant clock |
-| C2 | Dual face, one plant — Talk-face + Open Forge; plant_chat blocked; kit_act false | PASS (operator plant) | [DUAL_FACE.md](DUAL_FACE.md), [TALK_FACE.md](TALK_FACE.md) |
-| C3 | Fail-closed write mouth — confirm required; plant_chat/kit_act refused | PASS | `tests/test_talk_face_ref_allowlist.py` |
-| C4 | Held-out L5 stays 6/6 after dual-face cut (MERGE_HOLD) | PASS (operator plant) | Private plant gate; not re-soft-greened here |
+P1–P5 are internal certification labels on the operator plant. They are not external accreditation, and they are not a public PASS.
 
-Public reference tests cover allowlist / refuse / fail-closed confirm on the mock spine. Full long-horizon and L5 artifacts remain on the operator machine by design (private vs public boundary).
+| ID | Claim | Front label | Evidence and exclusion |
+|----|-------|-------------|------------------------|
+| C1 | Plant clock ≠ chat — mouth closed does not own the clock | **Real** for the mock. **Proved** only for the 30-minute endurance receipt | Mock: `scripts/demo_continuity.py` (CI does not run it). Plant window: `gate_endurance_v1` in [CLOSEOUT.md](CLOSEOUT.md). Longer than that window is **Locked** |
+| C2 | One plant, two surfaces (Talk-face + Forge); `plant_chat` blocked; `kit_act` false | **Pending** for the operator plant. Reference refuse is **Real** / **Untested** | No gate file for Forge or for "one plant" as a standing fact. Docs: [DUAL_FACE.md](DUAL_FACE.md), [TALK_FACE.md](TALK_FACE.md). `tests/test_talk_face_ref_allowlist.py` is not in the CI command |
+| C3 | Fail-closed write mouth — confirm required; `plant_chat` / `kit_act` refused | **Real** / **Untested** | `tests/test_talk_face_ref_allowlist.py`. The CI workflow on main does not run it. Not a public PASS |
+| C4 | Held-out L5 stays 6/6 after the dual-face cut (MERGE_HOLD) | **Pending** | No scrubbed receipt in [measurements/public_index/](../measurements/public_index/). Not a public PASS |
+
+Public reference tests cover allowlist / refuse / fail-closed confirm on the mock spine when you run that file locally. Full long-horizon and L5 artifacts remain on the operator machine by design (private vs public boundary).
 
 ## Operator-plant receipts (2026-09-22 evening)
 

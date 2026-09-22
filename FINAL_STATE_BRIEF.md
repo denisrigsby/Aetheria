@@ -18,8 +18,8 @@ You can run these here. They do not re-prove the plant receipts below.
 |-------|--------|----------|
 | This tree has a supervisor control plane and a mock worker | Clone smoke does not start the private plant | `python -u scripts/demo_local_smoke.py` · [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) |
 | A mock pulse keeps advancing after the reference mouth closes | Mock only. That is the public slice of plant clock ≠ chat | `python -u scripts/demo_continuity.py` · [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) |
-| Process identity rejects the wrong role or a junk PID | The assurance row "unrelated processes survive stale-PID recovery" is **PARTIAL** | CI: `tests/test_lh_process_identity.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
-| Simultaneous start and recover admit one supervisor | Assurance row is **PASS**. Corrupted / unknown-version → HOLD and clean stop ≠ crash stay **PARTIAL**. This test is not the live plant. No `soft_ACCEPT`. No L7 / LIVE_RSI | CI: `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Process identity rejects the wrong role or a junk PID. Windows tasklist liveness uses the PID column | The assurance row "unrelated processes survive stale-PID recovery" stays **PARTIAL**. The PID-column test does not flip `gate_stale_pid_reuse_v1`. OS PID-number reuse was not observed. This row is not an identity-checked tree kill | CI: `tests/test_lh_process_identity.py`, `tests/test_pid_liveness_exact.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Simultaneous start and recover admit one supervisor | Assurance row is **PASS** for that test (exactly one spawn). Corrupted / unknown-version → HOLD and clean stop ≠ crash stay **PARTIAL**. This test is not the live plant. No `soft_ACCEPT`. No L7 / LIVE_RSI | CI: `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
 | An interrupted JSON state write leaves the previous valid document or the new one | Assurance row is **PASS**. Private plant ≠ this tree. No L7 / LIVE_RSI. No soft_ACCEPT. PID and STOP files are short in-place text. Append-only JSONL is out of scope. `research/` artifacts are out of scope. Not an operator-plant receipt | CI on `395643e` (run 35695450920): `tests/test_atomic_state_writes.py`, `tests/test_interrupted_state_writes.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
 
 Run path: [README.md](README.md).
@@ -43,13 +43,7 @@ Talk Face mouth receipts record `dual_bank=false`. The evening plant receipts re
 
 Packet list for the evening gates (not an extra gate): [MANIFEST_f68b.json](measurements/public_index/MANIFEST_f68b.json).
 
-**Operator notes with no gate file** (2026-09-22 Talk Face session). Same closeout, weaker receipt. Not re-run from this clone:
-
-| Note | Limit |
-|------|--------|
-| Between ticks the mouth shows Standby, not Degraded. Offline means the mouth host is unreachable | Mouth label only |
-| One desktop shortcut. Host path unpublished | No second shortcut location |
-| Launcher is a normal Edge window (taskbar and close), not a frameless `--app` window | The window is the mouth, not the plant clock |
+A scrubbed gate file is required for **Proved**. An operator note with no gate file is **Pending**.
 
 ## Pending
 
@@ -61,10 +55,16 @@ Packet list for the evening gates (not an extra gate): [MANIFEST_f68b.json](meas
 | Clean stop distinguished from a crash | Assurance **PARTIAL**. Needs an explicit CI proof |
 | Localhost mutations require authorization | Assurance **PARTIAL** |
 | Job Object containment in this repo's CI | Assurance **PARTIAL**. The plant receipt above does not flip this row |
+| Standby vs Offline mouth labels | Operator note, 2026-09-22 Talk Face session. No gate file. Mouth label only. [docs/CLOSEOUT.md](docs/CLOSEOUT.md) |
+| One desktop shortcut | Operator note. No gate file. Host path unpublished |
+| Windowed Edge launcher (taskbar and close), not a frameless `--app` window | Operator note. No gate file. The window is the mouth, not the plant clock |
+| Held-out L5 stays 6/6 after the dual-face cut | No scrubbed receipt in [measurements/public_index/](measurements/public_index/). [docs/CLAIMS.md](docs/CLAIMS.md) |
+| No secrets in public artifacts | Assurance **PARTIAL**. CI scans `*.md` and `*.example.*` for absolute Windows user-home paths. That scan is the **PASS** row. It is not a secret scanner |
+| Narrative install and lifecycle passes with no indexed receipt | Live validation #1, a "12 passed" tree-kill count, disposable root `standalone-lifecycle`, and clean-clone install for v0.3.2. [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) |
 
-Simultaneous start/recover is **PASS** on the assurance checklist. It is listed under Real. It is not pending.
+Simultaneous start/recover is **PASS** for `tests/test_two_controller_concurrency.py` on the assurance checklist. It is listed under Real. It is not pending. It does not pass the other rows.
 
-Interrupted write → old or new valid state is **PASS**. It is listed under Real. It is not pending. The receipt is the two control-plane CI jobs on `395643e`, not an operator-plant receipt, so it is not in the Proved table above.
+Interrupted write → old or new valid state is **PASS** for `tests/test_atomic_state_writes.py` and `tests/test_interrupted_state_writes.py`. It is listed under Real. It is not pending. It does not pass the other rows. The receipt is the two control-plane CI jobs on `395643e`, not an operator-plant receipt, so it is not in the Proved table above.
 
 ## Locked
 
@@ -76,8 +76,8 @@ Withheld. Not claimed from this index.
 | Dual-bank full program (`gate_full_program_asset_class_v1`) | No receipt in [docs/CLOSEOUT.md](docs/CLOSEOUT.md), [docs/CLAIMS.md](docs/CLAIMS.md), or [measurements/public_index/](measurements/public_index/) |
 | `soft_ACCEPT`, LIVE_RSI, L7 | `soft_ACCEPT` stays false. No unlock |
 | Copilot as the plant mouth, or Copilot through plant truth | Not claimed |
-| Federation, swarm, autonomy, self-healing | Not claimed as present fact |
-| Production-ready, enterprise | Assurance checklist is not all PASS. [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Federation, swarm, autonomy, self-healing, gated self-modification | Not claimed as present fact |
+| Production-ready, enterprise, enterprise-grade, revolutionary | Assurance checklist is not all PASS. [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
 | Second clock, automatic dispatch, live model hot-swap | Not claimed |
 | Endurance past the 30-minute window | The endurance receipt is that window only |
 | Job Object as the only stop path; Toolhelp retired | The Job Object receipt is one tree kill |
@@ -95,7 +95,11 @@ An earlier draft of this index named items that have no receipt in this tree. Th
 - LoRA train (`may_train`) and LoRA shadow deploy
 - A generic "identity-checked kill path" beyond the Job Object receipt and the named call sites
 - A generic offline cold-start, beyond the 30-minute endurance receipt and the mock continuity demo
-- "Atomic dual start" as a plant seal. The public proof is the CI **PASS** under Real, scoped to that test
+- "Atomic dual start" as a plant seal. The public proof is the CI **PASS** under Real, scoped to `tests/test_two_controller_concurrency.py`
+- Standby / Offline, one desktop shortcut, and the windowed Edge launcher, as proved seals. They are Pending above (no gate file)
+- Held-out L5 6/6. No receipt in this index
+- A GPU mutex, or "the body is real," as a public fact. No receipt
+- `PARTIAL→improved` as a pass. A historical note that stays **PARTIAL** is still pending
 
 ## How to read a claim
 

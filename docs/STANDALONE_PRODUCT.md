@@ -15,7 +15,7 @@ Aetheria (full install) is a **versioned, auditable process-continuity layer** f
 | Cycle body / probe internals | Security-sensitive runtime + unpublished research |
 | Credentials, host paths | Deployment-specific |
 
-Public GitHub stays fully evaluable as infrastructure (start, heartbeat, STOP, recover, mock demo) without those.
+From this tree you can run the public scripts and the CI tests named in the [README](../README.md). That does not pass the **PARTIAL** assurance rows, and it does not include the private plant. Identity-checked plant kill stays the scoped Job Object and create_time receipts in [CLOSEOUT.md](CLOSEOUT.md).
 
 ## Supported product
 

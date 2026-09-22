@@ -2,9 +2,9 @@
 
 ## Fact under test
 
-After Talk-face (the mouth) closes, a plant pulse keeps advancing.
+After Talk-face (the mouth) closes, a mock plant pulse keeps advancing.
 
-That is the public slice of: **plant clock ≠ chat**.
+That is the public slice of: **plant clock ≠ chat**. Label: **Real** / **Mock**. CI does not run this script. It does not cover the operator plant. The plant receipt for mouth-closed continuity is `gate_endurance_v1` (30 minutes). Longer than that window is locked.
 
 ## Run
 
@@ -18,7 +18,7 @@ python -u scripts/demo_continuity.py
 | Is | Is not |
 |----|--------|
 | Mock plant pulse + Talk-face reference mouth | The private operator plant |
-| A runnable proof of one claim | A product trailer or hype script |
+| A runnable mock of one claim | A product trailer, an overnight proof, or a plant receipt |
 | Labeled `public_reference: true` in the pulse JSON | Soft-green marketing |
 
 ## Related

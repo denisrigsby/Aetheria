@@ -10,7 +10,7 @@ Keep the voice. Use this table when reading public docs.
 | **Tick / cycle** | One bounded unit of agent work |
 | **HOLD** | Fail-closed paused state pending operator action |
 | **Supervisor** | Process that owns the long-running work loop |
-| **Watchdog** | Side process that relaunches the supervisor if it dies |
+| **Watchdog** | Side process that watches the supervisor. Relaunch rules are in [ARCHITECTURE.md](ARCHITECTURE.md). Clean stop ≠ crash stays pending |
 | **STOP** | Explicit request to terminate the process tree |
 | **Measurements** | On-disk status / heartbeat / checkpoint artifacts |
 | **Living memory** | Private durable operator memory (not in this public repo) |

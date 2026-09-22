@@ -1,6 +1,6 @@
 # Process identity protocol (public)
 
-**Purpose:** Never kill, resume, or adopt a Windows process on PID alone (PIDs are reused).
+**Purpose:** Design rule — do not kill, resume, or adopt a Windows process on PID number alone. OS PID-number reuse was not observed (`gate_stale_pid_reuse_v1` does not claim it). The assurance row "unrelated processes survive stale-PID recovery" stays **PARTIAL**.
 
 ## Binding tuple (required fields)
 
@@ -19,7 +19,7 @@ An identity match for supervisor / watchdog / probe roles SHOULD bind:
 |-------------|--------|
 | PID missing / dead | Do not kill; reconcile PID files; treat as not alive |
 | PID alive, role cmdline mismatch | **Refuse** kill / resume / adopt |
-| PID alive, creation time mismatch vs recorded | **Refuse** (likely PID reuse) |
+| PID alive, creation time mismatch vs recorded | **Refuse** (`create_time_mismatch`). The plant receipt covers `kill_if_verified` with `expected_create_time`. It does not record that an OS PID number was reused |
 | PID alive, exe path unexpected | **Refuse** |
 | All bound fields match recorded identity | Allow role-scoped operations only |
 
