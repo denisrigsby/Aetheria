@@ -9,6 +9,16 @@
 > **Voice:** claim only what gates prove; P1–P5 = internal certification; pending stays visible.  
 > **Parity:** public export ≠ live plant (PRIVATE_AHEAD). Full program asset-class only as defined by `gate_full_program_asset_class_v1`.
 
+## Latest sealed cut (2026-09-22)
+
+Talk Face seals are Architect-ACCEPTed. Index: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Scrubbed receipts: [measurements/public_index/](measurements/public_index/). This cut does not publish plant source.
+
+**PASS:** plant presence between ticks shows Standby (not Degraded); Offline means the mouth host is unreachable; no visible `[MODEL_REASONING]` tag, and absolute `/living/` cites are rewritten to plant-relative form or refused; direct-answer contract with Cover + Architect ACCEPT and `soft_ACCEPT=false`; canonical desktop shortcut is OneDrive Desktop only; launcher is windowed Edge (taskbar + close), not a frameless `--app` black window.
+
+**LOCKED:** dual-bank FULL_PROGRAM; `soft_ACCEPT` / LIVE_RSI / L7; Copilot as plant mouth or through Plant Truth; federation / swarm / autonomy theater; widen spawn wrap.
+
+P1–P5 remains **internal certification** only.
+
 **Aetheria is a local plant clock for serious AI work on your Windows PC.**
 Chat is a mouth you can open or close. **The work clock is not the chat.**
 

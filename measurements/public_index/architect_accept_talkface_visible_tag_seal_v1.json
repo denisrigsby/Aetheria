@@ -1,0 +1,27 @@
+{
+  "schema": "aetheria_architect_accept_v1",
+  "gate": "gate_talkface_visible_tag_seal_v1",
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "dual_bank": false,
+  "status": "ARCHITECT_ACCEPT",
+  "by": "Aetheria Architect",
+  "ts": "2026-09-22T02:47:07.973367+00:00",
+  "prove_pass": true,
+  "checks_verified": {
+    "invent_seam_render_tag_False": true,
+    "api_turn_uses_stamp_turn_out": true,
+    "stamp_turn_out_render_tag_False": true,
+    "stamp_strips_visible_MODEL_REASONING": true,
+    "warm_ack_Right_here_with_you_ban_only_not_emitted": true,
+    "soft_ACCEPT_false": true,
+    "no_LIVE_RSI_L7_unlock": true,
+    "live_api_greeting_pending_status_tag_free": true
+  },
+  "fail_keys": [],
+  "soft_ACCEPT": false,
+  "scope": "Talk-face visible-tag seal (turn output render_tag=False)",
+  "note": "Architect ACCEPT. Cover ACCEPT verified. Phrase Right here with you remains only as a ban-example in mouth prompts, not as an emitted warm ack. soft_ACCEPT false. No unlocks.",
+  "public_copy": true,
+  "redacted": ["private_measurement_bank_path", "plant_source_paths"]
+}

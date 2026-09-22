@@ -2,6 +2,8 @@
 
 Talk-face is a **localhost-only** HTML mouth between the operator and plant power.
 
+**Presence:** Online = mouth host reachable during a tick; Standby = plant present between ticks (shown as Standby, not Degraded); Offline = mouth host unreachable. The label is the mouth, not the clock (plant ≠ chat).
+
 ## MUST NOT
 
 - enable / call `plant_chat`
