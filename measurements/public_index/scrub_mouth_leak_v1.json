@@ -1,0 +1,18 @@
+{
+  "schema": "aetheria_scrub_mouth_leak_v1",
+  "ts": "2026-09-22T02:40:08.393218+00:00",
+  "by": "Architect",
+  "go": "scrub-mouth-leak",
+  "changes": [
+    "Talk Face provenance stamp render_tag=False + strip visible [CLASS] tags",
+    "absolute /living/ cites rewritten to plant-relative form or refused"
+  ],
+  "prove": {
+    "path_scrub_hit": true,
+    "display_has_model_tag": false,
+    "abs_living_rewritten": true
+  },
+  "soft_ACCEPT": false,
+  "public_copy": true,
+  "redacted": ["plant_source_paths", "role_display_names"]
+}

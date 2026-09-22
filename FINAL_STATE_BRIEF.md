@@ -4,6 +4,16 @@
 
 **One-liner:** Aetheria is a local plant clock for serious AI work on your own Windows PC  chat is a mouth you can open or close; the work clock is not the chat.
 
+## Latest sealed cut (2026-09-22)
+
+Published index for the Talk Face seals. Plant source stays off this tree. Export parity stays PRIVATE_AHEAD. This cut does not dual-bank FULL_PROGRAM. Detail: [docs/CLOSEOUT.md](docs/CLOSEOUT.md). Receipts: [measurements/public_index/](measurements/public_index/).
+
+**PASS:** Standby (not Degraded) for plant presence between ticks; Offline = mouth host unreachable; no visible `[MODEL_REASONING]` tag and absolute `/living/` cites rewritten or refused; direct-answer contract, Cover + Architect ACCEPT, `soft_ACCEPT=false`; canonical operator Desktop shortcut (single location; host path unpublished); windowed Edge launcher (taskbar + close), not a frameless `--app` black window.
+
+**LOCKED:** dual-bank FULL_PROGRAM; `soft_ACCEPT` / LIVE_RSI / L7; Copilot as plant mouth or through Plant Truth; federation / swarm / autonomy theater; widen spawn wrap.
+
+P1–P5 remains **internal certification** only. Earlier sections below are the prior index; this cut does not extend them.
+
 ## What it is
 
 Aetheria is a local, evidence-gated control plant: dual-banked recovery, fail-closed process control, an offline control plane and supervisor tick, sealed operational evidence, and supervised LoRA training and shadow deployment. Operational claims are earned through bounded proof; unproved capabilities remain explicitly locked.

@@ -7,6 +7,7 @@ All notable changes to the **public control plane** are documented here.
 
 ### Added
 
+- **Public closeout 2026-09-22** ([docs/CLOSEOUT.md](docs/CLOSEOUT.md)): evidence index for the Talk Face cut. PASS: Standby (not Degraded) between ticks; Offline = mouth host unreachable; no visible `[MODEL_REASONING]` tag and absolute `/living/` cites rewritten or refused; direct-answer contract with Cover + Architect ACCEPT and `soft_ACCEPT=false`; canonical operator Desktop shortcut (single location; host path unpublished); windowed Edge launcher. LOCKED: dual-bank FULL_PROGRAM, `soft_ACCEPT` / LIVE_RSI / L7, Copilot as plant mouth, federation / swarm / autonomy theater, widen spawn wrap. Scrubbed receipts in `measurements/public_index/` (plant source paths omitted).
 - **Campaign snapshot v1** (`scripts/campaign_snapshot.py`): after a green tick, tmp+replace `measurements/campaign_snapshot_v1.json` + measurements-set backup. `python -m aetheria recover` loads that file only (dead plant, hash fail = no spawn). `start`/`resume` no longer alias recover.
 - **Mock public demo runtime** (`scripts/demo_runtime.py`, `python -m aetheria demo --cycles 3`): supervisor manages heartbeat/checkpoint/contract with no LLM
 - **Sanitized sitting demo** ([docs/SANITIZED_DEMO.md](docs/SANITIZED_DEMO.md)): clocked organism on a private PC; plant ≠ chat; public vs private boundary; honest 2026-09 prototype status

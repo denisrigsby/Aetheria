@@ -52,7 +52,6 @@ jobs:
               "scripts/plant_control.py",
               "tests/test_lh_process_identity.py",
               "docs/RELEASE_GATE.md",
-              "docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md",
               "docs/INSTALL.md",
               "docs/SUPPORT.md",
               "scripts/aetheria.py",
