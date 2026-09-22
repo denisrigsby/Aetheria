@@ -27,7 +27,7 @@ from typing import List, Optional, Tuple
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(ROOT / "scripts"))
-from lh_process_identity import pid_exists  # noqa: E402
+from lh_process_identity import ROLE_SUPERVISOR, kill_if_verified, pid_exists  # noqa: E402
 
 MEAS = ROOT / "measurements"
 LOGS = ROOT / "logs"
@@ -70,6 +70,44 @@ def read_pid() -> Optional[int]:
         return int(t) if t else None
     except Exception:
         return None
+
+
+def _clear_pid_receipt() -> None:
+    """Drop a pid file that is not a live verified supervisor."""
+    try:
+        if LH_PID.exists():
+            LH_PID.unlink()
+    except Exception:
+        pass
+
+
+def _stop_recorded_supervisor() -> Tuple[bool, str]:
+    """Identity-check the pid file before any kill.
+
+    Presence is not authority. A live PID whose command line is not the
+    supervisor is not killed; that pid file is removed and launch stops.
+    """
+    old = read_pid()
+    if old is None:
+        _clear_pid_receipt()
+        return True, ""
+    try:
+        alive = pid_exists(old)
+    except Exception as e:
+        return False, f"stop_old_refused:pid_check:{type(e).__name__}"
+    if not alive:
+        _clear_pid_receipt()
+        return True, ""
+    result = kill_if_verified(old, ROLE_SUPERVISOR, tree=True)
+    reason = str(result.get("reason") or "unverified")
+    if result.get("killed") or reason == "already_dead":
+        _clear_pid_receipt()
+        if result.get("killed"):
+            time.sleep(1.0)
+        return True, ""
+    if reason == "identity_mismatch":
+        _clear_pid_receipt()
+    return False, f"stop_old_refused:{reason}"
 
 
 def conservation_env() -> None:
@@ -165,20 +203,9 @@ def launch_lh_detached(
             pass
 
     if stop_old:
-        old = read_pid()
-        if old and pid_alive(old):
-            try:
-                if sys.platform == "win32":
-                    subprocess.run(
-                        ["taskkill", "/PID", str(old), "/F"],
-                        capture_output=True,
-                        timeout=30,
-                    )
-                else:
-                    os.kill(old, 15)
-            except Exception:
-                pass
-            time.sleep(1.0)
+        stopped, why = _stop_recorded_supervisor()
+        if not stopped:
+            return False, why, None
 
     py = resolve_python()
     args = supervisor_argv(

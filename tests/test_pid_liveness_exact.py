@@ -61,16 +61,15 @@ def _liveness_fns():
     try:
         import launch_lh_detached
         import lh_watchdog
-        import plant_control
         import status_report
         import verify_continuity_readonly
     finally:
         os.chdir(cwd)
+    # plant_control wait gates call pid_exists directly; they have no local liveness copy.
     return {
         "lh_process_identity.pid_exists": ident.pid_exists,
         "lh_watchdog.pid_alive": lh_watchdog.pid_alive,
         "launch_lh_detached.pid_alive": launch_lh_detached.pid_alive,
-        "plant_control.pid_alive": plant_control.pid_alive,
         "status_report.pid_alive": status_report.pid_alive,
         "verify_continuity_readonly.pid_alive": verify_continuity_readonly.pid_alive,
     }
