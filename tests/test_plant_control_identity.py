@@ -1,8 +1,8 @@
-"""plant_control stop/recover must not kill on PID presence alone.
+"""Stop, recover, and launch stop_old must not kill on PID presence alone.
 
 Wait loops use pid_exists (exact tasklist PID column after the liveness fix).
 Kills go through kill_if_verified. A live PID whose cmdline is the wrong role
-is a no-op: the process stays up, and taskkill / a non-zero signal is not sent.
+is left running: no taskkill and no non-zero signal.
 
 kill_if_verified does not take expected_create_time, so this file does not
 claim a create_time mismatch refusal.
@@ -16,6 +16,7 @@ import sys
 import time
 from pathlib import Path
 
+import launch_lh_detached as ld
 import lh_process_identity as ident
 import plant_control as pc
 
@@ -231,3 +232,50 @@ def test_stop_wait_does_not_treat_substring_pid_as_alive(tmp_path: Path, monkeyp
     out = capsys.readouterr().out
     assert "already dead" in out
     assert "rejected PID-only match" not in out
+
+
+def test_launch_stop_old_does_not_kill_wrong_cmdline(tmp_path: Path, monkeypatch):
+    """A stale long_horizon.pid naming a live non-supervisor must not be killed."""
+    proc = _sleeper()
+    try:
+        meas = tmp_path / "measurements"
+        logs = tmp_path / "logs"
+        meas.mkdir()
+        logs.mkdir()
+        monkeypatch.setattr(ld, "MEAS", meas)
+        monkeypatch.setattr(ld, "LOGS", logs)
+        monkeypatch.setattr(ld, "LH_PID", meas / "long_horizon.pid")
+        monkeypatch.setattr(ld, "LH_STOP", meas / "long_horizon_STOP")
+        monkeypatch.setattr(ld, "STANDBY", meas / "long_horizon_STANDBY.json")
+        monkeypatch.setattr(ld, "MANUAL", meas / "long_horizon_MANUAL_START.json")
+        ld.LH_PID.write_text(f"{proc.pid}\n", encoding="utf-8")
+        _cmdline(monkeypatch, proc.pid, "python -u lh_watchdog.py --interval-sec 60")
+        assert ident.verified_role(proc.pid, ident.ROLE_SUPERVISOR) is False
+
+        signals, taskkills = _watch_kills(monkeypatch)
+        seen: list[dict] = []
+        real = ident.kill_if_verified
+
+        def wrapped(pid, claimed, tree=True):
+            out = real(pid, claimed, tree=tree)
+            seen.append(out)
+            return out
+
+        monkeypatch.setattr(ld, "kill_if_verified", wrapped)
+
+        def _no_popen(*_a, **_k):
+            raise AssertionError("stop_old continued to spawn after an unverified pid")
+
+        monkeypatch.setattr(subprocess, "Popen", _no_popen)
+        ok, detail, pid = ld.launch_lh_detached(stop_old=True, clear_latches=True, poll_s=1.0)
+        assert ok is False
+        assert pid is None
+        assert detail == "stop_old_refused:identity_mismatch"
+        assert seen and seen[0]["reason"] == "identity_mismatch"
+        assert seen[0]["killed"] is False
+        assert seen[0]["claimed"] == ident.ROLE_SUPERVISOR
+        assert not ld.LH_PID.exists()
+        _assert_survived(proc, signals, taskkills)
+    finally:
+        proc.kill()
+        proc.wait(timeout=5)
