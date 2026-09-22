@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from atomic_state import atomic_write_json  # noqa: E402
-from lh_process_identity import ROLE_PROBE, is_probe, kill_if_verified  # noqa: E402
+from lh_process_identity import ROLE_PROBE, is_probe, kill_if_verified, pid_exists  # noqa: E402
 
 OUT = ROOT / "measurements" / "status_report_latest.json"
 
@@ -47,20 +47,9 @@ def load(p: Path, default=None):
 
 
 def pid_alive(pid) -> bool:
-    if pid is None:
-        return False
+    """Process-table presence. Windows match is the tasklist PID column."""
     try:
-        pid = int(pid)
-    except Exception:
-        return False
-    try:
-        r = subprocess.run(
-            ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-        )
-        return str(pid) in (r.stdout or "")
+        return pid_exists(pid)
     except Exception:
         return False
 

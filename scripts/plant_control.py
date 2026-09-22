@@ -56,6 +56,7 @@ from lh_process_identity import (  # noqa: E402
     ROLE_WATCHDOG,
     kill_if_verified,
     list_allowlisted,
+    pid_exists,
     verified_role,
 )
 
@@ -110,21 +111,16 @@ def write_json(path: Path, obj: dict) -> None:
 
 
 def pid_alive(pid: Any) -> bool:
+    """Process-table presence for wait loops. Not an identity check and not a kill."""
     try:
-        p = int(pid)
+        return pid_exists(pid)
     except Exception:
-        return False
-    if p <= 0:
-        return False
-    try:
-        out = subprocess.run(
-            ["tasklist", "/FI", f"PID eq {p}", "/NH"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-        )
-        return str(p) in (out.stdout or "")
-    except Exception:
+        try:
+            p = int(pid)
+        except Exception:
+            return False
+        if p <= 0:
+            return False
         try:
             os.kill(p, 0)
             return True

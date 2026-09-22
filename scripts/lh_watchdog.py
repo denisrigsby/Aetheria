@@ -22,7 +22,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 import time
 import traceback
@@ -35,7 +34,12 @@ os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
-from lh_process_identity import ROLE_SUPERVISOR, kill_if_verified, verified_role  # noqa: E402
+from lh_process_identity import (  # noqa: E402
+    ROLE_SUPERVISOR,
+    kill_if_verified,
+    pid_exists,
+    verified_role,
+)
 
 MEAS = ROOT / "measurements"
 STATE_PATH = MEAS / "long_horizon_state.json"
@@ -116,22 +120,16 @@ def read_state() -> Dict[str, Any]:
 
 
 def pid_alive(pid: Any) -> bool:
+    """Process-table presence. Not an identity check and not a kill."""
     try:
-        p = int(pid)
+        return pid_exists(pid)
     except Exception:
-        return False
-    if p <= 0:
-        return False
-    try:
-        # Windows-friendly
-        out = subprocess.run(
-            ["tasklist", "/FI", f"PID eq {p}", "/NH"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-        )
-        return str(p) in (out.stdout or "")
-    except Exception:
+        try:
+            p = int(pid)
+        except Exception:
+            return False
+        if p <= 0:
+            return False
         try:
             os.kill(p, 0)
             return True
