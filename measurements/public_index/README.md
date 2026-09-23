@@ -78,9 +78,9 @@ Public claim: Concurrent OEIG-live + UL7C-continuous proved on one control plane
 
 ## witness_governed_runtime_nr_20260923T175546Z
 
-Operator witness pack for sealed governed-runtime NR prove (NR1-NR6). Scrub-only export. Remediates prior HOLD on pack 174809Z. soft_ACCEPT=false. Not Certified. Merge held until Cover then Architect PR ACCEPT. Canary held. Plant dual unchanged.
+Operator witness pack for sealed governed-runtime NR prove (NR1–NR6). Scrub-only export. Remediates prior HOLD on pack 174809Z. soft_ACCEPT=false. Not Certified. Pack merged on main (`be793335…`). Operator canary dual sealed plant-side (`DUAL_BANK_CANARY_GOVERNED_RUNTIME_NR_BOUNDED` @ `20260923T182724Z` SHA `0d246469…5097`); not a Certified claim. Plant dual unchanged. README Proven (operator) promote for this scope is a separate exact GO.
 
-- Pack: `measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/`
+- Pack: [`witness_governed_runtime_nr_20260923T175546Z/`](witness_governed_runtime_nr_20260923T175546Z/)
 - Scrubbed dual: `c12bf86fb62e7136f99b5a77ca28d1e271e77a4ed64f1b404b6cccaa95c1853b`
 - Witness dual: `f25a7a6f94694e47caf1aaf51511f22e0194e53cbf6a6135849988225f31615b`
 - Plant dual (unchanged): `fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb`

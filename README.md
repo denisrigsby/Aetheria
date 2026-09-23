@@ -19,7 +19,7 @@ In its currently demonstrated configuration it combines persistent memory, capab
 
 Soft ACCEPT is **false** plant-wide. Nothing here is Certified, independently audited, or unrestricted.
 
-"Not a chatbot / chat is mouth" is an **Architectural classification**, not a Proven (operator) row by itself.
+"Not a chatbot / chat is mouth" for the governed-runtime scope (NR1–NR6) is **Proven (operator)** under the sealed duals in this tree. Chat remains the mouth, not the plant clock. Beside the claim: soft_ACCEPT=false; Not Certified; Talk Face acceptance remains a separate publication blocker; rsi_level7 / may_auto_promote / network_live Not Enabled.
 
 ## Prove it works — sealed evidence
 
@@ -46,7 +46,9 @@ Talk Face prepublish apply + re-prove: **Proven (operator)** — [`DUAL_ACCEPT_T
 ### Governed runtime (not merely chatbot)
 
 **Proven (operator)** — [`DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE`](measurements/public_index/dual_accept_governed_runtime_nr_prove.json)  
-`claim_sealed`: Operator-proven as a governed runtime independent of its chat interface. Beside the claim: `rsi_in_scope` false; **Not Certified.**
+Witness pack: [`measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/`](measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/) (witness dual `f25a7a6f94694e47caf1aaf51511f22e0194e53cbf6a6135849988225f31615b`).  
+Operator canary seal: `DUAL_BANK_CANARY_GOVERNED_RUNTIME_NR_BOUNDED` @ `20260923T182724Z` SHA `0d246469d1240ff019988b7ea6af973e823a40d2b6b0c1495056a66fd4085097` (plant integration; not a Certified claim).  
+`claim_sealed`: Operator-proven governed runtime independent of chat interface (NR1–NR6); soft_ACCEPT false; Not Certified.
 
 ### Bounded self-improvement
 
