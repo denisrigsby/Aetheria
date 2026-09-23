@@ -54,3 +54,13 @@ Scrubbed copies. `soft_ACCEPT` is false on every file in this section. These rec
 - [dual_accept_final_repo_publish.json](dual_accept_final_repo_publish.json) — `DUAL_ACCEPT_FINAL_REPO_PUBLISH`
 - [live_rsi_controls_store.json](live_rsi_controls_store.json) — `snapshot` (LIVE_RSI enabled bounded; `rsi_level7`, `may_auto_promote`, and `network_live` false)
 - [lll_registry_row.json](lll_registry_row.json) — `snapshot` (not an unlock of L7 or unrestricted RSI)
+
+## Operator witness — sealed OEIG + UL7C proves (20260923T143704Z)
+
+Checklist step 4 only. Scrubbed operator witness of already-sealed proves. `soft_ACCEPT` is false. Apply held. Not apply-live. Not canary. Not L7. Not unrestricted RSI. Not Certified. Not an independent third-party auditor. `export_parity` stays **PRIVATE_AHEAD**. `public_equals_plant` is false. Scrubbed hashes differ from the plant dual-bank originals; this pack does not claim byte identity after scrub.
+
+[witness_oeig_ul7c_20260923T143704Z/](witness_oeig_ul7c_20260923T143704Z/) holds the stage (`README_WITNESS_OEIG_UL7C_SNIPPET.md`, [MANIFEST_witness_oeig_ul7c_20260923T143704Z.json](witness_oeig_ul7c_20260923T143704Z/MANIFEST_witness_oeig_ul7c_20260923T143704Z.json)).
+
+- [dual_bank_oeig_prove.json](witness_oeig_ul7c_20260923T143704Z/dual_bank_oeig_prove.json) — scrubbed `DUAL_BANK_OEIG_PROVE` (sha256 `78e5e7b14b2fa51354ed2ed5957a83ac7c9a7527246ae6e17fb522062e86fe63`)
+- [dual_bank_ul7c_prove.json](witness_oeig_ul7c_20260923T143704Z/dual_bank_ul7c_prove.json) — scrubbed `DUAL_BANK_UL7C_PROVE` (sha256 `b0a488aa1457ba8caf264c31b9999ce2f02238801ef7002f3c8583ec36053b45`)
+- [DUAL_BANK_WITNESS_SCRUB_OEIG_UL7C.json](witness_oeig_ul7c_20260923T143704Z/DUAL_BANK_WITNESS_SCRUB_OEIG_UL7C.json) — Architect dual-bank stamp for this witness export only

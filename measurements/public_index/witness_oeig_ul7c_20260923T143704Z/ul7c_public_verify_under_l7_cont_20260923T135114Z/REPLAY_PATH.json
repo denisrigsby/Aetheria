@@ -1,0 +1,37 @@
+{
+  "schema": "aetheria_ul7c8_replay_path_v1",
+  "title": "Exact stranger replay path",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Clone repository at commit_SHA",
+      "commit_SHA": "854fbd63b1667fafa377976dc93f1dd8e543e6f3"
+    },
+    {
+      "step": 2,
+      "action": "Obtain public_verify pack from happy run (events.jsonl + EXPECTED_HASHES.json + verify_ul7c_public.py)"
+    },
+    {
+      "step": 3,
+      "action": "cd public_verify && python verify_ul7c_public.py"
+    },
+    {
+      "step": 4,
+      "action": "Pass only if exit 0 and pass=true (all file hashes + immutable chain tip match)"
+    },
+    {
+      "step": 5,
+      "action": "Do NOT require Slave-1 plant paths; PRIVATE_AHEAD paths are labeled and optional"
+    }
+  ],
+  "commit_SHA": "854fbd63b1667fafa377976dc93f1dd8e543e6f3",
+  "immutable_tip": "75ec5c8935e6eb804257b4d9b32a36cbfcdb64bf88d69b8dd2e24133956689fc",
+  "local_verify_result": {
+    "pass": true,
+    "fails": [],
+    "tip": "75ec5c8935e6eb804257b4d9b32a36cbfcdb64bf88d69b8dd2e24133956689fc",
+    "soft_ACCEPT": false
+  },
+  "soft_ACCEPT": false,
+  "utc": "20260923T141550Z"
+}

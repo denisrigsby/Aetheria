@@ -1,0 +1,24 @@
+{
+  "schema": "aetheria_public_index_pointer_v1",
+  "utc": "20260923T143704Z",
+  "gate": "witness_scrub_export_oeig_ul7c_v1",
+  "soft_ACCEPT": false,
+  "entries": [
+    {
+      "id": "oeig_prove_witness",
+      "file": "dual_bank_oeig_prove.json",
+      "happy": "oeig_20260923T134010Z",
+      "dual_stamp_utc": "20260923T134420Z",
+      "content_sha256": "78e5e7b14b2fa51354ed2ed5957a83ac7c9a7527246ae6e17fb522062e86fe63",
+      "plant_sha256": "70d37b7c692f58d052751a985b41160b2eba9a215c990992f1e9b6558fad3f62"
+    },
+    {
+      "id": "ul7c_prove_witness",
+      "file": "dual_bank_ul7c_prove.json",
+      "happy": "under_l7_cont_20260923T135114Z",
+      "dual_stamp_utc": "20260923T142459Z",
+      "content_sha256": "b0a488aa1457ba8caf264c31b9999ce2f02238801ef7002f3c8583ec36053b45",
+      "plant_sha256": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "aetheria_witness_scrub_receipt_v1",
+  "stamp": "SCRUB_EXPORT_OEIG_UL7C",
+  "utc": "20260923T143704Z",
+  "gate": "witness_scrub_export_oeig_ul7c_v1",
+  "exact_go": "GO: WITNESS_SCRUB_EXPORT_OEIG_UL7C",
+  "SCRUB_PASS": true,
+  "soft_ACCEPT": false,
+  "apply_authorized": false,
+  "canary_authorized": false,
+  "plant_dual_before_sha256": {
+    "DUAL_BANK_OEIG_PROVE.json": "70d37b7c692f58d052751a985b41160b2eba9a215c990992f1e9b6558fad3f62",
+    "DUAL_BANK_UL7C_PROVE.json": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b"
+  },
+  "plant_dual_after_sha256_expected_unchanged": {
+    "DUAL_BANK_OEIG_PROVE.json": "70d37b7c692f58d052751a985b41160b2eba9a215c990992f1e9b6558fad3f62",
+    "DUAL_BANK_UL7C_PROVE.json": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b"
+  },
+  "scrubbed_sha256": {
+    "DUAL_BANK_OEIG_PROVE.scrubbed.json": "78e5e7b14b2fa51354ed2ed5957a83ac7c9a7527246ae6e17fb522062e86fe63",
+    "DUAL_BANK_UL7C_PROVE.scrubbed.json": "b0a488aa1457ba8caf264c31b9999ce2f02238801ef7002f3c8583ec36053b45",
+    "dual_bank_oeig_prove.json": "78e5e7b14b2fa51354ed2ed5957a83ac7c9a7527246ae6e17fb522062e86fe63",
+    "dual_bank_ul7c_prove.json": "b0a488aa1457ba8caf264c31b9999ce2f02238801ef7002f3c8583ec36053b45",
+    "MANIFEST_witness_oeig_ul7c_20260923T143704Z.json": "5ed7132cc7d025d77979f2c60eab00f99757176d2d227b7230479a6a53ac15fb",
+    "INDEX_witness_oeig_ul7c.json": "fbd347a4d2bc1bb513e85e1c6df3fb12c73220ffa21ad8b040913cd8467cbd46",
+    "COVER_ACCEPT_OEIG_PROVE.scrubbed.json": "e5a15906aef0bc7d4da6e095e96994333593c9de669558942d772ca639a705c8",
+    "COVER_ACCEPT_UL7C_PROVE.scrubbed.json": "723127a45cec948b246595585ba451191afc8220fd2907c16eadd7ad05f40103",
+    "OEIG_PROVE_PASS.scrubbed.json": "2860d4b10f383a1766d24fc2039eae22d09edb800a3758d88c32e827fd7166fb",
+    "UL7C_PROVE_PASS.scrubbed.json": "e02a59fa0b34cadd1092ebe7e36c1d2f5701513643324a90fe419e44316485af"
+  },
+  "support_plant_sha256": {
+    "COVER_ACCEPT_OEIG_PROVE.json": "50a3c272d4c19fa0a64f8d40f342e320bfb112b97208046326c416a815bedeee",
+    "COVER_ACCEPT_UL7C_PROVE.json": "f2e7d460cc8478c9eb87808643f6708e96e1b471c55996620a6a26578ce71c22",
+    "OEIG_PROVE_PASS.json": "0ca3e79fbaef1eb5d1d7d95c6826ca3ec1d1a4bc8652a713008617d45bc92695",
+    "UL7C_PROVE_PASS.json": "05452ab3871c57a26e84800b18eb92eaa7c93de595a368eca5aa58e51f6d325a"
+  },
+  "acceptance_tests": {
+    "AT-W1": {
+      "pass": true
+    },
+    "AT-W2": {
+      "pass": true
+    },
+    "AT-W3": {
+      "pass": true,
+      "hard_hits": []
+    },
+    "AT-W4": {
+      "pass": true
+    },
+    "AT-W5": {
+      "pass": true
+    },
+    "AT-W7": {
+      "pass": true,
+      "bad": []
+    },
+    "AT-W6": {
+      "pass": null,
+      "note": "Cover ACCEPT then Architect dual-bank before merge — not executed in Floor scrub"
+    },
+    "VERIFY_OEIG_PUBLIC": {
+      "pass": true,
+      "exit": 0,
+      "body": {
+        "checker": "verify_oeig_public.py",
+        "fails": [],
+        "pass": true,
+        "soft_ACCEPT": false
+      }
+    },
+    "VERIFY_UL7C_PUBLIC": {
+      "pass": true,
+      "exit": 0,
+      "body": {
+        "pass": true,
+        "fails": [],
+        "tip": "75ec5c8935e6eb804257b4d9b32a36cbfcdb64bf88d69b8dd2e24133956689fc",
+        "soft_ACCEPT": false
+      }
+    }
+  },
+  "paths": {
+    "scrubbed": "scrubbed/20260923T143704Z/",
+    "public_index_stage": "public_index_stage/"
+  },
+  "locks": {
+    "soft_ACCEPT": false,
+    "apply_held": true,
+    "canary_held": true,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false
+  },
+  "intentionally_not_done": [
+    "git push",
+    "PR open (stage only)",
+    "Cover ACCEPT",
+    "Architect dual-bank",
+    "plant dual rewrite",
+    "apply",
+    "canary",
+    "L7 unlock"
+  ]
+}

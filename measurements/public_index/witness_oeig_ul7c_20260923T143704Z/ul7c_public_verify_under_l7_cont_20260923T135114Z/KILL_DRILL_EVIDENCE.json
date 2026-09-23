@@ -1,0 +1,21 @@
+{
+  "schema": "aetheria_ul7c_kill_drill_evidence_v1",
+  "kill_armed_utc": "20260923T141044Z",
+  "worker_pid": 20004,
+  "worker_exit_code": 0,
+  "worker_alive_after": false,
+  "window_state": "HALTED",
+  "mouth": {
+    "authority_live": false,
+    "token_present": false,
+    "mouth_live_authority_present": false,
+    "mouth_token_present": false,
+    "mouth_residual_live_authority": false,
+    "residual_live_authority": false,
+    "auth_pid": null,
+    "soft_ACCEPT": false
+  },
+  "halt_receipt_exists": true,
+  "soft_ACCEPT": false,
+  "utc": "20260923T141047Z"
+}
