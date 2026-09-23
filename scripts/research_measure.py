@@ -2,12 +2,13 @@
 """Measure worker scaling and write research/config/windows-local.json. No plant, no network."""
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import atomic_write_json  # noqa: E402
 
 from research.compare import ECOLOGIES, run_comparison  # noqa: E402
 from research.measure import measure_worker_count, recommend_profile, utc  # noqa: E402
@@ -27,12 +28,16 @@ def main() -> int:
     cfg = ROOT / "research" / "config"
     cfg.mkdir(parents=True, exist_ok=True)
     outp = cfg / "windows-local.json"
-    outp.write_text(json.dumps(profile, indent=2) + "\n", encoding="utf-8")
+    atomic_write_json(outp, profile)
     meas_path = cfg / "windows-local.measurement.json"
-    meas_path.write_text(
-        json.dumps({"schema": "aetheria_measurement_v1", "created_at": utc(), "blocks": blocks, "profile": profile}, indent=2)
-        + "\n",
-        encoding="utf-8",
+    atomic_write_json(
+        meas_path,
+        {
+            "schema": "aetheria_measurement_v1",
+            "created_at": utc(),
+            "blocks": blocks,
+            "profile": profile,
+        },
     )
     print("profile", outp)
     print("measurement", meas_path)

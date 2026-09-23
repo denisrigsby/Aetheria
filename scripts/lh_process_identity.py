@@ -8,6 +8,7 @@ Windows-specific helpers (tasklist/taskkill/CIM) are isolated; role matching is 
 """
 from __future__ import annotations
 
+import csv
 import os
 import subprocess
 import sys
@@ -51,6 +52,31 @@ def identity_matches(cmd: Optional[str], claimed: str) -> bool:
     return role_from_cmdline(cmd) == claimed
 
 
+def tasklist_csv_has_pid(stdout: str, pid: Any) -> bool:
+    """True when ``tasklist /FO CSV`` stdout has ``pid`` as the PID column token.
+
+    Digit sequences inside a longer PID (``12`` inside ``1234``) or another
+    column (memory ``12,345 K``) are not a match. This is presence only.
+    """
+    try:
+        want = str(int(pid))
+    except (TypeError, ValueError):
+        return False
+    if int(want) <= 0:
+        return False
+    for raw in (stdout or "").splitlines():
+        line = raw.strip()
+        if not line or line.upper().startswith("INFO:"):
+            continue
+        try:
+            row = next(csv.reader([line]))
+        except csv.Error:
+            continue
+        if len(row) >= 2 and row[1].strip() == want:
+            return True
+    return False
+
+
 def pid_exists(pid: Any) -> bool:
     """Process table presence. Windows: filtered tasklist CSV PID column (not substring)."""
     try:
@@ -71,21 +97,7 @@ def pid_exists(pid: Any) -> bool:
         text=True,
         timeout=15,
     )
-    out = (r.stdout or "").strip()
-    if not out or out.upper().startswith("INFO:"):
-        return False
-    for line in out.splitlines():
-        line = line.strip()
-        if not line or line.upper().startswith("INFO:"):
-            continue
-        parts = [x.strip().strip('"') for x in line.split(",")]
-        if len(parts) >= 2:
-            try:
-                if int(parts[1]) == p:
-                    return True
-            except Exception:
-                continue
-    return False
+    return tasklist_csv_has_pid(r.stdout or "", p)
 
 
 def cmdline_for_pid(pid: Any) -> Optional[str]:

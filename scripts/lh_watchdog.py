@@ -22,7 +22,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 import time
 import traceback
@@ -34,7 +33,13 @@ ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
-from lh_process_identity import ROLE_SUPERVISOR, kill_if_verified, verified_role  # noqa: E402
+from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
+from lh_process_identity import (  # noqa: E402
+    ROLE_SUPERVISOR,
+    kill_if_verified,
+    pid_exists,
+    verified_role,
+)
 
 MEAS = ROOT / "measurements"
 STATE_PATH = MEAS / "long_horizon_state.json"
@@ -102,10 +107,7 @@ def log(msg: str) -> None:
 
 
 def write_json(path: Path, obj: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(obj, indent=2, default=str), encoding="utf-8")
-    tmp.replace(path)
+    atomic_write_json(path, obj, default=str)
 
 
 def read_state() -> Dict[str, Any]:
@@ -118,22 +120,16 @@ def read_state() -> Dict[str, Any]:
 
 
 def pid_alive(pid: Any) -> bool:
+    """Process-table presence. Not an identity check and not a kill."""
     try:
-        p = int(pid)
+        return pid_exists(pid)
     except Exception:
-        return False
-    if p <= 0:
-        return False
-    try:
-        # Windows-friendly
-        out = subprocess.run(
-            ["tasklist", "/FI", f"PID eq {p}", "/NH"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-        )
-        return str(p) in (out.stdout or "")
-    except Exception:
+        try:
+            p = int(pid)
+        except Exception:
+            return False
+        if p <= 0:
+            return False
         try:
             os.kill(p, 0)
             return True
@@ -407,7 +403,7 @@ def apply_action(diag: Dict[str, Any]) -> Dict[str, Any]:
             try:
                 # archive then clear
                 arch = MEAS / "red_helix_relaunch_request_last.json"
-                arch.write_text(RH_RELAUNCH_REQ.read_text(encoding="utf-8"), encoding="utf-8")
+                _atomic_replace_text(arch, RH_RELAUNCH_REQ.read_text(encoding="utf-8"))
                 RH_RELAUNCH_REQ.unlink()
             except Exception as e:
                 log(f"rh request clear note: {e}")

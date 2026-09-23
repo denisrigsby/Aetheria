@@ -1,0 +1,14 @@
+{
+  "CLAIM_FROZEN.json": "8bb0d1336d09f1988f31c84d92b27311b0115ac920654358f45a38128daaf621",
+  "INVARIANT_BOUNDARIES.json": "691a6705b8e999926935efc6898d21b1c0e393cb953264d9f7afd1bb913e4e45",
+  "NONCLAIMS.json": "3a3d9c580237bd9bddcdaae8c111c73aab1187fdd30346ada53063756f7287c3",
+  "claim_text": "Open-ended learning under fixed external governance: scope may expand, authority may not.",
+  "soft_ACCEPT": false,
+  "PRIVATE_AHEAD": [
+    "(plant-private) measurements/lll/LIVE_RSI_CONTROLS_STORE.json",
+    "Slave-1 plant paths",
+    "UL7C live window internals"
+  ],
+  "scrubbed": true,
+  "note": "Hashes are of scrubbed public_verify files; not plant byte identity."
+}

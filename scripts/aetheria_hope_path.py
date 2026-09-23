@@ -27,6 +27,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
 
 
 def health() -> dict:
@@ -229,7 +231,7 @@ def launch_probe(cycles: int) -> dict:
         summary["ok"] = False
 
     outp = ROOT / "measurements" / f"hope_path_summary_{int(time.time())}.json"
-    outp.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    atomic_write_json(outp, summary)
     write_hope_status(
         {"phase": "hope_summary", "status": "ready", "summary": summary, "summary_path": str(outp)}
     )
@@ -244,11 +246,12 @@ def launch_probe(cycles: int) -> dict:
         resume["last_hope_summary"] = summary
         resume["last_hope_summary_path"] = str(outp)
         resume["last_hope_log"] = summary.get("log")
-        rp.write_text(json.dumps(resume, indent=2), encoding="utf-8")
+        atomic_write_json(rp, resume)
         defaults = ROOT / "next_interventions.defaults.json"
         if defaults.exists() and not (ROOT / "next_interventions.json").exists():
-            (ROOT / "next_interventions.json").write_text(
-                defaults.read_text(encoding="utf-8"), encoding="utf-8"
+            _atomic_replace_text(
+                ROOT / "next_interventions.json",
+                defaults.read_text(encoding="utf-8"),
             )
     except Exception as e:
         print("resume write note:", e)

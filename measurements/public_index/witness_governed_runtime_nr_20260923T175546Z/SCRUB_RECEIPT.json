@@ -1,0 +1,114 @@
+{
+  "schema": "aetheria_witness_scrub_receipt_v1",
+  "stamp": "SCRUB_EXPORT_GOVERNED_RUNTIME_NR",
+  "status": "SCRUB_PASS",
+  "utc": "20260923T175546Z",
+  "gate": "witness_scrub_export_governed_runtime_nr_v1",
+  "exact_go": "GO: WITNESS_SCRUB_EXPORT_GOVERNED_RUNTIME_NR",
+  "SCRUB_PASS": true,
+  "soft_ACCEPT": false,
+  "apply_authorized": false,
+  "canary_authorized": false,
+  "unlock_L7_authorized": false,
+  "floor_dual_bank": false,
+  "public_claim": "Operator-proven governed runtime (NR1-NR6): non-chat control-plane job, persistence across restart, same capability/policy via chat and non-chat, fail-closed unauthorized, receipt-backed completion, one-command repeatable Windows CI PASS - soft_ACCEPT false; Not Certified.",
+  "plant_dual_before_sha256": "fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb",
+  "plant_dual_after_sha256": "fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb",
+  "scrubbed_dual_sha256": "c12bf86fb62e7136f99b5a77ca28d1e271e77a4ed64f1b404b6cccaa95c1853b",
+  "go_banked_sha256": "da96f557905adad8190a336ffcab30a26632b856ff3aa91761b821b595806c29",
+  "hash_method": "sha256_disk_bytes",
+  "remediates": {
+    "hold": "HOLD_WITNESS_SCRUB_GOVERNED_RUNTIME_NR",
+    "hold_utc": "20260923T175135Z",
+    "hold_sha": "72d0f3d14355577078b3dbd7d466163832fd9c77dd09c4328da8f28e24ef9706",
+    "fixes": [
+      "AT-W1 disk hash rebind",
+      "AT-W7 tNNNNu + full PR38 residual_scan"
+    ]
+  },
+  "acceptance_tests": {
+    "AT-W1": {
+      "pass": true,
+      "scrubbed_dual_sha256": "c12bf86fb62e7136f99b5a77ca28d1e271e77a4ed64f1b404b6cccaa95c1853b",
+      "note": "disk-byte bind"
+    },
+    "AT-W2": {
+      "pass": true,
+      "plant_before": "fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb",
+      "plant_after": "fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb"
+    },
+    "AT-W3": {
+      "pass": true,
+      "nr_binds_all_PASS": true
+    },
+    "AT-W4": {
+      "pass": true,
+      "exact_command": "python measurements/integration/governed_runtime_not_merely_chatbot_v1/prove_governed_runtime_not_merely_chatbot_v1.py --ci-child --happy-name=nr_ci_child_20260923T035908Z",
+      "returncode": 0,
+      "github_hosted": false,
+      "job_id": "nr-win-ci-20260923T035908Z"
+    },
+    "AT-W5": {
+      "pass": true,
+      "has_inputs": true,
+      "has_outputs": true,
+      "has_policy": true
+    },
+    "AT-W6": {
+      "pass": true,
+      "readme_five_point": true
+    },
+    "AT-W7": {
+      "pass": true,
+      "residual_hits": [],
+      "soft_ACCEPT_true_count": 0,
+      "pr38": true
+    },
+    "AT-W8": {
+      "pass": true,
+      "soft_ACCEPT": false,
+      "apply_held": true,
+      "canary_held": true,
+      "L7_held": true,
+      "promote_held": true,
+      "floor_dual_bank": false
+    },
+    "AT-W9": {
+      "pass": null,
+      "note": "Cover ACCEPT then Architect dual before merge"
+    },
+    "AT-W10": {
+      "pass": true,
+      "exclusions_beside_claim": true
+    }
+  },
+  "paths": {
+    "scrubbed": "scrubbed/20260923T175546Z/",
+    "public_index_stage": "public_index_stage/witness_governed_runtime_nr_20260923T175546Z/",
+    "public_index_target": "measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/",
+    "supersedes_pack": "measurements/public_index/witness_governed_runtime_nr_20260923T174809Z/"
+  },
+  "locks": {
+    "soft_ACCEPT": false,
+    "apply_held": true,
+    "canary_held": true,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "floor_dual_bank": false,
+    "scrub_only": true
+  },
+  "intentionally_not_done": [
+    "git push",
+    "PR open (stage only)",
+    "Cover ACCEPT",
+    "Architect dual-bank",
+    "plant dual rewrite",
+    "apply",
+    "canary",
+    "L7 unlock",
+    "soft_ACCEPT",
+    "promote",
+    "Floor dual_bank"
+  ]
+}

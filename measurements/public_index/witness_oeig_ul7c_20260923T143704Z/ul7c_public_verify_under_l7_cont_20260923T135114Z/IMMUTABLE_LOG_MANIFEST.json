@@ -1,0 +1,9 @@
+{
+  "schema": "aetheria_ul7c7_immutable_log_v1",
+  "events_path": "events.jsonl",
+  "n_entries": 27,
+  "tip_chain_hash": "75ec5c8935e6eb804257b4d9b32a36cbfcdb64bf88d69b8dd2e24133956689fc",
+  "chain_verify_ok": true,
+  "soft_ACCEPT": false,
+  "utc": "20260923T141550Z"
+}

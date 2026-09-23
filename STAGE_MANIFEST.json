@@ -1,0 +1,15 @@
+{
+    "parity":  "PRIVATE_AHEAD",
+    "staged":  [
+                   "FINAL_STATE_BRIEF.md",
+                   "docs/FINAL_STATE_BRIEF.md",
+                   "docs/EXPORT_PARITY.md",
+                   "PUBLIC_EXPORT_PRIMARY.txt",
+                   "README.md (evidence banner)",
+                   "docs/PRODUCTION_READINESS.md (title softened)"
+               ],
+    "schema":  "aetheria_local_export_stage_v1",
+    "note":  "Operator-local absolute paths removed in metadata bleach pass.",
+    "public_equals_plant":  false,
+    "remote":  "https://github.com/denisrigsby/Aetheria"
+}

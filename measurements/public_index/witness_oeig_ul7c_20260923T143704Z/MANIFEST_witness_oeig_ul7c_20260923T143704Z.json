@@ -1,0 +1,41 @@
+{
+  "schema": "aetheria_public_witness_export_v1",
+  "generated_utc": "20260923T143704Z",
+  "gate": "witness_scrub_export_oeig_ul7c_v1",
+  "exact_go": "GO: WITNESS_SCRUB_EXPORT_OEIG_UL7C",
+  "export_parity": "PRIVATE_AHEAD",
+  "soft_ACCEPT": false,
+  "apply_held": true,
+  "public_equals_plant": false,
+  "not_certified": true,
+  "source_happies": {
+    "oeig": "oeig_20260923T134010Z",
+    "ul7c": "under_l7_cont_20260923T135114Z"
+  },
+  "files": [
+    {
+      "file": "dual_bank_oeig_prove.json",
+      "plant_status": "DUAL_BANK_OEIG_PROVE",
+      "plant_utc": "20260923T134420Z",
+      "happy": "oeig_20260923T134010Z",
+      "plant_sha256": "70d37b7c692f58d052751a985b41160b2eba9a215c990992f1e9b6558fad3f62",
+      "scrubbed_sha256": "78e5e7b14b2fa51354ed2ed5957a83ac7c9a7527246ae6e17fb522062e86fe63",
+      "sha256_12": "78e5e7b14b2f",
+      "card": "lll_open_ended_learning_under_invariant_governance_v1"
+    },
+    {
+      "file": "dual_bank_ul7c_prove.json",
+      "plant_status": "DUAL_BANK_UL7C_PROVE",
+      "plant_utc": "20260923T142459Z",
+      "happy": "under_l7_cont_20260923T135114Z",
+      "plant_sha256": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b",
+      "scrubbed_sha256": "b0a488aa1457ba8caf264c31b9999ce2f02238801ef7002f3c8583ec36053b45",
+      "sha256_12": "b0a488aa1457",
+      "card": "under_l7_continuous_live_v1"
+    }
+  ],
+  "support_packs": [
+    "oeig_public_verify_oeig_20260923T134010Z/",
+    "ul7c_public_verify_under_l7_cont_20260923T135114Z/"
+  ]
+}

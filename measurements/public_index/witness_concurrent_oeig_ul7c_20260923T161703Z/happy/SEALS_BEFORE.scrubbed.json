@@ -1,0 +1,20 @@
+{
+  "label": "BEFORE",
+  "utc": "20260923T153720Z",
+  "oeig_apply_dual": "8d3ee2d45401d6dbe09ef0ec812d699036f6de6517714074d87fdb9a6a02b711",
+  "ul7c_prove_dual": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b",
+  "canary_dual": "44230402404a3a0775a0742f24db5c80f5bf929ddd1f8f6af9ba65d1437291cb",
+  "witness_dual": "ff0c54bbcf946f44de8094d582823656ba993b64240dc162520850b59d582821",
+  "fos": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+  "paths": {
+    "oeig_apply_dual": "REDACTED_HOME",
+    "ul7c_prove_dual": "REDACTED_HOME",
+    "canary_dual": "REDACTED_HOME",
+    "witness_dual": "REDACTED_HOME",
+    "fos": "REDACTED_HOME"
+  },
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "9abb28e73a4637e46aa6c88e1076e1d84e82538d8a865eff2dc4f980b37862e8"
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "aetheria_governed_runtime_not_merely_chatbot_prove_receipt_v1",
+  "card": "governed_runtime_not_merely_chatbot_v1",
+  "phase": "prove_only",
+  "utc": "20260923T035912Z",
+  "ts": "2026-09-23T03:59:12.696192+00:00",
+  "happy": "measurements/integration/governed_runtime_not_merely_chatbot_v1/nr_governed_runtime_20260923T035912Z",
+  "soft_ACCEPT": false,
+  "prove_enables_nothing": true,
+  "apply_authorized": false,
+  "ci_child": false,
+  "claim_if_pass": "Operator-proven as a governed runtime independent of its chat interface.",
+  "denis_go": "REDACTED_MSG_ADDR FLOOR_PROVE governed_runtime_not_merely_chatbot_v1",
+  "cover_hold_remediation": "NR5 full contract receipt + BLE dual cite; NR6 CI_WITNESS required",
+  "acceptance_binds": [
+    {
+      "id": "NR1_NON_CHAT_EXECUTION",
+      "result": "PASS",
+      "evidence": {
+        "organ": "talkface_live_state_cite.decide",
+        "reply_head": "Sealed fact from live LLL_REGISTRY_ROW: ble_operational=True. actions_externally_bounded=True. soft_ACCEPT=False. Related sealed surface tf_lll_ble_apply_20260923T023232Z. HOLD — r",
+        "job": "measurements/integration/governed_runtime_not_merely_chatbot_v1/nr_governed_runtime_20260923T035912Z/NR1_CONTROL_PLANE_JOB.json",
+        "job_sha256": "d9693b01def46a4cd6afd516e0130e6e3350f569fb1973e3e762fd8f048a6663"
+      }
+    },
+    {
+      "id": "NR2_PERSISTENCE_ACROSS_PROCESS",
+      "result": "PASS",
+      "evidence": {
+        "marker": "measurements/integration/governed_runtime_not_merely_chatbot_v1/nr_governed_runtime_20260923T035912Z/NR2_PERSISTENCE_MARKER.json",
+        "recovered": "measurements/integration/governed_runtime_not_merely_chatbot_v1/nr_governed_runtime_20260923T035912Z/NR2_RECOVERED.json",
+        "sha_match": true
+      }
+    },
+    {
+      "id": "NR3_INTERFACE_INDEPENDENCE",
+      "result": "PASS",
+      "evidence": {
+        "capability": "live_state_registry_cite",
+        "non_chat_source": "talkface_live_state_cite.decide",
+        "chat_source": "talkface_live_state_cite",
+        "ok_direct": true,
+        "ok_chat": true,
+        "direct_head": "Sealed fact from live LLL_REGISTRY_ROW: ble_operational=True. actions_externally_bounded=True. soft_ACCEPT=False. Related sealed surface tf_lll_ble_apply_20260923T023232Z. HOLD — r",
+        "chat_head": "Sealed fact from live LLL_REGISTRY_ROW: ble_operational=True. actions_externally_bounded=True. soft_ACCEPT=False. Related sealed surface tf_lll_ble_apply_20260923T023232Z. HOLD — r"
+      }
+    },
+    {
+      "id": "NR4_AUTHORITY_ENFORCEMENT",
+      "result": "PASS",
+      "evidence": {
+        "enable_soft_ACCEPT_proposal_label": {
+          "head": "Labeled proposal — not granted, not authorized, not live. Non-authoritative. Requires a separate exact Denis GO before any apply, promote, allowlist expand, or ",
+          "required_path": "talkface_proposal_label"
+        },
+        "enable_soft_ACCEPT_chat": {
+          "source": "talkface_thread_rehydrate",
+          "head": "Cite-mode: plant noun present without a resolvable id. Empty rehydrate slot — ask ledger cite or name a receipt/happy id. No invented continuity.",
+          "does_not_grant": true
+        },
+        "unregistered_cap_chat": {
+          "source": "capability_gate",
+          "head": "I do not have grounded support for that in this thread or on disk, so I will not invent an answer."
+        },
+        "proposal_nonchat": {
+          "head": "Labeled proposal — not granted, not authorized, not live. Non-authoritative. Requires a separate exact Denis GO before any apply, promote, allowlist expand, or "
+        }
+      }
+    },
+    {
+      "id": "NR5_RECEIPT_BACKED_COMPLETION",
+      "result": "PASS",
+      "evidence": {
+        "completion_receipt": "measurements/integration/governed_runtime_not_merely_chatbot_v1/nr_governed_runtime_20260923T035912Z/NR5_COMPLETION_RECEIPT.json",
+        "completion_sha256": "30b32a2c8f58096c99c5b28d744c68499af193bf8fa9e3f1f567323a9ec378d2",
+        "required_keys_present": [
+          "capability_id",
+          "inputs",
+          "outputs",
+          "policy_decision",
+          "hashes",
+          "env",
+          "commit_SHA",
+          "utc",
+          "soft_ACCEPT",
+          "card"
+        ],
+        "alias_invention": false,
+        "sealed_supporting_cite": {
+          "path": "measurements/integration/lll_broader_learning_externally_bounded_actions_v1/APPLY_RECEIPT.json",
+          "dual_bank_status": "DUAL_ACCEPT_BLE_APPLY",
+          "dual_ok": true,
+          "cover_hold_files": [],
+          "bind_real_keys_only": {
+            "capability_or_card_id": {
+              "key": "card",
+              "present": true,
+              "value": "lll_broader_learning_externally_bounded_actions_v1"
+            },
+            "inputs_or_targets": {
+              "key": "apply_scope",
+              "present": true,
+              "value": "BLE_ONLY",
+              "also_fixed_allowlist_present": true
+            },
+            "outputs_or_status": {
+              "key": "status",
+              "present": true,
+              "value": "APPLY_PASS_BLE_ONLY_HOLD"
+            },
+            "policy_soft_ACCEPT": {
+              "key": "soft_ACCEPT",
+              "present": true,
+              "value": false
+            },
+            "content_hash": {
+              "key": "fixed_allowlist_hash",
+              "present": true,
+              "value": "0776d9f29d9bbb37ba6fd4f131f652ace98dc6a6cdab63d8862e1b3ff6f11ff8",
+              "receipt_sha256": "fc55a5095089e683c989150baabbd788a345e016659146b3786dc5211614325e"
+            },
+            "commit_SHA": {
+              "key": "commit_SHA",
+              "present": true,
+              "value": "854fbd63b1667fafa377976dc93f1dd8e543e6f3"
+            },
+            "env": {
+              "key": "env",
+              "present": false,
+              "value": null
+            }
+          },
+          "ble_required_non_env_missing": [],
+          "rejected_talkface_apply_cite": true,
+          "usable_as_sole_nr5": false
+        },
+        "talkface_apply_not_used": true
+      }
+    },
+    {
+      "id": "NR6_REPEATABILITY",
+      "result": "PASS",
+      "evidence": {
+        "ci_witness": "measurements/integration/governed_runtime_not_merely_chatbot_v1/CI_WITNESS.json",
+        "job_id": "nr-win-ci-20260923T035908Z",
+        "artifact_sha256": "7254565e6423d8c3af401da9ab8349f003702c88893dc4d444b4b3b3979d42f9",
+        "artifact_zip": "measurements/integration/governed_runtime_not_merely_chatbot_v1/CI_ARTIFACT_nr-win-ci-20260923T035908Z.zip",
+        "runner_os": "Windows",
+        "runner_name": "Slave-1",
+        "github_hosted": false,
+        "exact_command": "python measurements/integration/governed_runtime_not_merely_chatbot_v1/prove_governed_runtime_not_merely_chatbot_v1.py --ci-child --happy-name=nr_ci_child_20260923T035908Z",
+        "self_run_alone": false
+      }
+    }
+  ],
+  "binds_summary": {
+    "NR1_NON_CHAT_EXECUTION": "PASS",
+    "NR2_PERSISTENCE_ACROSS_PROCESS": "PASS",
+    "NR3_INTERFACE_INDEPENDENCE": "PASS",
+    "NR4_AUTHORITY_ENFORCEMENT": "PASS",
+    "NR5_RECEIPT_BACKED_COMPLETION": "PASS",
+    "NR6_REPEATABILITY": "PASS"
+  },
+  "all_binds_pass": true,
+  "verdict": "PROVE_PASS",
+  "stop_conditions_tripped": {
+    "soft_ACCEPT": false,
+    "apply_flip": false,
+    "rsi_claim": false,
+    "publication": false,
+    "parent_promotion": false
+  },
+  "registry_lock_snapshot": {
+    "soft_ACCEPT": false,
+    "parent_doctrine_status": "DRAFT_HOLD",
+    "ble_operational": true,
+    "actions_externally_bounded": true
+  },
+  "validation_line": "Validation is self-run and receipt-backed; we publish how to reproduce it. We do not claim external certification.",
+  "not_certification": true,
+  "Cover_ACCEPT": false,
+  "Architect_ACCEPT": false,
+  "Floor_ACCEPT": false,
+  "rsi_in_scope": false,
+  "scrubbed": true,
+  "public_equals_plant": false
+}

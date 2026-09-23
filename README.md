@@ -1,257 +1,124 @@
-# Aetheria Sovereign Agent
+# Aetheria
 
-[![CI](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria-sovereign-agent/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria-sovereign-agent)](https://github.com/denisrigsby/Aetheria-sovereign-agent/releases)
+**Prove it works. Prove it is running.**
 
-**Detached ticks. Identity-checked stop. Manual-start after crash. Restart-safe progress. Cloud optional.**
+Aetheria is a governed, persistent AI runtime — not a chatbot. Chat is only its mouth.
 
-Standalone product boundary: [docs/STANDALONE_PRODUCT.md](docs/STANDALONE_PRODUCT.md) · state: [docs/STATE_MODEL.md](docs/STATE_MODEL.md) · readiness: [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) · install: [docs/INSTALL.md](docs/INSTALL.md) · research: [docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md](docs/FRONTIER_EVOLUTION_WORKING_INSTRUCTIONS.md) · optional evidence ledger: [docs/PRIME_CONTINUITY.md](docs/PRIME_CONTINUITY.md)
+In its currently demonstrated configuration it combines persistent memory, capability registration, receipt-backed evidence, fail-closed authority, bounded learning under external governance, and sealed RSI-style evidence with **LIVE_RSI Enabled (bounded)**.
 
-Launcher: `python -u scripts/aetheria.py status|stop|start|resume|recover|diagnose`
+> Validation is self-run and receipt-backed; we publish how to reproduce it. We do not claim external certification.
 
-Local multi-cycle agent **control plane** — process supervision and on-disk continuity so long-running agent work does not die with the chat window that started it.
+## Status labels (only these)
 
-> Think **supervisor / pm2 for agent work loops**: hard stop, recovery, structured cycle completion — not another multi-agent framework and not a chat UI.
+| Label | Meaning |
+| --- | --- |
+| **Proven (operator)** | Scrubbed dual receipt in this tree for the named scope. Operator-run and dual-bank sealed on the plant. Not a clean-room rebuild of the Windows plant |
+| **HOLD** | Banked / gated; not promoted or not authorized to apply |
+| **Not Proven** | No sealed receipt chain for the claim |
+| **Not Enabled** | Implemented or specified but not live-enabled |
 
-### The pain this targets
+Soft ACCEPT is **false** plant-wide. Nothing here is Certified, independently audited, or unrestricted.
 
-| Common AI complaint | Control plane answer |
-|---------------------|----------------------|
-| Dies when chat/IDE closes | Detached supervisor + on-disk state |
-| Hangs / stuck forever | Timeouts, STOP files, conservation bounds |
-| “Is it still working?” | `status_report` + measurements JSON |
-| Overnight babysitting | Rolling ticks / segments + watchdog |
-| Thrash restart after power flap | Manual-start policy; resume when stable |
-| Chat is the whole runtime | **Plant clock ≠ chat** — chat never owns the schedule |
+"Not a chatbot / chat is mouth" for the governed-runtime scope (NR1–NR6) is **Proven (operator)** under the sealed duals in this tree. Chat remains the mouth, not the plant clock. Beside the claim: soft_ACCEPT=false; Not Certified; Talk Face acceptance remains a separate publication blocker; rsi_level7 / may_auto_promote / network_live Not Enabled.
 
-See [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md).
+## Prove it works — sealed evidence
 
-### Job #1 — local campaign runner
+All of the following are **Proven (operator)**: a scrubbed dual receipt in this tree, not a clean-room rebuild of the Windows plant. Exclusions sit beside each claim. `status` strings match the JSON.
 
-| Step | What you prove |
-|------|----------------|
-| 1 | `python -u scripts/demo_local_smoke.py` — control plane layout + compile (no private sauce) |
-| 2 | (Full operator root) launch supervisor + watchdog — detached ticks |
-| 3 | `status_report` / measurements — still alive? |
-| 4 | `python -u scripts/plant_control.py stop` — STOP files + identity-checked tree kill; survivors reported |
+### Authority / learning ladder (applied)
 
-**Clone alone = Job #1 smoke (step 1).** Full multi-hour plant needs a complete local Aetheria root (cycle body is private by design).
+| Card | Dual stamp | Claim | Beside the claim |
+| --- | --- | --- | --- |
+| Bounded autonomous promotion | [`DUAL_ACCEPT_BAP_APPLY_BOUNDED`](measurements/public_index/dual_accept_bap_apply_bounded.json) | bounded_autonomous_promotion_applied | soft_ACCEPT=false; allowlist fixed |
+| Repeated promotion no-regression | [`DUAL_ACCEPT_RPR_APPLY`](measurements/public_index/dual_accept_rpr_apply.json) | repeated_bounded_promotion_no_regression_applied | parent open-ended doctrine still DRAFT/HOLD |
+| Isolated learning domains | [`DUAL_ACCEPT_ILD_APPLY`](measurements/public_index/dual_accept_ild_apply.json) | isolated_learning_domains_applied | no allowlist expansion |
+| Sandbox self-generated experiments | [`DUAL_ACCEPT_SGE_APPLY`](measurements/public_index/dual_accept_sge_apply.json) | sandbox_self_generated_experiments_applied | sandbox-bounded |
+| Long-horizon learning across model replacement | [`DUAL_ACCEPT_LHL_APPLY`](measurements/public_index/dual_accept_lhl_apply.json) | long_horizon_learning_across_model_replacement_applied | model replacement under seal |
+| Broader learning, externally bounded actions | [`DUAL_ACCEPT_BLE_APPLY`](measurements/public_index/dual_accept_ble_apply.json) | broader_learning_externally_bounded_actions_applied | actions remain externally bounded |
 
-### Recovery (full operator root)
+Validation publication steps 1–3: **Proven (operator)** — [`DUAL_ACCEPT_VALIDATION_123`](measurements/public_index/dual_accept_validation_123.json). `claim_sealed`: validation_publication_steps_1_2_3_evidence_proved_operator.
 
-Prefer the **detached Python launcher** (avoids Windows Store `python` alias hangs):
+### Talk Face / mouth
 
-```powershell
-python -u scripts/launch_lh_detached.py --continue-tick --max-ticks 48
-# or:
-python -u scripts/plant_control.py resume --with-watchdog
-python -u scripts/status_report.py
-```
+Talk Face prepublish apply + re-prove: **Proven (operator)** — [`DUAL_ACCEPT_TALKFACE_APPLY_REPROVE`](measurements/public_index/dual_accept_talkface_apply_reprove.json)  
+`claim_sealed`: talkface_prepublish_apply_and_reprove_pass_banked. Beside the claim: `publication_authorized` false; Not Certified. This stamp is not the true RSI receipt.
 
-Segment end (`completed_max_ticks`) is **normal** — a new PID continues the campaign; mom / durable logs can carry across processes.
+### Governed runtime (not merely chatbot)
 
-## Why this exists
+**Proven (operator)** — [`DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE`](measurements/public_index/dual_accept_governed_runtime_nr_prove.json)  
+Witness pack: [`measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/`](measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/) (witness dual `f25a7a6f94694e47caf1aaf51511f22e0194e53cbf6a6135849988225f31615b`).  
+Operator canary seal: `DUAL_BANK_CANARY_GOVERNED_RUNTIME_NR_BOUNDED` @ `20260923T182724Z` SHA `0d246469d1240ff019988b7ea6af973e823a40d2b6b0c1495056a66fd4085097` (plant integration; not a Certified claim).  
+`claim_sealed`: Operator-proven governed runtime independent of chat interface (NR1–NR6); soft_ACCEPT false; Not Certified.
 
-Long-running local AI work often dies with the interactive session that started it. Context lives in chat. Restarts mean starting over. “Just leave it running” can turn into multi-hour hangs under unbounded manage/recon paths.
+### Bounded self-improvement
 
-Aetheria’s published control plane answers that with:
+**Proven (operator)** — [`DUAL_ACCEPT_BSI_THREE_CYCLE`](measurements/public_index/dual_accept_bsi_three_cycle.json)  
+`claim_sealed`: Demonstrated three consecutive bounded self-improvement cycles under external governance.  
+Beside claim: **not RSI** (`rsi_in_scope` false); prove-scoped at seal; **Not Certified.**
 
-1. A **detached plant clock** (long-horizon supervisor)  
-2. A **watchdog** that **latches manual start** after unexpected death (opt-in AUTORUN to thrash-relaunch)  
-3. A **cycle runner contract** (structured summary, env-based cycle count, hard timeouts)  
-4. **Rolling process segments** (default 48 ticks — multi-PID campaigns are normal)  
-5. **Restart-resilient green-tick logs** for optional change-control gates  
-6. **Operator tooling** to spot lag (orphan workers, memory, CPU) in one command  
+### RSI ladder
 
-Private runtime pieces (orchestrator, living memory, asset registry) stay on the operator machine. This repository is the **auditable control plane**.
+| Stage | Dual stamp | Claim | Beside the claim |
+| --- | --- | --- | --- |
+| Preliminary RSI | [`DUAL_ACCEPT_PRELIMINARY_RSI`](measurements/public_index/dual_accept_preliminary_rsi.json) | Preliminary RSI evidence under external governance. | does **not** satisfy true RSI; `LIVE_RSI` on this receipt is `Not Enabled` |
+| True RSI evidence | [`DUAL_ACCEPT_TRUE_RSI`](measurements/public_index/dual_accept_true_rsi.json) | True RSI evidence under external governance (still not unrestricted / unbounded unless separately proved). | `LIVE_RSI` on this prove receipt is `Not Enabled`; still **not** unrestricted / unbounded; Not Certified |
+| True RSI apply | [`DUAL_ACCEPT_APPLY_TRUE_RSI`](measurements/public_index/dual_accept_apply_true_rsi.json) | True RSI applied under external governance; LIVE_RSI Enabled (bounded — still not unrestricted / unbounded). | soft_ACCEPT=false; no rsi_level7; no may_auto_promote; no network_live; Not Certified; parent DRAFT/HOLD |
 
-**Not in this repo (private operator depth):** interactive companion chat, local generative backends, fine-tune / adapter train loops. If present locally, they must **never parent** the long-horizon plant clock.
+Publication pack: **Proven (operator)** — [`DUAL_ACCEPT_FINAL_REPO_PUBLISH`](measurements/public_index/dual_accept_final_repo_publish.json). `claim_sealed`: Final repo publish pack dual-bank sealed. Public main carries Proven (operator) claims with exclusions beside them; LIVE_RSI Enabled (bounded); soft_ACCEPT=false; Not Certified. Beside the claim: `export_parity` **PRIVATE_AHEAD**; public ≠ full plant.
 
-**Sovereign by default, cloud when you allow it** — optional external models/backup/notify are future adapters; they are not required for the control plane to run.
+## Prove it is running — live state
 
-→ Deep dive: [docs/WHY.md](docs/WHY.md) · [docs/CYCLE_RUNNER.md](docs/CYCLE_RUNNER.md) · [docs/MARKET_PAIN.md](docs/MARKET_PAIN.md)
+Read these two files in this tree:
 
-## Features
+- [`dual_accept_apply_true_rsi.json`](measurements/public_index/dual_accept_apply_true_rsi.json) — `status` `DUAL_ACCEPT_APPLY_TRUE_RSI`; `LIVE_RSI` is `Enabled (bounded under external governance)`; happy `true_rsi_20260923T044857Z`
+- [`live_rsi_controls_store.json`](measurements/public_index/live_rsi_controls_store.json) — `LIVE_RSI` true; `LIVE_RSI_mode` `bounded_under_external_governance`; `dual_apply_status` `DUAL_ACCEPT_APPLY_TRUE_RSI`
 
-| Feature | Description |
-|---------|-------------|
-| **Supervised tick loop** | Scheduled multi-cycle work with on-disk checkpoints |
-| **Cycle runner contract** | `lh_probe_summary_v1` JSON; env `AETHERIA_NUM_CYCLES`; dual-read fallback |
-| **Bounded finalize** | After contract success, short grace then terminate hang-prone tails |
-| **Watchdog recovery** | Default: manual-start latch after crash/segment; AUTORUN file to relaunch |
-| **PID-truth + identity** | Alive = PID exists **and** cmdline is the claimed role; PID-only matches rejected |
-| **Stop** | Signals supervisor **and** watchdog STOP files; kills supervisor tree while still alive (`taskkill /PID /F /T` on Windows); kills recorded probe by identity; reports remaining allowlisted descendants; exit 1 if any remain |
-| **Rolling segments** | Default **48 ticks** per process — not single-PID heroics |
-| **Durable green ticks** | Gate progress survives process restart |
-| **Measured entry path** | `aetheria_hope_path` for health + short runs |
-| **Momentum carry** | Progress signals can continue across restarts |
-| **Conservation defaults** | Light manage + selective heavy health |
-| **Status + resource hygiene** | `status_report` / `resource_check` — orphans, RAM, CPU, segment vs campaign |
-| **Bounded smoke runner** | `run_probe_bounded` — no unbounded manual probes |
-| **Guarded edit sandbox** | Disposable SafeEdit demo target |
-| **Plant != chat** | Detached ticks; interactive sessions never own the schedule |
-| **Prime continuity (optional)** | Draft/commit, hash-chained ledger, local search; does **not** start the plant |
+Scrubbed registry snapshot (not an extra stamp): [`lll_registry_row.json`](measurements/public_index/lll_registry_row.json).
 
-## Architecture
+- **LIVE_RSI = Enabled (bounded under external governance)**
+- soft_ACCEPT = false
+- rsi_level7 = false
+- may_auto_promote = false
+- network_live = false
+- unrestricted_rsi = false
+- unbounded_rsi = false
+- parent open-ended doctrine = **DRAFT/HOLD** (not operational; `parent_still_DRAFT_HOLD` true)
+- FIXED_OPERATOR_SPACE unchanged at apply
+- Sibling applied organs preserved (RPR/ILD/SGE/LHL/BLE)
+- Not Certified
 
-```mermaid
-flowchart TB
-  OP[Operator] -->|start / stop / status_report| SUP
-  SUP[long_horizon_supervisor] -->|env cycles + timeout| CR[Cycle runner contract]
-  CR -->|summary JSON| SUP
-  SUP --> DISK[(measurements/)]
-  SUP --> GLOG[gate_a_green_ticks.jsonl]
-  WD[lh_watchdog] -->|PID + heartbeat| SUP
-  WD -->|relaunch| SUP
-  HOPE[aetheria_hope_path] --> CR
-  CR --> PRIV[Private cycle body - full install]
-```
+The live process tick remains on the operator plant. It is not GitHub-hosted. This record is **running under seal**, not unrestricted RSI and not certification.
 
-| Layer | Owns | Does not own |
-|-------|------|----------------|
-| Operator | Intent, rare review | Multi-hour parent process |
-| Control plane (this repo) | Schedule, recovery, contracts, status | Private memory contents |
-| Private runtime | Cycle implementation, registry, living streams | Public distribution |
+## What remains HOLD / Not Enabled / Not Proven
 
-## Try the local demo (sanitized) — start here
+- Parent open-ended learning under invariant governance: **DRAFT/HOLD**
+- Unrestricted / unbounded RSI: **Not Proven** (explicitly excluded)
+- rsi_level7 / may_auto_promote / network_live: **Not Enabled**
+- External certification / independent audit: **Not Proven** (not claimed)
+- Broader vision of replaceable-model governed intelligence: labeled separately; **not** mixed into this as-is definition
 
-**High-signal path for clones:** prove the control plane works locally without private sauce.
+## How to verify the claims (clean clone)
 
-```powershell
-git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git
-cd Aetheria-sovereign-agent
-python -u scripts/demo_local_smoke.py
-# Windows one-click:
-#   Demo-Local.bat
-#   or: powershell -File scripts/demo_local.ps1
-```
+A stranger verifies the claims by opening the scrubbed duals linked above. That does not require plant-only `measurements/integration/` paths, and it is not a clean-room rebuild of the Windows plant.
 
-| Demo includes | Demo does **not** include |
-|---------------|---------------------------|
-| Layout + compile smoke | Private living streams / registry guts |
-| Example measurement shapes | Companion chat / Ollama surface |
-| Clear plant ≠ chat warnings | Live G4 train / adapters |
-| Soft status import probe | Auto-started multi-hour plant |
+1. Open each `measurements/public_index/dual_accept_*.json` linked in the Proven tables and confirm `status`. Packet list: [`MANIFEST_ladder_20260923.json`](measurements/public_index/MANIFEST_ladder_20260923.json).
+2. Open [`live_rsi_controls_store.json`](measurements/public_index/live_rsi_controls_store.json) and [`dual_accept_apply_true_rsi.json`](measurements/public_index/dual_accept_apply_true_rsi.json). LIVE_RSI is Enabled (bounded under external governance). `soft_ACCEPT` is false. `rsi_level7`, `may_auto_promote`, and `network_live` are false.
+3. The live process tick remains on the operator plant. It is not GitHub-hosted.
 
-Full doc: **[docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md)**.  
-Private depth (if you have a full operator root) must **never** parent the plant from chat.
+Exact demo script: [docs/RUNNABLE_DEMO.md](docs/RUNNABLE_DEMO.md). Optional operator-plant replay of `measurements/integration/` is an appendix there. It is not required to verify these claims.  
+Threat model: [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
-**Local only / no sauce.** Demo smoke needs Python only. Optional later (private companion, not this smoke): `ollama pull qwen2.5:14b`.
+## Public trust order
 
-## Quick start
+1. Plain-English problem statement (this README)
+2. Five-minute reproducible demo
+3. Architecture / trust-boundary diagrams (as published)
+4. Automated public CI (where wired)
+5. Machine-readable receipts
+6. Threat model and limitations
+7. LLL/RSI material only with the sealed stamps above — never without exclusions
 
-```powershell
-git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git
-cd Aetheria-sovereign-agent
-```
-
-**Conservation environment** (recommended for long runs):
-
-```powershell
-$env:AETHERIA_LIGHT_MANAGE = "1"
-$env:AETHERIA_SKIP_FINAL_RECON = "1"
-$env:AETHERIA_HEAVY_HEALTH_CYCLES = "6,12"
-$env:AETHERIA_META_RECON = "0"
-```
-
-**Status / lag check** (always safe, read-only unless reaping):
-
-```powershell
-python -u scripts/status_report.py
-# If ORPHAN_PROBES while plant is idle:
-python -u scripts/status_report.py --reap-orphans
-```
-
-**Short measured run** (full install required for cycle body):
-
-```powershell
-python -u scripts/aetheria_hope_path.py --health-only
-python -u scripts/aetheria_hope_path.py --cycles 2
-```
-
-**Detached schedule + watchdog** (rolling segment defaults):
-
-```powershell
-powershell -File scripts/launch_long_horizon.ps1 -Cycles 2 -IntervalMin 30 -MaxTicks 48
-powershell -File scripts/launch_lh_watchdog.ps1
-```
-
-**Manual cycle smoke** (hard timeout — prefer this over bare probe scripts):
-
-```powershell
-python -u scripts/run_probe_bounded.py --cycles 2
-```
-
-**Stop:**
-
-```powershell
-Set-Content measurements/long_horizon_STOP "stop"
-Set-Content measurements/watchdog_STOP "stop"
-```
-
-> **Scope:** Clones of this repo alone are the control plane. The cycle body and registry resolve inside a complete local Aetheria root. That split is intentional.
-
-## Repository layout
-
-```
-scripts/        Supervisor, watchdog, hope path, cycle contract consumers,
-                status/resource hygiene, bounded runner, gate eval, sandbox edit
-living/         Path helpers + disposable sandbox target
-measurements/   Examples and schemas only (not live host state)
-templates/      Example handoff / resume shapes
-docs/           Why, architecture, cycle runner, operations, internals
-```
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) | **Sanitized try-it-now demo** (clones) |
-| [docs/WHY.md](docs/WHY.md) | Problem, non-goals, success criteria |
-| [docs/CYCLE_RUNNER.md](docs/CYCLE_RUNNER.md) | Cycle contract, timeouts, orphan hygiene |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layers and components |
-| [docs/OPERATIONS.md](docs/OPERATIONS.md) | Start, stop, recover, maintenance |
-| [docs/INTERNALS.md](docs/INTERNALS.md) | Continuity files and change policy |
-| [docs/MEMORY_AND_STATE.md](docs/MEMORY_AND_STATE.md) | Public vs private boundary |
-| [docs/PRIME_CONTINUITY.md](docs/PRIME_CONTINUITY.md) | Optional local draft/commit ledger (not the control plane) |
-| [docs/AETHERIA_PRIME_SPEC.md](docs/AETHERIA_PRIME_SPEC.md) | Design spec; FastAPI/React/nodes are **not** shipped |
-| [docs/HYGIENE.md](docs/HYGIENE.md) | Public hygiene PR policy |
-| [SETUP.md](SETUP.md) | Requirements and smoke tests |
-| [CHANGELOG.md](CHANGELOG.md) | Release history |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | What belongs in PRs |
-| [SECURITY.md](SECURITY.md) | Vulnerability reporting |
-
-## Status
-
-| Area | State |
-|------|--------|
-| Light multi-cycle + supervision | **Stable** |
-| Cycle runner contract (summary + env cycles) | **Stable** (parent consumers published) |
-| Watchdog relaunch (PID-truth) | **Stable** |
-| Rolling segments (default 48) | **Stable** |
-| Durable green-tick / change gate | **Stable** |
-| Status + orphan/resource hygiene | **Stable** |
-| Guarded sandbox edit | **Demonstrated** |
-| Broad auto-edit of production modules | **Incomplete** (not claimed) |
-| Private cycle body / living / registry | **Not published** |
-| Prime continuity ledger (optional) | **Shipped thin** (not a web app) |
-
-## What this repository is not
-
-- Not a hosted multi-tenant agent cloud  
-- Not a dump of private memory, registries, or host paths  
-- Not a claim that full autonomous production-code editing is finished  
-- Not “chat as the long-run parent”
-
-## Contributing
-
-Bugfixes and documentation improvements to the published scripts are welcome.  
-Do **not** open PRs that include living dumps, registries, credentials, host absolute paths, or operator-private notes.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## License
-
-[MIT](LICENSE) © 2026 Denis Rigsby / Aetheria Project
+---
+Final repo cut authorized by Denis `GO: FINAL_REPO_PUBLISH` (t1369u–t1371u).  
+Voice: prove it works; prove it is running; no known failings; all receipts.  
+soft_ACCEPT=false. Not Certified. Generated 2026-09-23T05:12:17.887768+00:00.

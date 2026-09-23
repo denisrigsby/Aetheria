@@ -1,0 +1,32 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "preliminary_rsi_evidence_v1",
+  "kind": "PRELIMINARY_RSI_PROVE",
+  "ts": "20260923T042936Z",
+  "status": "DUAL_ACCEPT_PRELIMINARY_RSI",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "prove_only_sealed",
+  "verdict": "PROVE_PASS",
+  "happy": "prelim_rsi_20260923T042610Z",
+  "claim_sealed": "Preliminary RSI evidence under external governance.",
+  "label": "Proven (operator)",
+  "meta_score_chain": [
+    0.026178571428571423,
+    0.24488026733392876,
+    0.37665907076889854,
+    0.6849940231688239
+  ],
+  "apply_authorized": false,
+  "LIVE_RSI": "Not Enabled",
+  "publication_authorized": false,
+  "not_certification": true,
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "preliminary_rsi_evidence_v1",
+  "plant_status": "DUAL_ACCEPT_PRELIMINARY_RSI"
+}

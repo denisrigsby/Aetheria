@@ -23,7 +23,7 @@ Schema field: JSON files should include `"schema": "aetheria_*_v1"` where they a
 
 ## Writes
 
-- JSON control files: tmp + replace (`plant_control.write_json`).
+- JSON control files: `scripts/atomic_state.py` `atomic_write_json` (same-directory temp, flush, fsync, replace). `plant_control.write_json` calls that helper.
 - PID files: short `write_text`; **reconcile** (unlink) after a verified stop when the PID is not a live matching role.
 - STOP files: overwrite in place (idempotent).
 
@@ -36,3 +36,8 @@ After `stop` exit 0 (no allowlisted survivors), unlink `long_horizon.pid` and `w
 ## Not in this model
 
 Compaction or deletion of living/session stores from a query path. Public product does not compact “memory.”
+
+
+## Transition table
+
+Executable transitions: [STATE_TRANSITIONS.md](STATE_TRANSITIONS.md).

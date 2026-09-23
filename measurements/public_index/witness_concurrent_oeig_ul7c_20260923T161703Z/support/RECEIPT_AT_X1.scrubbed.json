@@ -1,0 +1,54 @@
+{
+  "schema": "aetheria_concurrent_at_x1_receipt_v1",
+  "bind": "AT_X1_OEIG_LIVE_PRE",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_oeig_live_pre",
+      "REDACTED_HOME",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "b29be9a87631422104b52e62420f2951cfac8a403c4822dec29af727d3e9df59",
+    "exit_code": 0,
+    "output_hash": "3b4b1c3847f0657b15cbe1781f835fb5f07827138b2018c9f6bef20c41689479"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_oeig_live_pre",
+      "REDACTED_HOME",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "b29be9a87631422104b52e62420f2951cfac8a403c4822dec29af727d3e9df59",
+    "output_hash": "3b4b1c3847f0657b15cbe1781f835fb5f07827138b2018c9f6bef20c41689479",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160416Z"
+  },
+  "detail": {
+    "ok_start": true,
+    "fails_start": [],
+    "oeig_operational": true,
+    "oeig_mode": "fixed_external_governance",
+    "soft_ACCEPT": false,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "parent_still_DRAFT_HOLD": true,
+    "FIXED_OPERATOR_SPACE_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+    "oeig_controls_hash": "198ed2a6a141b9833c321618bba434f4a88598b337e6e2c02f59fe61defaf773",
+    "prereq_oeig_apply_dual_utc": "20260923T152603Z",
+    "prereq_ul7c_prove_dual_utc": "20260923T142459Z",
+    "remediation": "locks_ok string compare fixed (!=); re-eval on same happy snaps"
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160416Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "ba58a09eaf0b2c2036a9616a94051e47fbb4e799bde70970095542d17ad24e0a"
+}

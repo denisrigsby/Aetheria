@@ -1,0 +1,12 @@
+{"LIVE_RSI": true, "LIVE_RSI_mode": "bounded_under_external_governance", "event": "WINDOW_START", "fos_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44", "idx": 0, "soft_ACCEPT": false, "start_tick": 1472, "ts": "2026-09-23T13:51:14.441977+00:00", "utc": "20260923T135114Z"}
+{"cycle": 0, "event": "RSI_CYCLE", "fos_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44", "idx": 1, "operator_id": "meta_expand_k", "result": "PASS", "ts": "2026-09-23T13:51:14.466977+00:00", "utc": "20260923T135114Z"}
+{"cycle": 1, "event": "RSI_CYCLE", "fos_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44", "idx": 2, "operator_id": "boost012", "result": "PASS", "ts": "2026-09-23T13:51:15.618952+00:00", "utc": "20260923T135115Z"}
+{"cycle": 2, "event": "RSI_CYCLE", "fos_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44", "idx": 3, "operator_id": "boost01_cut67", "result": "PASS", "ts": "2026-09-23T13:51:16.788924+00:00", "utc": "20260923T135116Z"}
+{"event": "LH_TICK_OK", "idx": 4, "post_tick": 1473, "tick_delta_from_start": 1, "ts": "2026-09-23T13:51:57.022894+00:00", "utc": "20260923T135157Z"}
+{"event": "LH_TICK_OK", "idx": 5, "post_tick": 1474, "tick_delta_from_start": 2, "ts": "2026-09-23T13:55:40.042315+00:00", "utc": "20260923T135540Z"}
+{"event": "LH_TICK_OK", "idx": 6, "post_tick": 1475, "tick_delta_from_start": 3, "ts": "2026-09-23T13:59:26.226904+00:00", "utc": "20260923T135926Z"}
+{"event": "LH_TICK_OK", "idx": 7, "post_tick": 1476, "tick_delta_from_start": 4, "ts": "2026-09-23T14:03:12.298066+00:00", "utc": "20260923T140312Z"}
+{"event": "LH_TICK_OK", "idx": 8, "post_tick": 1477, "tick_delta_from_start": 5, "ts": "2026-09-23T14:06:58.325765+00:00", "utc": "20260923T140658Z"}
+{"event": "LH_TICK_OK", "idx": 9, "post_tick": 1478, "tick_delta_from_start": 6, "ts": "2026-09-23T14:10:44.453566+00:00", "utc": "20260923T141044Z"}
+{"cycles": 3, "event": "KILL_ARM_SEEN", "idx": 10, "ts": "2026-09-23T14:10:47.468495+00:00", "utc": "20260923T141047Z"}
+{"cycles": 3, "event": "WINDOW_HALTED", "idx": 11, "mouth_residual_live_authority": false, "ts": "2026-09-23T14:10:47.470495+00:00", "utc": "20260923T141047Z"}

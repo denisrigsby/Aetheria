@@ -1,0 +1,10 @@
+{
+  "kind": "control_plane_hash_job",
+  "capability_id": "control_plane_hash_job",
+  "target": "measurements/lll/LLL_REGISTRY_ROW.json",
+  "sha256": "81e3596654d55f1e3d7b27c03519d42ab6f19131cac32838e173eb875efab9e1",
+  "utc": "20260923T035912Z",
+  "via": "non_chat_python",
+  "scrubbed": true,
+  "public_equals_plant": false
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "aetheria_public_gate_receipt_v1",
+  "gate": "gate_endurance_v1",
+  "status": "DUAL_BANK_COMPLETE",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "revision": null,
+  "claim_wording": "continuous supervised plant clock 30 minutes, mouth closed, tick advanced; as defined by gate_endurance_v1",
+  "locked": [
+    "endurance_beyond_window",
+    "second_clock",
+    "autonomy_proven",
+    "may_auto_dispatch",
+    "live_lora_hot_swap",
+    "LIVE_RSI",
+    "L7",
+    "job_objects_kill_claim",
+    "stale_pid_reuse",
+    "export_hash",
+    "public_equals_plant"
+  ],
+  "ts_utc": "2026-09-22T04:00:53.311276+00:00",
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as gate wording.",
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "may_claim_endurance_v1": true
+}

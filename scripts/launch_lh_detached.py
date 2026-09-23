@@ -25,6 +25,10 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+from lh_process_identity import ROLE_SUPERVISOR, kill_if_verified, pid_exists  # noqa: E402
+
 MEAS = ROOT / "measurements"
 LOGS = ROOT / "logs"
 LH_PID = MEAS / "long_horizon.pid"
@@ -49,19 +53,11 @@ def resolve_python() -> str:
 
 
 def pid_alive(pid: Optional[int]) -> bool:
+    """Process-table presence for launch polling. Not an identity check and not a kill."""
     if not pid:
         return False
     try:
-        if sys.platform == "win32":
-            r = subprocess.run(
-                ["tasklist", "/FI", f"PID eq {int(pid)}"],
-                capture_output=True,
-                text=True,
-                timeout=15,
-            )
-            return str(pid) in (r.stdout or "")
-        os.kill(int(pid), 0)
-        return True
+        return pid_exists(pid)
     except Exception:
         return False
 
@@ -76,6 +72,44 @@ def read_pid() -> Optional[int]:
         return None
 
 
+def _clear_pid_receipt() -> None:
+    """Drop a pid file that is not a live verified supervisor."""
+    try:
+        if LH_PID.exists():
+            LH_PID.unlink()
+    except Exception:
+        pass
+
+
+def _stop_recorded_supervisor() -> Tuple[bool, str]:
+    """Identity-check the pid file before any kill.
+
+    Presence is not authority. A live PID whose command line is not the
+    supervisor is not killed; that pid file is removed and launch stops.
+    """
+    old = read_pid()
+    if old is None:
+        _clear_pid_receipt()
+        return True, ""
+    try:
+        alive = pid_exists(old)
+    except Exception as e:
+        return False, f"stop_old_refused:pid_check:{type(e).__name__}"
+    if not alive:
+        _clear_pid_receipt()
+        return True, ""
+    result = kill_if_verified(old, ROLE_SUPERVISOR, tree=True)
+    reason = str(result.get("reason") or "unverified")
+    if result.get("killed") or reason == "already_dead":
+        _clear_pid_receipt()
+        if result.get("killed"):
+            time.sleep(1.0)
+        return True, ""
+    if reason == "identity_mismatch":
+        _clear_pid_receipt()
+    return False, f"stop_old_refused:{reason}"
+
+
 def conservation_env() -> None:
     os.environ.setdefault("AETHERIA_LIGHT_MANAGE", "1")
     os.environ.setdefault("AETHERIA_SKIP_FINAL_RECON", "1")
@@ -85,6 +119,41 @@ def conservation_env() -> None:
         os.environ["AETHERIA_RED_HELIX"] = "1"
     if (MEAS / "red_helix_c2_actuate.enable").exists():
         os.environ["AETHERIA_RED_HELIX_ACTUATE"] = "1"
+
+
+def supervisor_argv(
+    py: str,
+    script: str,
+    *,
+    cycles: int,
+    interval_min: float,
+    max_ticks: int,
+    backup_every: int,
+    continue_tick: bool,
+    once: bool,
+    ignore_standby: bool,
+) -> List[str]:
+    """Argv the supervisor parser accepts. No flags outside that contract."""
+    args: List[str] = [
+        py,
+        "-u",
+        script,
+        "--cycles",
+        str(int(cycles)),
+        "--interval-min",
+        str(float(interval_min)),
+        "--max-ticks",
+        str(int(max_ticks)),
+        "--backup-every",
+        str(int(backup_every)),
+    ]
+    if continue_tick:
+        args.append("--continue-tick")
+    if once:
+        args.append("--once")
+    if ignore_standby:
+        args.append("--ignore-standby")
+    return args
 
 
 def launch_lh_detached(
@@ -134,41 +203,22 @@ def launch_lh_detached(
             pass
 
     if stop_old:
-        old = read_pid()
-        if old and pid_alive(old):
-            try:
-                if sys.platform == "win32":
-                    subprocess.run(
-                        ["taskkill", "/PID", str(old), "/F"],
-                        capture_output=True,
-                        timeout=30,
-                    )
-                else:
-                    os.kill(old, 15)
-            except Exception:
-                pass
-            time.sleep(1.0)
+        stopped, why = _stop_recorded_supervisor()
+        if not stopped:
+            return False, why, None
 
     py = resolve_python()
-    args: List[str] = [
+    args = supervisor_argv(
         py,
-        "-u",
         str(ROOT / "scripts" / "long_horizon_supervisor.py"),
-        "--cycles",
-        str(int(cycles)),
-        "--interval-min",
-        str(float(interval_min)),
-        "--max-ticks",
-        str(int(max_ticks)),
-        "--backup-every",
-        str(int(backup_every)),
-    ]
-    if continue_tick:
-        args.append("--continue-tick")
-    if once:
-        args.append("--once")
-    if clear_latches:
-        args.append("--ignore-standby")
+        cycles=cycles,
+        interval_min=interval_min,
+        max_ticks=max_ticks,
+        backup_every=backup_every,
+        continue_tick=continue_tick,
+        once=once,
+        ignore_standby=clear_latches,
+    )
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     out = LOGS / f"long_horizon_launch_{ts}.log"

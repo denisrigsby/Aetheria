@@ -1,0 +1,11 @@
+﻿PUBLIC EXPORT — PRIMARY (GitHub target)
+
+Remote: https://github.com/denisrigsby/Aetheria
+This tree is the curated public control-plane export.
+
+STATUS: final-state brief + parity note on main.
+Parity: PRIVATE_AHEAD — public ≠ live plant.
+Evidence index: FINAL_STATE_BRIEF.md
+One PASS row is that row only. Pending stays pending. P1–P5 are internal certification, not an outside audit.
+
+Do not publish private operator plant contents from outside this export tree.

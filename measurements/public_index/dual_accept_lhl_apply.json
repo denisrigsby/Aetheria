@@ -1,0 +1,33 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "lll_long_horizon_learning_across_model_replacement_v1",
+  "ts": "20260923T022108Z",
+  "status": "DUAL_ACCEPT_LHL_APPLY",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "apply_LHL_only_sealed",
+  "claim_sealed": "long_horizon_learning_across_model_replacement_applied",
+  "apply_scope": "LHL_ONLY",
+  "lhl_operational": true,
+  "rpr_still_operational": true,
+  "ild_still_operational": true,
+  "sge_still_operational": true,
+  "commit_SHA": "854fbd63b1667fafa377976dc93f1dd8e543e6f3",
+  "fixed_allowlist_hash": "0776d9f29d9bbb37ba6fd4f131f652ace98dc6a6cdab63d8862e1b3ff6f11ff8",
+  "hold_after": true,
+  "not_sealed": [
+    "apply_BLE",
+    "allowlist_expansion",
+    "open_ended_parent_operational",
+    "parent_promotion",
+    "authority_expansion_beyond_LHL_apply"
+  ],
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "lll_long_horizon_learning_across_model_replacement_v1",
+  "plant_status": "DUAL_ACCEPT_LHL_APPLY"
+}

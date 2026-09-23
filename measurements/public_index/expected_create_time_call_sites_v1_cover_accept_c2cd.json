@@ -1,0 +1,14 @@
+{
+  "schema": "aetheria_cover_accept_v1",
+  "gate": "gate_expected_create_time_call_sites_v1",
+  "revision": "call_site_wire_v1",
+  "cover_accept": "ACCEPT",
+  "architect_accept": "ACCEPT",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "status": "DUAL_BANK_COMPLETE",
+  "by": "Aetheria Architect Cover",
+  "ts": "2026-09-22T05:03:53.742738+00:00",
+  "claim_wording": "Live kill sites lh_watchdog.kill_pid, plant_control._kill_pid, lh_recover_reap.reap_orphan_probes, status_report.reap_orphans pass expected_create_time into kill_if_verified; wrong create_time \u2192 create_time_mismatch, no terminate.",
+  "note": "Scrubbed public accept. No plant paths."
+}

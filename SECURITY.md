@@ -1,15 +1,32 @@
-# Security
+# Security Policy
 
-## Supported surface
+## Supported versions
 
-Security reports are accepted for **published** control-plane scripts and documentation in this repository.
+| Version | Supported |
+|---------|-----------|
+| `main` branch public control plane | Yes (best-effort) |
+| Private operator plant | Not in scope of this repository |
 
-Private runtime modules, living memory, and host deployments are outside the published surface.
+## Reporting a vulnerability
 
-## Reporting
+**Do not file public GitHub issues for security reports.**
 
-Please report vulnerabilities privately to the repository owner rather than opening a public issue with exploit detail.
+Please email **denisrigsby@users.noreply.github.com** with subject `Aetheria security` (or use GitHub Security Advisories / private vulnerability reporting on this repository when enabled).
 
-## Safe contribution rules
+Include: affected commit/version, reproduction steps, impact, and whether a public PoC exists.
 
-Do not commit secrets, tokens, host paths to personal profiles, live registries, or living dumps. See [CONTRIBUTING.md](CONTRIBUTING.md).
+## Response window (best-effort)
+
+- Acknowledgement: within **7 days**
+- Initial severity assessment: within **14 days**
+- Fix or mitigation plan for accepted reports: as soon as practical for a solo maintainer
+
+## Disclosure
+
+We prefer coordinated disclosure. Please allow a reasonable window after a fix lands on `main` before public write-ups.
+
+## Scope notes
+
+- Localhost Talk-face is a **local UI mouth**, not a remote multi-tenant service.
+- Snapshot digests in this repo are **integrity checksums**, not authentication.
+- Process stop/recover must be **identity-checked**; PID-alone kill is a defect.

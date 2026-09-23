@@ -1,0 +1,23 @@
+{
+  "schema": "aetheria_architect_accept_v1",
+  "card": "validation_publication_post_ble_v1",
+  "kind": "ARCHITECT_ACCEPT_VALIDATION_123",
+  "phase": "validation_steps_1_2_3",
+  "stamp": "ARCHITECT_ACCEPT_VALIDATION_123",
+  "Architect_ACCEPT": true,
+  "Cover_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "status": "DUAL_ACCEPT_VALIDATION_123",
+  "ts": "2026-09-23T02:47:01.041073+00:00",
+  "utc": "20260923T024701Z",
+  "soft_ACCEPT": false,
+  "commit_SHA": "854fbd63b1667fafa377976dc93f1dd8e543e6f3",
+  "fixed_allowlist_hash": "0776d9f29d9bbb37ba6fd4f131f652ace98dc6a6cdab63d8862e1b3ff6f11ff8",
+  "claim_sealed": "validation_publication_steps_1_2_3_evidence_proved_operator",
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "validation_publication_post_ble_v1",
+  "plant_status": "DUAL_ACCEPT_VALIDATION_123"
+}

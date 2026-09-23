@@ -1,0 +1,13 @@
+{
+  "schema": "aetheria_ul7c9_private_ahead_v1",
+  "note": "Plant-absolute paths below are PRIVATE_AHEAD — not required for stranger public verify.",
+  "PRIVATE_AHEAD": [
+    "REDACTED_HOME",
+    "(plant-private) measurements/integration/under_l7_continuous_live_v1",
+    "(plant-private) measurements/integration/under_l7_continuous_live_v1/under_l7_cont_20260923T135114Z",
+    "(plant-private) measurements/lll/LIVE_RSI_CONTROLS_STORE.json",
+    "(plant-private) measurements/lll/LLL_REGISTRY_ROW.json",
+    "REDACTED_HOME"
+  ],
+  "soft_ACCEPT": false
+}

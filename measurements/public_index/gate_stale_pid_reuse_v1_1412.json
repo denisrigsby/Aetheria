@@ -1,0 +1,33 @@
+{
+  "schema": "aetheria_public_gate_receipt_v1",
+  "gate": "gate_stale_pid_reuse_v1",
+  "status": "DUAL_BANK_COMPLETE",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "architect_accept": "ACCEPT",
+  "cover_accept": "ACCEPT",
+  "revision": "create_time_bind_v1",
+  "claim_wording": "Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role.",
+  "locked": [
+    "observed_os_pid_number_reuse_required",
+    "all_call_sites_pass_expected_create_time",
+    "create_time_binding_as_sole_identity",
+    "pid_reuse_impossible",
+    "portable_pytest_alone_flips_gate",
+    "wrong_live_pid_mismatch_alone_flips_gate",
+    "second_clock",
+    "autonomy_proven",
+    "may_auto_dispatch",
+    "live_lora_hot_swap",
+    "LIVE_RSI",
+    "L7",
+    "public_equals_plant",
+    "job_object_sole_plant_stop_path",
+    "toolhelp_retired"
+  ],
+  "ts_utc": "2026-09-22T04:52:09.542390+00:00",
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as gate wording.",
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "may_claim_stale_pid_reuse_v1": true
+}

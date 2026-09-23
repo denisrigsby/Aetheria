@@ -1,16 +1,18 @@
-# Arbitrary-path installation
+﻿# Arbitrary-path installation
 
-The control plane and research substrate run from **any directory**. They do not require a developer home path, a nested clone, or a pre-existing `.venv`.
+The scripts and research substrate can be checked out in **any directory**. They do not require a developer home path, a nested clone, or a pre-existing `.venv`. That is a path layout. It is not a portable stop or relaunch.
 
 ## Supported
 
 - Python 3.10, 3.11, or 3.12
-- Windows 10/11 (reference). POSIX: identity matching is portable; process tree-kill tests are Windows-only.
+- Windows 10/11 is the reference OS for stop, tree-kill, Job Object, and relaunch.
+- Ubuntu CI runs role-matching tests. Those tests are not a tree-kill and not a relaunch.
+- Tree-kill and Job Object stop are **Proved on Windows** only where a receipt says so, and **Locked on non-Windows**.
 
 ## Install
 
 ```text
-git clone https://github.com/denisrigsby/Aetheria-sovereign-agent.git aetheria
+git clone https://github.com/denisrigsby/Aetheria.git aetheria
 cd aetheria
 python -m pip install -r requirements-dev.lock
 python -u scripts/aetheria.py init

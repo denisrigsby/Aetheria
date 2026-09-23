@@ -42,10 +42,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import _atomic_replace_text, atomic_write_json  # noqa: E402
 
 STATE_PATH = ROOT / "measurements" / "long_horizon_state.json"
+RESUME_PATH = ROOT / "RESUME_STATE.json"
 STOP_PATH = ROOT / "measurements" / "long_horizon_STOP"
+STANDBY_PATH = ROOT / "measurements" / "long_horizon_STANDBY.json"
 PID_PATH = ROOT / "measurements" / "long_horizon.pid"
+_SECRET_KEY = re.compile(r"(secret|password|api[_-]?key|token|credential|authorization)", re.I)
 LOG_JSONL = ROOT / "logs" / "long_horizon.jsonl"
 LOG_TXT = ROOT / "logs" / f"long_horizon_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
@@ -75,12 +80,9 @@ def append_jsonl(obj: dict) -> None:
 
 
 def write_state(state: dict) -> None:
-    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     state = dict(state)
     state["updated_at"] = utc_now()
-    tmp = STATE_PATH.with_suffix(".tmp")
-    tmp.write_text(json.dumps(state, indent=2, default=str), encoding="utf-8")
-    tmp.replace(STATE_PATH)
+    atomic_write_json(STATE_PATH, state, default=str)
     try:
         from living.aetheria_canon import write_hope_status
 
@@ -146,7 +148,7 @@ def write_resume(state: dict) -> None:
             "Do not redesign; maintain conservation; intervene only on failures."
         ),
     }
-    (ROOT / "RESUME_STATE.json").write_text(json.dumps(resume, indent=2), encoding="utf-8")
+    atomic_write_json(RESUME_PATH, resume)
 
 
 def ensure_env() -> None:
@@ -220,14 +222,24 @@ def _load_probe_contract_summary() -> dict | None:
         return None
 
 
-def run_probe_cycles(cycles: int, tick: int) -> dict:
+def run_probe_cycles(cycles: int, tick: int, *, probe_script: Path | None = None) -> dict:
     """Run paradigm probe: env cycle count + contract summary; regex dual-read fallback.
 
     Primary: AETHERIA_NUM_CYCLES + grok_supervised_12_probe.py (no source rewrite).
+    Public clones: pass probe_script=scripts/demo_runtime.py (mock, no LLM).
     Parent trusts measurements/lh_probe_summary_latest.json when present.
     """
     ensure_env()
-    probe_script = ROOT / "grok_supervised_12_probe.py"
+    if probe_script is None:
+        probe_script = ROOT / "grok_supervised_12_probe.py"
+        demo = ROOT / "scripts" / "demo_runtime.py"
+        if not probe_script.exists() and os.environ.get("AETHERIA_DEMO", "").strip() in (
+            "1",
+            "true",
+            "True",
+        ):
+            probe_script = demo
+    probe_script = Path(probe_script)
     if not probe_script.exists():
         return {"ok": False, "error": "probe_script_missing", "error_class": "import_error", "tick": tick}
 
@@ -270,6 +282,7 @@ def run_probe_cycles(cycles: int, tick: int) -> dict:
     timeout = _probe_timeout_s(cycles)
     summary["timeout_s"] = timeout
     try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
         with log_path.open("w", encoding="utf-8") as lf:
             p = subprocess.Popen(
                 [sys.executable, "-u", str(run_target)],
@@ -387,7 +400,7 @@ def run_probe_cycles(cycles: int, tick: int) -> dict:
                 "notes": [summary.get("note")] if summary.get("note") else [],
                 "tick": tick,
             }
-            contract_path.write_text(json.dumps(parent_view, indent=2), encoding="utf-8")
+            atomic_write_json(contract_path, parent_view)
         except Exception:
             pass
     except Exception as e:
@@ -402,8 +415,9 @@ def run_probe_cycles(cycles: int, tick: int) -> dict:
                 pass
         defaults = ROOT / "next_interventions.defaults.json"
         if defaults.exists():
-            (ROOT / "next_interventions.json").write_text(
-                defaults.read_text(encoding="utf-8"), encoding="utf-8"
+            _atomic_replace_text(
+                ROOT / "next_interventions.json",
+                defaults.read_text(encoding="utf-8"),
             )
     return summary
 
@@ -438,7 +452,8 @@ def should_stop() -> bool:
     return STOP_PATH.exists()
 
 
-def main() -> int:
+def make_parser() -> argparse.ArgumentParser:
+    """Flags the detached launcher is allowed to send. Unknown flags are a contract error."""
     ap = argparse.ArgumentParser(description="Long-horizon detached Aetheria supervisor")
     ap.add_argument("--cycles", type=int, default=2, help="Cycles per tick (default 2; use 6 for deeper)")
     ap.add_argument("--interval-min", type=float, default=30.0, help="Minutes between ticks after a run")
@@ -446,7 +461,57 @@ def main() -> int:
     ap.add_argument("--backup-every", type=int, default=4, help="Backup every N ticks (0=never)")
     ap.add_argument("--hygiene-every", type=int, default=8, help="Registry hygiene every N ticks (0=never)")
     ap.add_argument("--once", action="store_true", help="Single tick then exit (test)")
-    args = ap.parse_args()
+    ap.add_argument(
+        "--continue-tick",
+        action="store_true",
+        help="Resume the segment tick from long_horizon_state.json when that file exists",
+    )
+    ap.add_argument(
+        "--ignore-standby",
+        action="store_true",
+        help="Start even if long_horizon_STANDBY.json is present",
+    )
+    return ap
+
+
+def secret_field_names(doc: dict) -> list[str]:
+    return sorted(str(k) for k in doc if _SECRET_KEY.search(str(k)))
+
+
+def standby_blocks(standby_path: Path, ignore: bool) -> bool:
+    return standby_path.is_file() and not ignore
+
+
+def resolve_continue_tick(state_path: Path, enabled: bool) -> dict:
+    """Segment tick to resume. Unreadable or secret-bearing state fails closed."""
+    if not enabled or not state_path.is_file():
+        return {"ok": True, "tick": 0, "prior": {}}
+    try:
+        prior = json.loads(state_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "state_unreadable"}
+    if not isinstance(prior, dict):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "state_not_object"}
+    if secret_field_names(prior):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "secret_field"}
+    try:
+        tick = int(prior.get("tick") or 0)
+    except (TypeError, ValueError):
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "tick_invalid"}
+    if tick < 0:
+        return {"ok": False, "tick": 0, "prior": {}, "reason": "tick_invalid"}
+    return {"ok": True, "tick": tick, "prior": prior}
+
+
+def main() -> int:
+    args = make_parser().parse_args()
+    if standby_blocks(STANDBY_PATH, args.ignore_standby):
+        log("standby latch present; refuse start")
+        return 1
+    resolved = resolve_continue_tick(STATE_PATH, args.continue_tick)
+    if not resolved["ok"]:
+        log(f"continue-tick refused: {resolved.get('reason')}")
+        return 1
 
     ensure_env()
     (ROOT / "logs").mkdir(exist_ok=True)
@@ -456,17 +521,22 @@ def main() -> int:
 
     pid = os.getpid()
     PID_PATH.write_text(str(pid), encoding="utf-8")
-    state = {
-        "pid": pid,
-        "status": "starting",
-        "tick": 0,
-        "cycles_per_tick": args.cycles,
-        "interval_min": args.interval_min,
-        "max_ticks": args.max_ticks,
-        "log_txt": str(LOG_TXT),
-        "started_at": utc_now(),
-        "history": [],
-    }
+    prior = dict(resolved["prior"])
+    history = prior.get("history") if isinstance(prior.get("history"), list) else []
+    state = dict(prior)
+    state.update(
+        {
+            "pid": pid,
+            "status": "starting",
+            "tick": int(resolved["tick"]),
+            "cycles_per_tick": args.cycles,
+            "interval_min": args.interval_min,
+            "max_ticks": args.max_ticks,
+            "log_txt": str(LOG_TXT),
+            "started_at": prior.get("started_at") or utc_now(),
+            "history": history,
+        }
+    )
     write_state(state)
     write_resume(state)
     log(f"LONG HORIZON SUPERVISOR START pid={pid} cycles={args.cycles} interval={args.interval_min}m")
@@ -486,7 +556,7 @@ def main() -> int:
     except Exception:
         pass
 
-    tick = 0
+    tick = int(resolved["tick"])
     while True:
         if should_stop():
             log("STOP file detected — graceful exit")
@@ -572,17 +642,25 @@ def main() -> int:
                 mod.record_green_tick(tick_ts, tick, bool(summary.get("ok")), pid=state.get("pid"))
             except Exception as e:
                 log(f"gate_a durable record note: {e}")
+        if summary.get("ok"):
+            try:
+                import campaign_snapshot as csnap
+
+                csnap.write_after_green_tick(state)
+            except Exception as e:
+                log(f"campaign_snapshot note: {e}")
         # Persist mom so next tick subprocess continues ladder (not reset to 0)
         try:
             mom = summary.get("final_mom")
             if mom is not None:
                 mp = ROOT / "measurements" / "guidance_momentum.json"
-                mp.write_text(
-                    json.dumps(
-                        {"guidance_momentum": float(mom), "updated_at": utc_now(), "from_tick": tick},
-                        indent=2,
-                    ),
-                    encoding="utf-8",
+                atomic_write_json(
+                    mp,
+                    {
+                        "guidance_momentum": float(mom),
+                        "updated_at": utc_now(),
+                        "from_tick": tick,
+                    },
                 )
                 state["persisted_mom"] = float(mom)
         except Exception as e:

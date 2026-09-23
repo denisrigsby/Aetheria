@@ -1,0 +1,24 @@
+{
+  "happy_id": "under_l7_cont_20260923T135114Z",
+  "verdict": "PROVE_PASS",
+  "binds": {
+    "UL7C1_CONTINUITY": "PASS",
+    "UL7C2_CEILING": "PASS",
+    "UL7C3_KILL_DRILL": "PASS",
+    "UL7C4_CONTINUOUS_CHAIN": "PASS",
+    "UL7C5_LOCKS": "PASS",
+    "UL7C6_SUPERVISION": "PASS",
+    "UL7C7_IMMUTABLE_LOG": "PASS",
+    "UL7C8_REPLAY_PATH": "PASS",
+    "UL7C9_FRESH_CLONE": "PASS",
+    "UL7C10_NEGATIVE_CONTROLS": "PASS",
+    "UL7C11_NARROW_CLAIM": "PASS"
+  },
+  "wall_duration_s": 1476.1037049293518,
+  "successful_lh_ticks": 6,
+  "cycle_pass": 3,
+  "claim_frozen": "Bounded LIVE_RSI under external governance sustained a continuous supervised under-L7 live window with continuity ticks, ceiling cycles, kill-drill fail-closed halt, and lock invariants held; not L7, not unrestricted/unbounded RSI, not open-ended doctrine operational, not Certified.",
+  "soft_ACCEPT": false,
+  "apply_authorized": false,
+  "utc": "20260923T141550Z"
+}

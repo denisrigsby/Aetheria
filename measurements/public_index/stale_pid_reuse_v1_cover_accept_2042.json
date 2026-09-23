@@ -1,0 +1,14 @@
+{
+  "schema": "aetheria_cover_accept_v1",
+  "gate": "gate_stale_pid_reuse_v1",
+  "revision": "create_time_bind_v1",
+  "cover_accept": "ACCEPT",
+  "architect_accept": "ACCEPT",
+  "dual_bank": true,
+  "soft_ACCEPT": false,
+  "status": "DUAL_BANK_COMPLETE",
+  "by": "Aetheria Architect Cover",
+  "ts": "2026-09-22T04:52:52.632102+00:00",
+  "claim_wording": "kill_if_verified with expected_create_time refuses create_time_mismatch and does not terminate when live create_time disagrees, even if cmdline still matches claimed role.",
+  "note": "Scrubbed public accept. No plant paths."
+}

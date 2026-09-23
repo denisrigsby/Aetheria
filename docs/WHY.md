@@ -16,47 +16,54 @@ When that happens, the usual failure modes are:
 | Non-goal | Why |
 |----------|-----|
 | Chat as the parent of multi-hour work | Sessions are not process supervisors |
+| Talk as a runtime dependency | If chat is closed, the worker must still tick |
+| AUTORUN after dirty last_ok | HOLD; resume when stable |
 | Unbounded full-manage every cycle | Observed multi-hour stall ridge |
-| Publishing private memory/registries | Control plane ≠ whole organism |
+| Publishing private memory/registries | Control plane ≠ the private plant |
 | Publishing optional private companion / local generate / train stacks | Depth stays offline; public surface stays auditable and thin |
-| Multi-tenant SaaS orchestration | This design optimizes for a **sovereign local owner** |
+| Multi-tenant SaaS orchestration | This design is for one local operator (Denis Rigsby on the operator machine) |
 
 ## What we build instead
 
 A **control plane** in the spirit of process supervisors (supervisor, pm2):
 
-1. **Detached supervisor** — ticks of bounded multi-cycle work  
-2. **On-disk status** — hope / long-horizon / watchdog JSON  
-3. **Watchdog** — relaunch on death, stall, or segment end  
-4. **Conservation defaults** — light manage, selective heavy health  
-5. **Rolling segments** — a process is a worker (e.g. 48 ticks), not the whole campaign  
-6. **Restart-resilient green-tick accounting** — change gates do not forget progress when a PID dies  
-7. **Private runtime stays private** — orchestrator, living streams, registries on the operator machine  
+1. **Detached supervisor** — ticks of bounded multi-cycle work
+2. **On-disk status** — long-horizon / watchdog JSON
+3. **Watchdog** — HOLD after dirty death is the intent (that row stays **PARTIAL**). A green interruption may ensure a dispatcher on Windows. Tree-kill and Job Object stop are **Locked on non-Windows**. Relaunch is **Pending** and is not portable
+4. **Conservation defaults** — light manage, selective heavy health
+5. **Rolling segments** — a process is a worker (e.g. 48 ticks), not the whole campaign
+6. **Restart-resilient green-tick accounting** — change gates do not forget progress when a PID dies
+7. **Private runtime stays private** — mouth, living, cycle body on the operator machine
+
+The private agent is an **extension** of this protocol, not a missing file. See [RUNTIME_CONTRACT.md](RUNTIME_CONTRACT.md).
 
 ## Why this is not “just pm2”
 
 Process supervision is the **bones**. The muscle is **agent continuity**:
 
-- Momentum and status that survive restarts  
-- Measured short runs (`aetheria_hope_path`) vs long detached campaigns  
-- Optional change-control gate (enough green work since last change)  
-- Explicit split: **public control plane** vs **private organism depth**  
+- Momentum and status that survive restarts
+- Measured short runs (`aetheria_hope_path`) vs long detached campaigns
+- Optional change-control gate (enough green work since last change)
+- Explicit split: **public control plane** vs **private plant**
 
 If you only need to keep a static web server up, use pm2. If you need **local multi-cycle agent work that outlives chat**, you need something shaped like this.
 
 ## Success for the intended user
 
+These rows are the operator outcome the design aims at. They are not a public PASS. The indexed plant window with the mouth closed is 30 minutes (`gate_endurance_v1`). Clean stop ≠ crash stays pending.
+
 | Role | Success looks like |
 |------|---------------------|
-| Sparse operator | Plant runs while they do other things; pulses say “green” or “heal” |
-| Recovering after reboot | Relaunch supervisor + watchdog; restore registry if needed; continue |
+| Sparse operator | Plant runs while they do other things; pulses say “green” or HOLD |
+| Recovering after reboot | Relaunch when last_ok; dirty last_ok stays HOLD |
 | Public reader | Understands *why*, can run or audit the control plane without private dumps |
 
 Not success: a flashy single-turn chat demo that still dies when the tab closes.
 
 ## Related docs
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — layers and components  
-- [OPERATIONS.md](OPERATIONS.md) — start / stop / recover  
-- [MEMORY_AND_STATE.md](MEMORY_AND_STATE.md) — public vs private  
-- [../README.md](../README.md) — landing page  
+- [RUNTIME_CONTRACT.md](RUNTIME_CONTRACT.md) — protocol v1
+- [ARCHITECTURE.md](ARCHITECTURE.md) — layers and components
+- [OPERATIONS.md](OPERATIONS.md) — start / stop / recover
+- [MEMORY_AND_STATE.md](MEMORY_AND_STATE.md) — public vs private
+- [../README.md](../README.md) — landing page

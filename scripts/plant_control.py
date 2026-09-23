@@ -17,7 +17,8 @@ Durable intent: measurements/long_horizon_STANDBY.json
 
 Stop contract (ordinary stop):
   - signal long_horizon_STOP then watchdog_STOP
-  - if supervisor still alive, kill its process tree (/T) only when cmdline identity matches
+  - wait on process-table presence only (pid_exists); the wait does not kill
+  - kill a still-present PID only through kill_if_verified (claimed role)
   - kill recorded probe_pid only when identity is probe
   - reject PID-only matches
   - print any remaining allowlisted descendants; exit 1 if any remain
@@ -35,6 +36,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -46,14 +48,19 @@ ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
+from atomic_state import atomic_write_json  # noqa: E402
+from campaign_lock import single_flight_spawn  # noqa: E402
 from lh_process_identity import (  # noqa: E402
     ROLE_PROBE,
     ROLE_SUPERVISOR,
     ROLE_WATCHDOG,
     kill_if_verified,
     list_allowlisted,
+    pid_exists,
     verified_role,
 )
+
+_SECRET_KEY = re.compile(r"(secret|password|api[_-]?key|token|credential|authorization)", re.I)
 
 MEAS = ROOT / "measurements"
 STATE_PATH = MEAS / "long_horizon_state.json"
@@ -94,34 +101,13 @@ def read_json(path: Path) -> Dict[str, Any]:
         return {"_error": "unreadable", "path": str(path)}
 
 
+def _reject_secret_fields(doc: dict) -> None:
+    if any(_SECRET_KEY.search(str(k)) for k in doc):
+        raise ValueError("secret_field")
+
+
 def write_json(path: Path, obj: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(obj, indent=2, default=str), encoding="utf-8")
-    tmp.replace(path)
-
-
-def pid_alive(pid: Any) -> bool:
-    try:
-        p = int(pid)
-    except Exception:
-        return False
-    if p <= 0:
-        return False
-    try:
-        out = subprocess.run(
-            ["tasklist", "/FI", f"PID eq {p}", "/NH"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-        )
-        return str(p) in (out.stdout or "")
-    except Exception:
-        try:
-            os.kill(p, 0)
-            return True
-        except Exception:
-            return False
+    atomic_write_json(path, obj, default=str)
 
 
 def read_pid(path: Path) -> Optional[int]:
@@ -136,6 +122,7 @@ def read_pid(path: Path) -> Optional[int]:
 def plant_snap() -> Dict[str, Any]:
     st = read_json(STATE_PATH)
     pid = st.get("pid") or read_pid(LH_PID)
+    identity_ok = bool(pid) and verified_role(pid, ROLE_SUPERVISOR)
     return {
         "status": st.get("status"),
         "tick": st.get("tick"),
@@ -143,9 +130,9 @@ def plant_snap() -> Dict[str, Any]:
         "last_ok": st.get("last_ok"),
         "mom": st.get("last_final_mom") or st.get("persisted_mom"),
         "pid": pid,
-        "alive": bool(pid) and verified_role(pid, ROLE_SUPERVISOR),
-        "pid_exists": bool(pid) and pid_alive(pid),
-        "identity_ok": bool(pid) and verified_role(pid, ROLE_SUPERVISOR),
+        "alive": identity_ok,
+        "pid_exists": bool(pid) and pid_exists(pid),
+        "identity_ok": identity_ok,
         "cycles_per_tick": st.get("cycles_per_tick"),
         "interval_min": st.get("interval_min"),
         "history_len": len(st.get("history") or []) if isinstance(st.get("history"), list) else 0,
@@ -155,11 +142,12 @@ def plant_snap() -> Dict[str, Any]:
 def wd_snap() -> Dict[str, Any]:
     st = read_json(WD_STATUS)
     pid = st.get("watchdog_pid") or read_pid(WD_PID)
+    identity_ok = bool(pid) and verified_role(pid, ROLE_WATCHDOG)
     return {
         "pid": pid,
-        "alive": bool(pid) and verified_role(pid, ROLE_WATCHDOG),
-        "pid_exists": bool(pid) and pid_alive(pid),
-        "identity_ok": bool(pid) and verified_role(pid, ROLE_WATCHDOG),
+        "alive": identity_ok,
+        "pid_exists": bool(pid) and pid_exists(pid),
+        "identity_ok": identity_ok,
         "updated_at": st.get("updated_at"),
         "last_action": (st.get("last_applied") or {}).get("action")
         if isinstance(st.get("last_applied"), dict)
@@ -313,10 +301,10 @@ def enter_standby(
         print("  signaled long_horizon_STOP (graceful)")
         deadline = time.time() + max(15.0, force_kill_after_s)
         while time.time() < deadline:
-            if not pid_alive(pl0.get("pid")):
+            if not pid_exists(pl0.get("pid")):
                 break
             time.sleep(2)
-        if pid_alive(pl0.get("pid")):
+        if pid_exists(pl0.get("pid")):
             print("  graceful wait timed out — force kill LH tree (identity)")
             _kill_pid(pl0.get("pid"), "lh", ROLE_SUPERVISOR)
     else:
@@ -326,7 +314,7 @@ def enter_standby(
 
     # Patch state if process already gone
     st2 = read_json(STATE_PATH)
-    if st2 and not pid_alive(st2.get("pid") or pl0.get("pid")):
+    if st2 and not pid_exists(st2.get("pid") or pl0.get("pid")):
         st2["status"] = "standby"
         st2["standby"] = True
         st2["standby_reason"] = intent["reason"]
@@ -341,10 +329,10 @@ def enter_standby(
         if wd.get("alive"):
             deadline = time.time() + 45
             while time.time() < deadline:
-                if not pid_alive(wd.get("pid")):
+                if not pid_exists(wd.get("pid")):
                     break
                 time.sleep(1)
-            if pid_alive(wd.get("pid")):
+            if pid_exists(wd.get("pid")):
                 _kill_pid(wd.get("pid"), "watchdog", ROLE_WATCHDOG)
     else:
         print("  watchdog left running (will respect STANDBY — no relaunch)")
@@ -382,10 +370,10 @@ def cmd_stop(*, reason: str = "operator_stop") -> int:
     if pl0.get("pid"):
         deadline = time.time() + 90
         while time.time() < deadline:
-            if not pid_alive(pl0.get("pid")):
+            if not pid_exists(pl0.get("pid")):
                 break
             time.sleep(2)
-        if pid_alive(pl0.get("pid")):
+        if pid_exists(pl0.get("pid")):
             print("  graceful wait timed out — kill supervisor tree while still alive")
             _kill_pid(pl0.get("pid"), "lh", ROLE_SUPERVISOR)
         else:
@@ -398,10 +386,10 @@ def cmd_stop(*, reason: str = "operator_stop") -> int:
     if wd.get("pid"):
         deadline = time.time() + 45
         while time.time() < deadline:
-            if not pid_alive(wd.get("pid")):
+            if not pid_exists(wd.get("pid")):
                 break
             time.sleep(1)
-        if pid_alive(wd.get("pid")):
+        if pid_exists(wd.get("pid")):
             _kill_pid(wd.get("pid"), "watchdog", ROLE_WATCHDOG)
     for row in list_allowlisted():
         role = row.get("role")
@@ -457,6 +445,131 @@ def _reconcile_stale_pid_files() -> None:
             print(f"  reconcile {path.name} note: {e}")
 
 
+def _supervisor_lock_paths() -> tuple[Path, Path]:
+    return (
+        MEAS / "campaign_supervisor.lock",
+        MEAS / "campaign_supervisor_claim.json",
+    )
+
+
+def single_supervisor_critical(
+    spawn,
+    *,
+    origin: str,
+    lock_path: Optional[Path] = None,
+    claim_path: Optional[Path] = None,
+    role_alive=None,
+    timeout_s: float = 90.0,
+) -> Dict[str, Any]:
+    """Start/recover admit. At most one caller runs ``spawn`` for the supervisor role."""
+    lock_p, claim_p = _supervisor_lock_paths()
+    if lock_path is not None:
+        lock_p = Path(lock_path)
+    if claim_path is not None:
+        claim_p = Path(claim_path)
+    if role_alive is None:
+
+        def role_alive() -> bool:
+            return bool(plant_snap().get("alive"))
+    result = single_flight_spawn(
+        lock_p,
+        claim_p,
+        role=ROLE_SUPERVISOR,
+        role_alive=role_alive,
+        spawn=spawn,
+        timeout_s=timeout_s,
+    )
+    result["origin"] = origin
+    return result
+
+
+def _apply_recover_record(rec: dict) -> None:
+    camp = rec.get("campaign") or {}
+    st = read_json(STATE_PATH) or {}
+    if st.get("_error"):
+        st = {}
+    st["last_ok"] = bool(camp.get("last_ok"))
+    st["last_final_mom"] = camp.get("mom")
+    st["persisted_mom"] = camp.get("mom")
+    st["last_tick_finished"] = camp.get("last_tick_finished")
+    st["recovered_from_snapshot_at"] = utc()
+    st["status"] = "idle_between_ticks"
+    _reject_secret_fields(st)
+    atomic_write_json(STATE_PATH, st)
+    print(f"  snapshot applied mom={camp.get('mom')} last_ok={camp.get('last_ok')}")
+    print("  segment tick may reset; campaign mom restored")
+
+
+def _optional_recover_reap() -> None:
+    try:
+        import importlib.util
+
+        rr_path = ROOT / "scripts" / "lh_recover_reap.py"
+        if not rr_path.is_file():
+            return
+        spec = importlib.util.spec_from_file_location("lh_recover_reap", rr_path)
+        rrmod = importlib.util.module_from_spec(spec)
+        assert spec.loader
+        spec.loader.exec_module(rrmod)
+        rr = rrmod.run_all(dry_run=False, reap=True, recover=True)
+        eng = rr.get("english") or rrmod.english_handoff(rr)
+        print(eng)
+        rec = rr.get("recover") or {}
+        reap = rr.get("reap") or {}
+        print(f"  detail recover: {rec.get('note')}")
+        print(
+            f"  detail reap: orphans={len(reap.get('orphans_found') or [])} "
+            f"killed={reap.get('killed')} lh_was_alive={reap.get('lh_alive')}"
+        )
+    except Exception as e:
+        print(f"  recover/reap note: {type(e).__name__}: {e}")
+
+
+def admit_launch_kwargs(
+    *,
+    cycles: int,
+    interval_min: float,
+    max_ticks: int,
+    continue_tick: bool,
+) -> Dict[str, Any]:
+    """Start/recover launch options. Do not kill from a PID file (stop_old stays false)."""
+    return {
+        "cycles": cycles,
+        "interval_min": interval_min,
+        "max_ticks": max_ticks,
+        "continue_tick": bool(continue_tick),
+        "clear_latches": True,
+        "stop_old": False,
+        "poll_s": 60.0,
+    }
+
+
+def _launch_supervisor(
+    *,
+    cycles: int,
+    interval_min: float,
+    max_ticks: int,
+    continue_tick: bool,
+) -> Dict[str, Any]:
+    """Detach one supervisor. Returns {ok, pid, detail}. Does not decide single-flight."""
+    import importlib.util
+
+    launch_mod_path = ROOT / "scripts" / "launch_lh_detached.py"
+    spec = importlib.util.spec_from_file_location("launch_lh_detached", launch_mod_path)
+    mod = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(mod)
+    ok_l, detail, pid_l = mod.launch_lh_detached(
+        **admit_launch_kwargs(
+            cycles=cycles,
+            interval_min=interval_min,
+            max_ticks=max_ticks,
+            continue_tick=continue_tick,
+        )
+    )
+    return {"ok": bool(ok_l), "pid": pid_l, "detail": detail}
+
+
 def resume(
     *,
     with_watchdog: bool,
@@ -464,6 +577,7 @@ def resume(
     interval_min: Optional[float],
     max_ticks: Optional[int],
     continue_tick: bool = True,
+    recover_record: Optional[dict] = None,
 ) -> int:
     sb = standby_snap()
     hint = (sb.get("resume_hint") or {}) if sb.get("active") else {}
@@ -491,75 +605,68 @@ def resume(
             f"(continue_tick past prior ceiling; state_tick={cur_tick})"
         )
 
-    print("RESUME plant")
+    origin = "recover" if recover_record is not None else "start"
+    print("RESUME plant" if origin == "start" else "RESUME plant (recover admit)")
     print(f"  cycles={cyc} interval_min={iv} max_ticks={mt} continue_tick={continue_tick}")
-    clear_standby_files()
 
-    # Recover banked mom + reap orphan probes; always print shop-English handoff
-    try:
-        import importlib.util
-
-        rr_path = ROOT / "scripts" / "lh_recover_reap.py"
-        if rr_path.is_file():
-            spec = importlib.util.spec_from_file_location("lh_recover_reap", rr_path)
-            rrmod = importlib.util.module_from_spec(spec)
-            assert spec.loader
-            spec.loader.exec_module(rrmod)
-            rr = rrmod.run_all(dry_run=False, reap=True, recover=True)
-            eng = rr.get("english") or rrmod.english_handoff(rr)
-            print(eng)
-            # detail lines for logs
-            rec = rr.get("recover") or {}
-            reap = rr.get("reap") or {}
-            print(f"  detail recover: {rec.get('note')}")
-            print(
-                f"  detail reap: orphans={len(reap.get('orphans_found') or [])} "
-                f"killed={reap.get('killed')} lh_was_alive={reap.get('lh_alive')}"
-            )
-            st = read_json(STATE_PATH) or st
-    except Exception as e:
-        print(f"  recover/reap note: {type(e).__name__}: {e}")
-
-    # Mark state for supervisor continue
-    if st:
-        st["standby"] = False
-        st["resume_requested_at"] = utc()
-        st["continue_tick"] = bool(continue_tick)
-        st["max_ticks"] = mt
-        write_json(STATE_PATH, st)
-
-    # Reliable path: direct detached Python (avoids PS Start-Process + Store-python hang)
-    try:
-        import importlib.util
-
-        launch_mod_path = ROOT / "scripts" / "launch_lh_detached.py"
-        spec = importlib.util.spec_from_file_location("launch_lh_detached", launch_mod_path)
-        mod = importlib.util.module_from_spec(spec)
-        assert spec.loader
-        spec.loader.exec_module(mod)
-        ok_l, detail, pid_l = mod.launch_lh_detached(
+    def _work() -> Dict[str, Any]:
+        if recover_record is not None:
+            _apply_recover_record(recover_record)
+        clear_standby_files()
+        _optional_recover_reap()
+        state = read_json(STATE_PATH) or {}
+        if state.get("_error"):
+            state = {}
+        if state:
+            state["standby"] = False
+            state["resume_requested_at"] = utc()
+            state["continue_tick"] = bool(continue_tick)
+            state["max_ticks"] = mt
+            _reject_secret_fields(state)
+            atomic_write_json(STATE_PATH, state)
+        elif recover_record is None and st and not st.get("_error"):
+            patched = dict(st)
+            patched["standby"] = False
+            patched["resume_requested_at"] = utc()
+            patched["continue_tick"] = bool(continue_tick)
+            patched["max_ticks"] = mt
+            _reject_secret_fields(patched)
+            atomic_write_json(STATE_PATH, patched)
+        return _launch_supervisor(
             cycles=cyc,
             interval_min=iv,
             max_ticks=mt,
             continue_tick=bool(continue_tick),
-            clear_latches=True,
-            poll_s=60.0,
         )
-        print(f"  launch: {detail}")
-        if not ok_l:
+
+    try:
+        timeout_s = float(os.environ.get("AETHERIA_ROLE_LOCK_TIMEOUT_S", "90"))
+    except ValueError:
+        timeout_s = 90.0
+    gate = single_supervisor_critical(_work, origin=origin, timeout_s=timeout_s)
+    if not gate.get("spawned"):
+        reason = gate.get("reason")
+        print(f"FAIL: single-flight supervisor ({reason})")
+        if reason in ("role_alive", "claim_held", "lock_timeout", "role_check_error"):
+            print("  refused: will not spawn a second supervisor")
+        elif reason == "spawn_failed":
             print("FAIL: detached launch did not produce live LH")
-            return 1
-        print(f"  LH alive pid={pid_l}")
-        print(
-            f"--- Start handoff ---\n"
-            f"Plant starting (pid={pid_l}). Interval={iv}m continue_tick={continue_tick}.\n"
-            f"Check /status or: python -u scripts/plant_control.py status\n"
-            f"Shop: measurements/SHOP_CARD.md\n"
-            f"---"
-        )
-    except Exception as e:
-        print(f"FAIL launch: {type(e).__name__}: {e}")
+            if gate.get("detail"):
+                print(f"  launch: {gate.get('detail')}")
+        elif reason == "spawn_error":
+            print(f"FAIL launch: {gate.get('detail')}")
         return 1
+
+    pid_l = gate.get("pid")
+    print(f"  launch: {gate.get('detail')}")
+    print(f"  LH alive pid={pid_l}")
+    print(
+        f"--- Start handoff ---\n"
+        f"Plant starting (pid={pid_l}). Interval={iv}m continue_tick={continue_tick}.\n"
+        f"Check /status or: python -u scripts/plant_control.py status\n"
+        f"Shop: measurements/SHOP_CARD.md\n"
+        f"---"
+    )
 
     if with_watchdog:
         # clear wd stop if any
@@ -595,6 +702,38 @@ def resume(
     cmd_status(as_json=False)
     print("OK resume — plant should continue (tick continuity if prior state present)")
     return 0
+
+
+def cmd_recover() -> int:
+    """Dead plant only. Load campaign_snapshot_v1. Hash fail → exit 1, do not spawn."""
+    print("RECOVER plant from campaign_snapshot_v1")
+    snap = plant_snap()
+    if snap.get("alive"):
+        print("FAIL: supervisor identity-alive — recover will not spawn a second clock")
+        print(f"  pid={snap.get('pid')}")
+        return 1
+    try:
+        import campaign_snapshot as csnap
+    except Exception as e:
+        print(f"FAIL: campaign_snapshot import: {e}")
+        return 1
+    rec, why = csnap.load_snapshot()
+    if rec is None:
+        print(f"FAIL: snapshot {why}")
+        print("  path: measurements/campaign_snapshot_v1.json")
+        print("  recover does not spawn without a valid snapshot")
+        return 1
+    camp = rec.get("campaign") or {}
+    print(f"  snapshot valid mom={camp.get('mom')} last_ok={camp.get('last_ok')}")
+    print("  apply + spawn run under the supervisor single-flight lock")
+    return resume(
+        with_watchdog=True,
+        cycles=None,
+        interval_min=None,
+        max_ticks=None,
+        continue_tick=True,
+        recover_record=rec,
+    )
 
 
 def main(argv=None) -> int:
@@ -636,6 +775,10 @@ def main(argv=None) -> int:
     p_start.add_argument("--interval-min", type=float, default=None)
     p_start.add_argument("--max-ticks", type=int, default=None)
     p_start.add_argument("--fresh-segment", action="store_true")
+    sub.add_parser(
+        "recover",
+        help="Dead plant only: load campaign_snapshot_v1 then spawn. Hash fail = no spawn.",
+    )
 
     args = ap.parse_args(argv)
 
@@ -671,6 +814,8 @@ def main(argv=None) -> int:
             max_ticks=args.max_ticks,
             continue_tick=not bool(args.fresh_segment),
         )
+    if args.cmd == "recover":
+        return cmd_recover()
     return 2
 
 
