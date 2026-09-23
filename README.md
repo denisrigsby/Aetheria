@@ -1,132 +1,111 @@
 # Aetheria
 
-[![CI](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml/badge.svg)](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Release](https://img.shields.io/github/v/release/denisrigsby/Aetheria)](https://github.com/denisrigsby/Aetheria/releases)
+**Prove it works. Prove it is running.**
 
-A local supervisor for long-running AI work on one Windows PC. The chat window is optional. The work schedule is a separate process plus files on disk.
+Aetheria is a governed, persistent AI runtime — not a chatbot. Chat is only its mouth.
 
-**Plant clock ≠ chat.** "Plant clock" means that schedule. "Chat" (also called the mouth, or Talk-face) does not own it. Closing the chat does not stop the schedule.
+In its currently demonstrated configuration it combines persistent memory, capability registration, receipt-backed evidence, fail-closed authority, bounded learning under external governance, and sealed RSI-style evidence with **LIVE_RSI Enabled (bounded)**.
 
-This repository is a public control-plane export. It is **not** the live operator plant. The parity label is **PRIVATE_AHEAD** (public export ≠ live plant): [docs/EXPORT_PARITY.md](docs/EXPORT_PARITY.md).
+> Validation is self-run and receipt-backed; we publish how to reproduce it. We do not claim external certification.
 
-P1–P5 are internal certification labels used on the operator plant. They are not an outside audit, and this repo does not treat them as one.
+## Status labels (only these)
 
-## This repo and the private plant
+| Label | Meaning |
+| --- | --- |
+| **Proven (operator)** | Operator-run, receipt-backed, dual-bank sealed for the named scope |
+| **HOLD** | Banked / gated; not promoted or not authorized to apply |
+| **Not Proven** | No sealed receipt chain for the claim |
+| **Not Enabled** | Implemented or specified but not live-enabled |
 
-| In this GitHub repo | On the private operator machine |
-|---------------------|----------------------------------|
-| Supervisor, watchdog, stop and recover scripts, docs | Live plant, Forge console, living memory, real cycle body |
-| A mock / reference worker you can run | Host paths, credentials, private measurements |
-| Scrubbed receipt copies under [measurements/public_index/](measurements/public_index/) | The mouth and plant code those receipts describe |
+Soft ACCEPT is **false** plant-wide. Nothing here is Certified, independently audited, or unrestricted.
 
-Cloning this repo does not give you the live plant. A full multi-hour run needs a complete local operator root. That root is private by design.
+"Not a chatbot / chat is mouth" is an **Architectural classification**, not a Proven (operator) row by itself.
 
-## Real, proved, pending, locked
+## Prove it works — sealed evidence
 
-Finer labels (Tests, Mock, Untested, Private) live in [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md). The four words below are the ones that matter on this page. A receipt or a named CI check sits beside each claim, and the exclusion sits in the same row. One **PASS** cell is that row only. The evidence index is [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md).
+All of the following are **Proven (operator)** with dual-bank stamps. Exclusions sit beside each claim.
 
-### Real (in this repository, or the CI workflow on main runs it)
+### Authority / learning ladder (applied)
 
-| What | Limit | Evidence |
-|------|--------|----------|
-| Layout and compile of this tree | Does not start the private plant | `python -u scripts/demo_local_smoke.py` · [docs/PUBLIC_DEMO.md](docs/PUBLIC_DEMO.md) |
-| Reference mouth closes; a mock pulse keeps advancing | Mock worker. This is the public slice of plant clock ≠ chat. CI does not run this script | `python -u scripts/demo_continuity.py` · [docs/CONTINUITY_DEMO.md](docs/CONTINUITY_DEMO.md) |
-| Process identity rejects the wrong role or a junk PID. Windows tasklist liveness uses the PID column | "Unrelated processes survive stale-PID recovery" stays **PARTIAL**. The PID-column test does not flip `gate_stale_pid_reuse_v1`. OS PID-number reuse was not observed. This row is not a tree-kill. Tree-kill and Job Object stop are **Proved on Windows** only where a receipt says so, and **Locked on non-Windows** | CI runs `tests/test_lh_process_identity.py` and `tests/test_pid_liveness_exact.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
-| A raced start and recover admit one supervisor | Assurance row is **PASS** for that test (exactly one spawn) on the Ubuntu and Windows CI jobs. It is not a tree-kill and not a watchdog relaunch. Tree-kill and Job Object stop are **Locked on non-Windows**. Corrupted / unknown-version → HOLD and clean stop ≠ crash stay **PARTIAL**. The test is not the live plant | CI runs `tests/test_two_controller_concurrency.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
-| An interrupted JSON state write leaves the previous valid document or the new one | Assurance row is **PASS** for that test. Private plant ≠ this tree. No L7 / LIVE_RSI. No soft_ACCEPT. PID and STOP files are short in-place text. Append-only JSONL is out of scope. `research/` artifacts are out of scope. HOLD and clean stop stay **PARTIAL** | CI on `395643e` (run 35695450920) runs `tests/test_atomic_state_writes.py` and `tests/test_interrupted_state_writes.py` · [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) |
+| Card | Dual stamp | Claim | Beside the claim |
+| --- | --- | --- | --- |
+| Bounded autonomous promotion | `DUAL_ACCEPT_BAP_APPLY_BOUNDED` | Applied under sealed controls | soft_ACCEPT=false; allowlist fixed |
+| Repeated promotion no-regression | `DUAL_ACCEPT_RPR_APPLY` | Applied | parent open-ended doctrine still DRAFT/HOLD |
+| Isolated learning domains | `DUAL_ACCEPT_ILD_APPLY` | Applied | no allowlist expansion |
+| Sandbox self-generated experiments | `DUAL_ACCEPT_SGE_APPLY` | Applied | sandbox-bounded |
+| Long-horizon learning across model replacement | `DUAL_ACCEPT_LHL_APPLY` | Applied | model replacement under seal |
+| Broader learning, externally bounded actions | `DUAL_ACCEPT_BLE_APPLY` | Applied | actions remain externally bounded |
 
-### Proved (a receipt is in this repo)
+Validation publication steps 1–3: **Proven (operator)** — `DUAL_ACCEPT_VALIDATION_123` (snapshot, sealed-evidence replay, invariant/rollback audit).
 
-These were accepted on the operator plant. The JSON files are scrubbed copies. Cloning does not re-run them. Exclusions in full: [docs/CLOSEOUT.md](docs/CLOSEOUT.md).
+### Talk Face / mouth
 
-| Claim, in plain language | What it does not prove | Receipt |
-|--------------------------|------------------------|---------|
-| Talk-face text has no visible `[MODEL_REASONING]` tag. Absolute `/living/` cites are rewritten or refused | Does not publish plant source. Copilot is not the mouth | [scrub](measurements/public_index/scrub_mouth_leak_v1.json), [gate](measurements/public_index/gate_talkface_visible_tag_seal_v1.json), [accept](measurements/public_index/architect_accept_talkface_visible_tag_seal_v1.json) |
-| Direct-answer contract accepted by Cover and Architect. `soft_ACCEPT` is false. `dual_bank` is false | Does not unlock L7 or LIVE_RSI | [gate](measurements/public_index/gate_direct_answer_contract_talk_face_v1.json), [accept](measurements/public_index/architect_accept_direct_answer_contract_talk_face_v1.json) |
-| A kill is refused when the process start time does not match, even if the command line still looks right | OS PID-number reuse was not observed. Tests in this repo do not flip that plant gate | [gate](measurements/public_index/gate_stale_pid_reuse_v1_1412.json) |
-| Four named kill sites pass that start time and refuse a mismatch | Not every future kill site. Start time is not the only identity check | [gate](measurements/public_index/gate_expected_create_time_call_sites_v1_930b.json) |
-| Supervised clock ran 30 minutes with the mouth closed and the tick advanced | Longer runs stay locked | [gate](measurements/public_index/gate_endurance_v1_0440.json) |
-| An identity-checked Windows Job Object stop ended an assigned process tree | **Proved on Windows** (operator plant). **Locked on non-Windows**. Not the only stop path. Linux CI does not re-prove it. Toolhelp is not retired | [gate](measurements/public_index/gate_job_object_kill_path_v1_a709.json) |
-| Export hash census, with an explicit parity decision | The decision on the receipt is **PRIVATE_AHEAD**, so public ≠ plant | [gate](measurements/public_index/gate_export_hash_parity_v1_79b2.json) |
-| Resume / stop / watchdog record is dual-banked | The receipt has no claim sentence (`claim_wording` is null). No stop or relaunch behavior is claimed. Not a portable control plane | [gate](measurements/public_index/gate_control_plane_resume_stop_watchdog_v1_84f7.json) |
+Talk Face prepublish apply + re-prove: **Proven (operator)** — `DUAL_ACCEPT_TALKFACE_APPLY_REPROVE`  
+Registry-bound, fail-closed, claims != proposals, coherent controls/memory/evidence.
 
-### Pending (not PASS on main)
+### Governed runtime (not merely chatbot)
 
-- Re-run of the receipts above inside this clone. The mouth and the plant body are not in this tree. [docs/CLOSEOUT.md](docs/CLOSEOUT.md)
-- Same Talk Face session, **no gate file**: Standby vs Offline labels, one desktop shortcut, windowed Edge instead of a frameless app window. Operator notes only. [docs/CLOSEOUT.md](docs/CLOSEOUT.md)
-- Assurance rows that are still **PARTIAL**: unrelated processes surviving stale-PID recovery; corrupted or unknown-version state ending in HOLD; clean stop distinguished from a crash; localhost mutations requiring authorization; a general "no secrets" scan (the CI path scan is narrower — see the assurance table). [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md)
-- Job Object containment on this repo's CI (**PARTIAL**). The plant receipt above is **Proved on Windows** only. It does not make the CI row PASS, and it is **Locked on non-Windows**.
-- Watchdog relaunch of a process tree. No gate file. Windows is the reference. **Pending** on non-Windows. Not a portable stop.
-- Held-out L5 "6/6" after the dual-face cut. No scrubbed receipt in this repo. [docs/CLAIMS.md](docs/CLAIMS.md)
+`governed_runtime_not_merely_chatbot_v1` NR1–NR6: **Proven (operator)** — `DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE`  
+NR6 witness is an **operator Windows subprocess**, not GitHub-hosted CI. **Not Certified.**
 
-### Locked (not claimed)
+### Bounded self-improvement
 
-- This tree equals the live plant
-- Dual-bank full program. No receipt for `gate_full_program_asset_class_v1` is in this repo
-- `soft_ACCEPT`, LIVE_RSI, L7
-- Copilot as the plant mouth
-- Federation, swarm, autonomy, self-healing, gated self-modification
-- Production-ready, enterprise, enterprise-grade, revolutionary
-- A second clock, automatic dispatch, live model hot-swap
-- Endurance past the 30-minute receipt
-- Job Object as the only stop path
-- A portable control plane: tree-kill, Job Object stop, or watchdog relaunch on non-Windows
-- A wider spawn wrap
-- P1–P5 as external accreditation
+Three consecutive bounded self-improvement cycles under external governance: **Proven (operator)** — `DUAL_ACCEPT_BSI_THREE_CYCLE`  
+Beside claim: **not RSI**; was prove-scoped at seal.
 
-## Run and check
+### RSI ladder
 
-Python 3.10+. Windows is the reference OS for stop, tree-kill, Job Object, and relaunch. The smoke commands below can run on other systems. They do not make stop or relaunch portable.
+| Stage | Dual stamp | Claim | Beside the claim |
+| --- | --- | --- | --- |
+| Preliminary RSI | `DUAL_ACCEPT_PRELIMINARY_RSI` | Preliminary RSI evidence under external governance | does **not** satisfy true RSI; was not LIVE_RSI enable |
+| True RSI evidence | `DUAL_ACCEPT_TRUE_RSI` | True RSI evidence under external governance | still **not** unrestricted / unbounded; Not Certified |
+| True RSI apply | `DUAL_ACCEPT_APPLY_TRUE_RSI` | True RSI applied; **LIVE_RSI Enabled (bounded)** | soft_ACCEPT=false; no rsi_level7; no may_auto_promote; no network_live; Not Certified; parent DRAFT/HOLD |
 
-```powershell
-git clone https://github.com/denisrigsby/Aetheria.git
-cd Aetheria
+## Prove it is running — live state
 
-# 1. Run — layout and compile. No private plant.
-python -u scripts/demo_local_smoke.py
+As of apply dual `DUAL_ACCEPT_APPLY_TRUE_RSI` (happy `true_rsi_20260923T044857Z`):
 
-# 2. Test — reference mouth closes; the mock pulse still advances.
-python -u scripts/demo_continuity.py
+- **LIVE_RSI = Enabled (bounded under external governance)**
+- soft_ACCEPT = false
+- rsi_level7 = false
+- may_auto_promote = false
+- network_live = false
+- parent open-ended doctrine = **DRAFT/HOLD** (not operational)
+- FIXED_OPERATOR_SPACE unchanged at apply
+- Sibling applied organs preserved (RPR/ILD/SGE/LHL/BLE)
 
-# 3. Local checks — identity, single-flight start/recover, and fault injection.
-python -m pip install pytest
-python -m pytest tests/test_lh_process_identity.py tests/test_pid_liveness_exact.py tests/test_two_controller_concurrency.py tests/test_fault_injection_public.py -q
-```
+This is **running under seal**, not unrestricted RSI and not certification.
 
-Windows wrappers for steps 1 and 2: `Demo-Local.bat`, `Demo-Continuity.bat`.
+## What remains HOLD / Not Enabled / Not Proven
 
-[CI](https://github.com/denisrigsby/Aetheria/actions/workflows/ci.yml) runs the files named in `.github/workflows/ci.yml`, including `tests/test_lh_process_identity.py`, `tests/test_pid_liveness_exact.py`, `tests/test_two_controller_concurrency.py`, `tests/test_atomic_state_writes.py`, and `tests/test_interrupted_state_writes.py`. It does not run `demo_continuity.py`, `tests/test_fault_injection_public.py`, or `tests/test_talk_face_ref_allowlist.py`. Those three are local checks. The workflow file is the list.
+- Parent open-ended learning under invariant governance: **DRAFT/HOLD**
+- Unrestricted / unbounded RSI: **Not Proven** (explicitly excluded)
+- rsi_level7 / may_auto_promote / network_live: **Not Enabled**
+- External certification / independent audit: **Not Proven** (not claimed)
+- Broader vision of replaceable-model governed intelligence: labeled separately; **not** mixed into this as-is definition
 
-On a full local root, read-only status is `python -u scripts/status_report.py`. Stop is `python -u scripts/aetheria.py stop` (Windows tree-kill / Job Object; **Locked on non-Windows**). Recover is a different command from start: [docs/OPERATIONS.md](docs/OPERATIONS.md). The CI start/recover test is one supervisor admitted. It is not an OS relaunch.
+## How to reproduce (operator)
 
-## Read next
+1. Clean Windows plant with Aetheria install path used for the sealed runs.
+2. Replay sealed validation pack under `measurements/integration/validation_publication_post_ble_v1/` (steps 1–3 receipts).
+3. Confirm dual-bank stamps listed above on disk.
+4. Confirm LIVE_RSI controls store + registry: Enabled bounded; soft_ACCEPT false; hard locks false.
+5. Run Talk Face acceptance suite receipts under `talkface_prepublish_acceptance_v1`.
 
-| Doc | Why |
-|-----|-----|
-| [FINAL_STATE_BRIEF.md](FINAL_STATE_BRIEF.md) | Evidence index (real / proved / pending / locked) |
-| [docs/CLOSEOUT.md](docs/CLOSEOUT.md) | Receipt tables and exclusions |
-| [docs/CLAIMS_TAXONOMY.md](docs/CLAIMS_TAXONOMY.md) | Front labels and finer labels |
-| [docs/RELEASE_GATE_ASSURANCE.md](docs/RELEASE_GATE_ASSURANCE.md) | PASS / PARTIAL / FAIL |
-| [docs/GLOSSARY.md](docs/GLOSSARY.md) | Plant clock, mouth, HOLD, Forge |
-| [docs/WHY.md](docs/WHY.md) | Problem and non-goals |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layers |
-| [docs/RUNTIME_CONTRACT.md](docs/RUNTIME_CONTRACT.md) | Heartbeat, STOP, recover |
-| [SETUP.md](SETUP.md) | What a full local root still needs |
-| [docs/SCENARIO_30S.md](docs/SCENARIO_30S.md) | The crash-and-hold picture, and what this clone can show |
+Exact demo script: see [docs/RUNNABLE_DEMO.md](docs/RUNNABLE_DEMO.md).  
+Threat model: see [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
-### Glossary (short)
+## Public trust order
 
-| Term | Plain meaning |
-|------|----------------|
-| Plant clock | Detached supervised job runtime |
-| Mouth / Talk-face | Optional local chat or operator UI |
-| Forge | Private operator console |
-| Tick / cycle | One bounded unit of work |
-| HOLD | Fail-closed pause until an operator acts |
-| Cover / Architect | Two accept roles on a plant receipt. Both accepted means the receipt says so. It is not an outside audit |
+1. Plain-English problem statement (this README)
+2. Five-minute reproducible demo
+3. Architecture / trust-boundary diagrams (as published)
+4. Automated public CI (where wired)
+5. Machine-readable receipts
+6. Threat model and limitations
+7. LLL/RSI material only with the sealed stamps above — never without exclusions
 
-## License
-
-[MIT](LICENSE) © 2026 Denis Rigsby / Aetheria Project
+---
+Final repo cut authorized by Denis `GO: FINAL_REPO_PUBLISH` (t1369u–t1371u).  
+Voice: prove it works; prove it is running; no known failings; all receipts.  
+soft_ACCEPT=false. Not Certified. Generated 2026-09-23T05:12:17.887768+00:00.
