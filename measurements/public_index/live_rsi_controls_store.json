@@ -7,7 +7,7 @@
   "true_rsi_operational": true,
   "apply_scope": "APPLY_TRUE_RSI_LIVE",
   "exact_command": "GO: APPLY_TRUE_RSI_LIVE",
-  "denis_go": "t1363u",
+  "denis_go": "REDACTED_MSG_ADDR",
   "prerequisite_dual": "DUAL_ACCEPT_TRUE_RSI",
   "prerequisite_happy": "true_rsi_20260923T044857Z",
   "soft_ACCEPT": false,

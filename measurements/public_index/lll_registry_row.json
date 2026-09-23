@@ -45,7 +45,7 @@
   "kill_env": "AETHERIA_LLL_STANDING_KILL",
   "denis_go_ts": "20260923T001508Z",
   "go_citation": {
-    "denis": "t1252u",
+    "denis": "REDACTED_MSG_ADDR",
     "architect": "STANDING-ON GO",
     "token": "DENIS_GO_BATCH_lll_standing_ON_first_ON_20260923T001508Z",
     "status": "DENIS_GO_AUTHENTIC_ARCHITECT_WITNESSED__STANDING_ON_FIRST_ON"
@@ -72,7 +72,7 @@
   "bap_applied_at": "2026-09-23T00:44:18Z",
   "bap_apply_ts": "20260923T004418Z",
   "go_citation_bap_apply": {
-    "denis": "t1262u",
+    "denis": "REDACTED_MSG_ADDR",
     "architect": "APPLY GO",
     "token": "DENIS_GO_BATCH_lll_bap_apply_20260923T004154Z",
     "status": "DENIS_GO_AUTHENTIC_ARCHITECT_WITNESSED__APPLY_BOUNDED_AUTONOMOUS_PROMOTION"
@@ -88,7 +88,7 @@
   "rpr_applied_at": "2026-09-23T01:56:44Z",
   "rpr_prerequisite_dual_bank": "DUAL_ACCEPT_RPR_HOLD",
   "go_citation_rpr_apply": {
-    "denis": "t1288u",
+    "denis": "REDACTED_MSG_ADDR",
     "architect": "APPLY_RPR_ONLY GO",
     "token": "DENIS_GO_BATCH_APPLY_RPR_ONLY_20260923T015043Z",
     "status": "DENIS_GO_AUTHENTIC_ARCHITECT_WITNESSED__APPLY_RPR_ONLY"
@@ -109,7 +109,7 @@
   "ild_applied_at": "2026-09-23T02:04:13Z",
   "ild_prerequisite_dual_bank": "DUAL_ACCEPT_ILD_HOLD",
   "go_citation_ild_apply": {
-    "denis": "t1293u",
+    "denis": "REDACTED_MSG_ADDR",
     "architect": "APPLY_ILD_ONLY GO",
     "token": "DENIS_GO_BATCH_APPLY_ILD_ONLY_20260923T020210Z",
     "status": "DENIS_GO_AUTHENTIC_ARCHITECT_WITNESSED__APPLY_ILD_ONLY"
@@ -146,7 +146,7 @@
   "sge_applied_at": "2026-09-23T02:12:44Z",
   "sge_prerequisite_dual_bank": "DUAL_ACCEPT_SGE_HOLD",
   "go_citation_sge_apply": {
-    "denis": "t1296u",
+    "denis": "REDACTED_MSG_ADDR",
     "architect": "APPLY_SGE_ONLY",
     "kind": "APPLY_SGE_ONLY",
     "status": "APPLY_SGE_ONLY"
@@ -160,7 +160,7 @@
   "lhl_applied_at": "2026-09-23T02:19:24Z",
   "lhl_prerequisite_dual_bank": "DUAL_ACCEPT_LHL_HOLD",
   "go_citation_lhl_apply": {
-    "denis": "t1298u",
+    "denis": "REDACTED_MSG_ADDR",
     "architect": "APPLY_LHL_ONLY",
     "kind": "APPLY_LHL_ONLY",
     "status": "APPLY_LHL_ONLY"
@@ -175,7 +175,7 @@
   "ble_prerequisite_dual_bank": "DUAL_ACCEPT_BLE_HOLD",
   "actions_externally_bounded": true,
   "go_citation_ble_apply": {
-    "denis": "t1306u",
+    "denis": "REDACTED_MSG_ADDR",
     "denis_text": "GO: APPLY_BLE_ONLY",
     "architect": "APPLY_BLE_ONLY",
     "kind": "APPLY_BLE_ONLY",

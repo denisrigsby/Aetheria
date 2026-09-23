@@ -90,12 +90,12 @@
     {
       "file": "live_rsi_controls_store.json",
       "plant_status": "snapshot",
-      "sha256_12": "806ed96fc927"
+      "sha256_12": "44365c7d6cd4"
     },
     {
       "file": "lll_registry_row.json",
       "plant_status": "snapshot",
-      "sha256_12": "5da9b8e46f27"
+      "sha256_12": "fe646a06502d"
     }
   ]
 }
