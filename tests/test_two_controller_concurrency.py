@@ -166,7 +166,12 @@ def _race_child(
 
 
 def test_contended_start_and_recover_admit_one_spawn(tmp_path: Path):
-    """Two controllers race the same admit used by start and recover."""
+    """Two controllers race the same admit used by start and recover.
+
+    The loser must report role_alive or claim_held. Windows run 35916007830
+    returned lock_timeout after the acquire budget expired even though the
+    winner had already admitted. That reason stays out of this assertion.
+    """
     ctx = multiprocessing.get_context("spawn")
     barrier = ctx.Barrier(2)
     queue = ctx.Queue()
@@ -295,6 +300,124 @@ def test_create_time_probe_does_not_hold_the_admit_lock(tmp_path: Path):
     assert claim["worker_create_time"] == "boot:9"
     assert "/" not in json.dumps(claim)
     assert "\\" not in json.dumps(claim)
+
+
+def test_acquire_failure_observes_visible_admit(tmp_path: Path):
+    """A lost lock reports the visible admit, and still does not spawn.
+
+    Forces acquire failure while a role or claim is already visible. A dead
+    claim, and a live pid that is not the recorded process, stay lock_timeout.
+    """
+    lock_path = tmp_path / "campaign.lock"
+    claim_path = tmp_path / "claim.json"
+    started = threading.Event()
+    release = threading.Event()
+
+    def holder():
+        with CampaignLock(lock_path, timeout_s=2.0) as ok:
+            assert ok is True
+            started.set()
+            assert release.wait(5.0)
+
+    thread = threading.Thread(target=holder)
+    thread.start()
+    assert started.wait(2.0)
+    calls: list[int] = []
+
+    def spawn():
+        calls.append(1)
+        return {"ok": True, "pid": os.getpid()}
+
+    def lost(**kwargs):
+        return single_flight_spawn(
+            lock_path,
+            claim_path,
+            role="supervisor",
+            spawn=spawn,
+            timeout_s=0.2,
+            **kwargs,
+        )
+
+    try:
+        role = lost(role_alive=lambda: True)
+        claim_path.write_text(
+            json.dumps(
+                {
+                    "schema": CLAIM_SCHEMA,
+                    "role": "supervisor",
+                    "state": "live",
+                    "owner_pid": os.getpid(),
+                    "worker_pid": os.getpid(),
+                    "claim_id": "live",
+                }
+            ),
+            encoding="utf-8",
+        )
+        held = lost(role_alive=lambda: False, pid_alive_fn=lambda _p: True)
+        claim_path.write_text(
+            json.dumps(
+                {
+                    "schema": CLAIM_SCHEMA,
+                    "role": "supervisor",
+                    "state": "spawning",
+                    "owner_pid": os.getpid(),
+                    "worker_pid": None,
+                    "claim_id": "spawning",
+                }
+            ),
+            encoding="utf-8",
+        )
+        spawning = lost(role_alive=lambda: False, pid_alive_fn=lambda _p: True)
+        claim_path.write_text(
+            json.dumps(
+                {
+                    "schema": CLAIM_SCHEMA,
+                    "role": "supervisor",
+                    "state": "live",
+                    "owner_pid": 4242,
+                    "worker_pid": 4242,
+                    "claim_id": "dead",
+                }
+            ),
+            encoding="utf-8",
+        )
+        dead = lost(role_alive=lambda: False, pid_alive_fn=lambda _p: False)
+        claim_path.write_text(
+            json.dumps(
+                {
+                    "schema": CLAIM_SCHEMA,
+                    "role": "supervisor",
+                    "state": "live",
+                    "owner_pid": os.getpid(),
+                    "worker_pid": os.getpid(),
+                    "worker_create_time": "100",
+                    "claim_id": "reused",
+                }
+            ),
+            encoding="utf-8",
+        )
+        reused = lost(
+            role_alive=lambda: False,
+            pid_alive_fn=lambda _p: True,
+            create_time_fn=lambda _p: "200",
+        )
+
+        def boom() -> bool:
+            raise RuntimeError("role probe failed")
+
+        errored = lost(role_alive=boom)
+    finally:
+        release.set()
+        thread.join(2.0)
+
+    assert role["spawned"] is False and role["reason"] == "role_alive"
+    assert held["spawned"] is False and held["reason"] == "claim_held"
+    assert spawning["spawned"] is False and spawning["reason"] == "claim_held"
+    assert dead["spawned"] is False and dead["reason"] == "lock_timeout"
+    assert reused["spawned"] is False and reused["reason"] == "lock_timeout"
+    assert errored["spawned"] is False and errored["reason"] == "role_check_error"
+    assert calls == []
+    assert not thread.is_alive()
 
 
 def test_single_flight_timeout_does_not_spawn(tmp_path: Path):
