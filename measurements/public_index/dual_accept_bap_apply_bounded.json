@@ -1,0 +1,31 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "lll_bounded_autonomous_promotion_v1",
+  "ts": "20260923T004657Z",
+  "status": "DUAL_ACCEPT_BAP_APPLY_BOUNDED",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "apply_bounded_autonomous_promotion_sealed",
+  "claim_sealed": "bounded_autonomous_promotion_applied",
+  "prior_claim_sealed": "bounded_autonomous_promotion_controls_proved",
+  "allowlist": [
+    "sandbox_fixture_note",
+    "sandbox_fixture_config",
+    "sandbox_metric_snapshot"
+  ],
+  "not_sealed": [
+    "unbounded_learning",
+    "soft_ACCEPT",
+    "Floor_ACCEPT",
+    "public_release",
+    "allowlist_expansion"
+  ],
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "lll_bounded_autonomous_promotion_v1",
+  "plant_status": "DUAL_ACCEPT_BAP_APPLY_BOUNDED"
+}

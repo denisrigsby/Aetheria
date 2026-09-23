@@ -1,0 +1,23 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "validation_publication_post_ble_v1",
+  "kind": "FINAL_REPO_PUBLISH",
+  "phase": "final_repo_publish",
+  "stamp": "DUAL_ACCEPT_FINAL_REPO_PUBLISH",
+  "status": "DUAL_ACCEPT_FINAL_REPO_PUBLISH",
+  "ts": "2026-09-23T05:18:00.000Z",
+  "utc": "20260923T051800Z",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "claim_sealed": "Final repo publish pack dual-bank sealed. Public main carries Proven (operator) claims with exclusions beside them; LIVE_RSI Enabled (bounded); soft_ACCEPT=false; Not Certified.",
+  "label": "Proven (operator) \u00e2\u20ac\u201d publication pack",
+  "not_certified": true,
+  "LIVE_RSI": "Enabled (bounded under external governance)",
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "plant_status": "DUAL_ACCEPT_FINAL_REPO_PUBLISH"
+}

@@ -28,7 +28,7 @@ Indexed from scrubbed receipts. `dual_bank=true`. `soft_ACCEPT=false`. Not re-pr
 | `gate_export_hash_parity_v1` | Export hash/parity receipt layer as defined by gate_export_hash_parity_v1: fail-closed census of public export paths vs plant counterparts with per-path hashes and an explicit decision (PARITY_PASS or PRIVATE_AHEAD); public_equals_plant is true only when decision is PARITY_PASS. | Decision on this receipt is PRIVATE_AHEAD, so public≠plant. Export is not the full plant. Full-program claim does not include export parity. No publish sync without Denis GO. No second clock, autonomy, LIVE_RSI, or L7. |
 | `gate_control_plane_resume_stop_watchdog_v1` | Dual-bank record only. `claim_wording` is null. | No CommandLine redact field on the receipt. No further operational sentence. |
 
-L7, LIVE_RSI, second clock, autonomy, and public=plant stay locked.
+L7, unrestricted RSI, second clock, and public=plant stay locked. The evening gates above do not themselves enable LIVE_RSI. Bounded LIVE_RSI is the 2026-09-23 ladder in [CLOSEOUT.md](CLOSEOUT.md) and [FINAL_STATE_BRIEF.md](../FINAL_STATE_BRIEF.md): `soft_ACCEPT` false; no `rsi_level7`; no `may_auto_promote`; no `network_live`.
 
 Discovery doctrine: searchable popular language is allowed only when bound to a proveable fact. See README.
 

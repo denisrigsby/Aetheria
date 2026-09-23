@@ -1,0 +1,33 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "talkface_prepublish_acceptance_v1",
+  "kind": "APPLY_REPROVE",
+  "ts": "20260923T035221Z",
+  "status": "DUAL_ACCEPT_TALKFACE_APPLY_REPROVE",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "apply_and_reprove_pass_sealed",
+  "claim_sealed": "talkface_prepublish_apply_and_reprove_pass_banked",
+  "label": "Proven (operator)",
+  "happy": "measurements/integration/talkface_prepublish_acceptance_v1/tf_talkface_prepub_20260923T034954Z",
+  "publication_authorized": false,
+  "does_not_overwrite": [
+    "DUAL_BANK.json prior prove-fail seal if separate",
+    "DUAL_BANK_REMEDIATION_PROPOSAL.json"
+  ],
+  "not_sealed": [
+    "publication",
+    "Certified",
+    "parent_promotion",
+    "true RSI",
+    "preliminary RSI"
+  ],
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "talkface_prepublish_acceptance_v1",
+  "plant_status": "DUAL_ACCEPT_TALKFACE_APPLY_REPROVE"
+}

@@ -12,7 +12,7 @@ In its currently demonstrated configuration it combines persistent memory, capab
 
 | Label | Meaning |
 | --- | --- |
-| **Proven (operator)** | Operator-run, receipt-backed, dual-bank sealed for the named scope |
+| **Proven (operator)** | Scrubbed dual receipt in this tree for the named scope. Operator-run and dual-bank sealed on the plant. Not a clean-room rebuild of the Windows plant |
 | **HOLD** | Banked / gated; not promoted or not authorized to apply |
 | **Not Proven** | No sealed receipt chain for the claim |
 | **Not Enabled** | Implemented or specified but not live-enabled |
@@ -23,58 +23,69 @@ Soft ACCEPT is **false** plant-wide. Nothing here is Certified, independently au
 
 ## Prove it works — sealed evidence
 
-All of the following are **Proven (operator)** with dual-bank stamps. Exclusions sit beside each claim.
+All of the following are **Proven (operator)**: a scrubbed dual receipt in this tree, not a clean-room rebuild of the Windows plant. Exclusions sit beside each claim. `status` strings match the JSON.
 
 ### Authority / learning ladder (applied)
 
 | Card | Dual stamp | Claim | Beside the claim |
 | --- | --- | --- | --- |
-| Bounded autonomous promotion | `DUAL_ACCEPT_BAP_APPLY_BOUNDED` | Applied under sealed controls | soft_ACCEPT=false; allowlist fixed |
-| Repeated promotion no-regression | `DUAL_ACCEPT_RPR_APPLY` | Applied | parent open-ended doctrine still DRAFT/HOLD |
-| Isolated learning domains | `DUAL_ACCEPT_ILD_APPLY` | Applied | no allowlist expansion |
-| Sandbox self-generated experiments | `DUAL_ACCEPT_SGE_APPLY` | Applied | sandbox-bounded |
-| Long-horizon learning across model replacement | `DUAL_ACCEPT_LHL_APPLY` | Applied | model replacement under seal |
-| Broader learning, externally bounded actions | `DUAL_ACCEPT_BLE_APPLY` | Applied | actions remain externally bounded |
+| Bounded autonomous promotion | [`DUAL_ACCEPT_BAP_APPLY_BOUNDED`](measurements/public_index/dual_accept_bap_apply_bounded.json) | bounded_autonomous_promotion_applied | soft_ACCEPT=false; allowlist fixed |
+| Repeated promotion no-regression | [`DUAL_ACCEPT_RPR_APPLY`](measurements/public_index/dual_accept_rpr_apply.json) | repeated_bounded_promotion_no_regression_applied | parent open-ended doctrine still DRAFT/HOLD |
+| Isolated learning domains | [`DUAL_ACCEPT_ILD_APPLY`](measurements/public_index/dual_accept_ild_apply.json) | isolated_learning_domains_applied | no allowlist expansion |
+| Sandbox self-generated experiments | [`DUAL_ACCEPT_SGE_APPLY`](measurements/public_index/dual_accept_sge_apply.json) | sandbox_self_generated_experiments_applied | sandbox-bounded |
+| Long-horizon learning across model replacement | [`DUAL_ACCEPT_LHL_APPLY`](measurements/public_index/dual_accept_lhl_apply.json) | long_horizon_learning_across_model_replacement_applied | model replacement under seal |
+| Broader learning, externally bounded actions | [`DUAL_ACCEPT_BLE_APPLY`](measurements/public_index/dual_accept_ble_apply.json) | broader_learning_externally_bounded_actions_applied | actions remain externally bounded |
 
-Validation publication steps 1–3: **Proven (operator)** — `DUAL_ACCEPT_VALIDATION_123` (snapshot, sealed-evidence replay, invariant/rollback audit).
+Validation publication steps 1–3: **Proven (operator)** — [`DUAL_ACCEPT_VALIDATION_123`](measurements/public_index/dual_accept_validation_123.json). `claim_sealed`: validation_publication_steps_1_2_3_evidence_proved_operator.
 
 ### Talk Face / mouth
 
-Talk Face prepublish apply + re-prove: **Proven (operator)** — `DUAL_ACCEPT_TALKFACE_APPLY_REPROVE`  
-Registry-bound, fail-closed, claims != proposals, coherent controls/memory/evidence.
+Talk Face prepublish apply + re-prove: **Proven (operator)** — [`DUAL_ACCEPT_TALKFACE_APPLY_REPROVE`](measurements/public_index/dual_accept_talkface_apply_reprove.json)  
+`claim_sealed`: talkface_prepublish_apply_and_reprove_pass_banked. Beside the claim: `publication_authorized` false; Not Certified. This stamp is not the true RSI receipt.
 
 ### Governed runtime (not merely chatbot)
 
-`governed_runtime_not_merely_chatbot_v1` NR1–NR6: **Proven (operator)** — `DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE`  
-NR6 witness is an **operator Windows subprocess**, not GitHub-hosted CI. **Not Certified.**
+**Proven (operator)** — [`DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE`](measurements/public_index/dual_accept_governed_runtime_nr_prove.json)  
+`claim_sealed`: Operator-proven as a governed runtime independent of its chat interface. Beside the claim: `rsi_in_scope` false; **Not Certified.**
 
 ### Bounded self-improvement
 
-Three consecutive bounded self-improvement cycles under external governance: **Proven (operator)** — `DUAL_ACCEPT_BSI_THREE_CYCLE`  
-Beside claim: **not RSI**; was prove-scoped at seal.
+**Proven (operator)** — [`DUAL_ACCEPT_BSI_THREE_CYCLE`](measurements/public_index/dual_accept_bsi_three_cycle.json)  
+`claim_sealed`: Demonstrated three consecutive bounded self-improvement cycles under external governance.  
+Beside claim: **not RSI** (`rsi_in_scope` false); prove-scoped at seal; **Not Certified.**
 
 ### RSI ladder
 
 | Stage | Dual stamp | Claim | Beside the claim |
 | --- | --- | --- | --- |
-| Preliminary RSI | `DUAL_ACCEPT_PRELIMINARY_RSI` | Preliminary RSI evidence under external governance | does **not** satisfy true RSI; was not LIVE_RSI enable |
-| True RSI evidence | `DUAL_ACCEPT_TRUE_RSI` | True RSI evidence under external governance | still **not** unrestricted / unbounded; Not Certified |
-| True RSI apply | `DUAL_ACCEPT_APPLY_TRUE_RSI` | True RSI applied; **LIVE_RSI Enabled (bounded)** | soft_ACCEPT=false; no rsi_level7; no may_auto_promote; no network_live; Not Certified; parent DRAFT/HOLD |
+| Preliminary RSI | [`DUAL_ACCEPT_PRELIMINARY_RSI`](measurements/public_index/dual_accept_preliminary_rsi.json) | Preliminary RSI evidence under external governance. | does **not** satisfy true RSI; `LIVE_RSI` on this receipt is `Not Enabled` |
+| True RSI evidence | [`DUAL_ACCEPT_TRUE_RSI`](measurements/public_index/dual_accept_true_rsi.json) | True RSI evidence under external governance (still not unrestricted / unbounded unless separately proved). | `LIVE_RSI` on this prove receipt is `Not Enabled`; still **not** unrestricted / unbounded; Not Certified |
+| True RSI apply | [`DUAL_ACCEPT_APPLY_TRUE_RSI`](measurements/public_index/dual_accept_apply_true_rsi.json) | True RSI applied under external governance; LIVE_RSI Enabled (bounded — still not unrestricted / unbounded). | soft_ACCEPT=false; no rsi_level7; no may_auto_promote; no network_live; Not Certified; parent DRAFT/HOLD |
+
+Publication pack: **Proven (operator)** — [`DUAL_ACCEPT_FINAL_REPO_PUBLISH`](measurements/public_index/dual_accept_final_repo_publish.json). `claim_sealed`: Final repo publish pack dual-bank sealed. Public main carries Proven (operator) claims with exclusions beside them; LIVE_RSI Enabled (bounded); soft_ACCEPT=false; Not Certified. Beside the claim: `export_parity` **PRIVATE_AHEAD**; public ≠ full plant.
 
 ## Prove it is running — live state
 
-As of apply dual `DUAL_ACCEPT_APPLY_TRUE_RSI` (happy `true_rsi_20260923T044857Z`):
+Read these two files in this tree:
+
+- [`dual_accept_apply_true_rsi.json`](measurements/public_index/dual_accept_apply_true_rsi.json) — `status` `DUAL_ACCEPT_APPLY_TRUE_RSI`; `LIVE_RSI` is `Enabled (bounded under external governance)`; happy `true_rsi_20260923T044857Z`
+- [`live_rsi_controls_store.json`](measurements/public_index/live_rsi_controls_store.json) — `LIVE_RSI` true; `LIVE_RSI_mode` `bounded_under_external_governance`; `dual_apply_status` `DUAL_ACCEPT_APPLY_TRUE_RSI`
+
+Scrubbed registry snapshot (not an extra stamp): [`lll_registry_row.json`](measurements/public_index/lll_registry_row.json).
 
 - **LIVE_RSI = Enabled (bounded under external governance)**
 - soft_ACCEPT = false
 - rsi_level7 = false
 - may_auto_promote = false
 - network_live = false
-- parent open-ended doctrine = **DRAFT/HOLD** (not operational)
+- unrestricted_rsi = false
+- unbounded_rsi = false
+- parent open-ended doctrine = **DRAFT/HOLD** (not operational; `parent_still_DRAFT_HOLD` true)
 - FIXED_OPERATOR_SPACE unchanged at apply
 - Sibling applied organs preserved (RPR/ILD/SGE/LHL/BLE)
+- Not Certified
 
-This is **running under seal**, not unrestricted RSI and not certification.
+The live process tick remains on the operator plant. It is not GitHub-hosted. This record is **running under seal**, not unrestricted RSI and not certification.
 
 ## What remains HOLD / Not Enabled / Not Proven
 
@@ -84,16 +95,16 @@ This is **running under seal**, not unrestricted RSI and not certification.
 - External certification / independent audit: **Not Proven** (not claimed)
 - Broader vision of replaceable-model governed intelligence: labeled separately; **not** mixed into this as-is definition
 
-## How to reproduce (operator)
+## How to verify the claims (clean clone)
 
-1. Clean Windows plant with Aetheria install path used for the sealed runs.
-2. Replay sealed validation pack under `measurements/integration/validation_publication_post_ble_v1/` (steps 1–3 receipts).
-3. Confirm dual-bank stamps listed above on disk.
-4. Confirm LIVE_RSI controls store + registry: Enabled bounded; soft_ACCEPT false; hard locks false.
-5. Run Talk Face acceptance suite receipts under `talkface_prepublish_acceptance_v1`.
+A stranger verifies the claims by opening the scrubbed duals linked above. That does not require plant-only `measurements/integration/` paths, and it is not a clean-room rebuild of the Windows plant.
 
-Exact demo script: see [docs/RUNNABLE_DEMO.md](docs/RUNNABLE_DEMO.md).  
-Threat model: see [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
+1. Open each `measurements/public_index/dual_accept_*.json` linked in the Proven tables and confirm `status`. Packet list: [`MANIFEST_ladder_20260923.json`](measurements/public_index/MANIFEST_ladder_20260923.json).
+2. Open [`live_rsi_controls_store.json`](measurements/public_index/live_rsi_controls_store.json) and [`dual_accept_apply_true_rsi.json`](measurements/public_index/dual_accept_apply_true_rsi.json). LIVE_RSI is Enabled (bounded under external governance). `soft_ACCEPT` is false. `rsi_level7`, `may_auto_promote`, and `network_live` are false.
+3. The live process tick remains on the operator plant. It is not GitHub-hosted.
+
+Exact demo script: [docs/RUNNABLE_DEMO.md](docs/RUNNABLE_DEMO.md). Optional operator-plant replay of `measurements/integration/` is an appendix there. It is not required to verify these claims.  
+Threat model: [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
 ## Public trust order
 
