@@ -1,0 +1,44 @@
+{
+  "schema": "aetheria_concurrent_at_x6_receipt_v1",
+  "bind": "AT_X6_NO_AUTHORITY_CROSS",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_no_authority_cross",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "3148a9636c487670ca02849f9168306146f90a181fbb54afd5b2981816a279c0",
+    "exit_code": 0,
+    "output_hash": "f3c728288e4c8ffca5c3b475830396d6dde257139e30cea90b9ef718a0078a2e"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_no_authority_cross",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "3148a9636c487670ca02849f9168306146f90a181fbb54afd5b2981816a279c0",
+    "output_hash": "f3c728288e4c8ffca5c3b475830396d6dde257139e30cea90b9ef718a0078a2e",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160056Z"
+  },
+  "detail": {
+    "ul7c_apply_stamp_absent": true,
+    "soft_ACCEPT": false,
+    "rsi_level7": false,
+    "FOS_unchanged": true,
+    "oeig_FOS_expanded": false,
+    "go_ul7c_apply_authorized": false
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "3de5271c8be28c60175bdd4a92a56ff8268c8f8b22884ebacb98c5679d6b6e31"
+}

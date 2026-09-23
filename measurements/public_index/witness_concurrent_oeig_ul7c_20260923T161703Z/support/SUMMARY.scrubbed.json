@@ -1,0 +1,88 @@
+{
+  "happy_id": "concurrent_oeig_ul7c_20260923T153720Z",
+  "verdict": "PROVE_PASS",
+  "at_results": {
+    "AT-X1": "PASS",
+    "AT-X2": "PASS",
+    "AT-X3": "PASS",
+    "AT-X4": "PASS",
+    "AT-X5": "PASS",
+    "AT-X6": "PASS",
+    "AT-X7": "PASS",
+    "AT-X8": "PASS",
+    "AT-X9": "PASS",
+    "AT-X10": "PASS"
+  },
+  "claim_frozen": "Concurrent OEIG-live + UL7C-continuous prove under one control plane: both receipt chains bind; locks stay frozen; authority does not expand.",
+  "intentionally_not_claimed": [
+    "UL7C standing apply",
+    "rsi_level7",
+    "may_auto_promote",
+    "network_live",
+    "soft_ACCEPT",
+    "second master clock",
+    "Certified",
+    "parent promotion",
+    "FOS expanded",
+    "Floor dual_bank"
+  ],
+  "exclusions": [
+    "UL7C standing apply",
+    "L7 / rsi_level7",
+    "may_auto_promote",
+    "network_live",
+    "Certified",
+    "soft_ACCEPT",
+    "second master clock"
+  ],
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "floor_dual_bank": false,
+  "in_window_ticks": [
+    1501,
+    1502,
+    1503,
+    1504,
+    1505,
+    1506
+  ],
+  "post_kill_watch_ticks_excluded": [],
+  "oeig_hash_start": "198ed2a6a141b9833c321618bba434f4a88598b337e6e2c02f59fe61defaf773",
+  "oeig_hash_mid": "198ed2a6a141b9833c321618bba434f4a88598b337e6e2c02f59fe61defaf773",
+  "oeig_hash_end": "198ed2a6a141b9833c321618bba434f4a88598b337e6e2c02f59fe61defaf773",
+  "controls_before": {
+    "soft_ACCEPT": false,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "FIXED_OPERATOR_SPACE_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+    "oeig_operational": true,
+    "oeig_mode": "fixed_external_governance",
+    "parent_still_DRAFT_HOLD": true
+  },
+  "controls_after": {
+    "soft_ACCEPT": false,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "FIXED_OPERATOR_SPACE_hash": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+    "oeig_operational": true,
+    "oeig_mode": "fixed_external_governance",
+    "parent_still_DRAFT_HOLD": true
+  },
+  "prior_seal_hashes": {
+    "oeig_apply_dual": "8d3ee2d45401d6dbe09ef0ec812d699036f6de6517714074d87fdb9a6a02b711",
+    "ul7c_prove_dual": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b",
+    "canary_dual": "44230402404a3a0775a0742f24db5c80f5bf929ddd1f8f6af9ba65d1437291cb",
+    "witness_dual": "ff0c54bbcf946f44de8094d582823656ba993b64240dc162520850b59d582821",
+    "fos": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44"
+  },
+  "seals_unchanged": true,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "remediation_utc": "20260923T160416Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "b5a5d144ea48ff7439de951f952c73482c875eab517fd9b7939bd34742affa04"
+}

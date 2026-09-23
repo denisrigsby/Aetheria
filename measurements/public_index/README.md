@@ -64,3 +64,14 @@ Checklist step 4 only. Scrubbed operator witness of already-sealed proves. `soft
 - [dual_bank_oeig_prove.json](witness_oeig_ul7c_20260923T143704Z/dual_bank_oeig_prove.json) — scrubbed `DUAL_BANK_OEIG_PROVE` (sha256 `78e5e7b14b2fa51354ed2ed5957a83ac7c9a7527246ae6e17fb522062e86fe63`)
 - [dual_bank_ul7c_prove.json](witness_oeig_ul7c_20260923T143704Z/dual_bank_ul7c_prove.json) — scrubbed `DUAL_BANK_UL7C_PROVE` (sha256 `b0a488aa1457ba8caf264c31b9999ce2f02238801ef7002f3c8583ec36053b45`)
 - [DUAL_BANK_WITNESS_SCRUB_OEIG_UL7C.json](witness_oeig_ul7c_20260923T143704Z/DUAL_BANK_WITNESS_SCRUB_OEIG_UL7C.json) — Architect dual-bank stamp for this witness export only
+
+## Operator witness — concurrent OEIG-live + UL7C-continuous (20260923T161703Z)
+
+Checklist step 4 only (concurrent lane). Scrubbed operator witness of already-sealed concurrent prove. `soft_ACCEPT` is false. Apply held. UL7C apply held. Not apply-live. Not canary. Not L7. Not unrestricted RSI. Not Certified. Not an independent third-party auditor. `export_parity` stays **PRIVATE_AHEAD**. `public_equals_plant` is false. Scrubbed hashes differ from the plant dual-bank original; this pack does not claim byte identity after scrub.
+
+Public claim: Concurrent OEIG-live + UL7C-continuous proved on one control plane, with locks frozen, soft_ACCEPT false, UL7C apply held, and authority unchanged.
+
+[witness_concurrent_oeig_ul7c_20260923T161703Z/](witness_concurrent_oeig_ul7c_20260923T161703Z/) holds the stage (`README_WITNESS_CONCURRENT_OEIG_UL7C_SNIPPET.md`, [MANIFEST_witness_concurrent_oeig_ul7c_20260923T161703Z.json](witness_concurrent_oeig_ul7c_20260923T161703Z/MANIFEST_witness_concurrent_oeig_ul7c_20260923T161703Z.json)).
+
+- [dual_bank_prove_concurrent_oeig_ul7c.json](witness_concurrent_oeig_ul7c_20260923T161703Z/dual_bank_prove_concurrent_oeig_ul7c.json) — scrubbed `DUAL_BANK_PROVE_CONCURRENT_OEIG_LIVE_UL7C` (sha256 `9134c82ba1b3015e3a8b9b830831d4ee714c08e1f1721edbf40e4b7308c377a6`; plant dual unchanged `bbcd205ff90f78d4fe78b02df1c4510e4b276695b8b49142ee975364b9f569f7`)
+- [DUAL_BANK_WITNESS_SCRUB_CONCURRENT_OEIG_UL7C.json](witness_concurrent_oeig_ul7c_20260923T161703Z/DUAL_BANK_WITNESS_SCRUB_CONCURRENT_OEIG_UL7C.json) — Architect dual-bank stamp for this witness export only (sha256 `a17e1b9105da4864509b101ffe575d01efe2d42b89f3641e3da34412857b2b1d`)

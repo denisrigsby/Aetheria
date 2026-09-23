@@ -1,0 +1,119 @@
+{
+  "schema": "aetheria_witness_scrub_receipt_v1",
+  "stamp": "SCRUB_EXPORT_CONCURRENT_OEIG_UL7C",
+  "status": "SCRUB_PASS",
+  "utc": "20260923T161703Z",
+  "gate": "witness_scrub_export_concurrent_oeig_ul7c_v1",
+  "exact_go": "GO: WITNESS_SCRUB_EXPORT_CONCURRENT_OEIG_UL7C",
+  "SCRUB_PASS": true,
+  "soft_ACCEPT": false,
+  "apply_authorized": false,
+  "ul7c_apply_authorized": false,
+  "canary_authorized": false,
+  "public_claim": "Concurrent OEIG-live + UL7C-continuous proved on one control plane, with locks frozen, soft_ACCEPT false, UL7C apply held, and authority unchanged.",
+  "plant_dual_before_sha256": {
+    "DUAL_BANK_PROVE_CONCURRENT_OEIG_LIVE_UL7C.json": "bbcd205ff90f78d4fe78b02df1c4510e4b276695b8b49142ee975364b9f569f7"
+  },
+  "plant_dual_after_sha256_expected_unchanged": {
+    "DUAL_BANK_PROVE_CONCURRENT_OEIG_LIVE_UL7C.json": "bbcd205ff90f78d4fe78b02df1c4510e4b276695b8b49142ee975364b9f569f7"
+  },
+  "scrubbed_sha256": {
+    "DUAL_BANK_PROVE_CONCURRENT_OEIG_LIVE_UL7C.scrubbed.json": "9134c82ba1b3015e3a8b9b830831d4ee714c08e1f1721edbf40e4b7308c377a6",
+    "dual_bank_prove_concurrent_oeig_ul7c.json": "9134c82ba1b3015e3a8b9b830831d4ee714c08e1f1721edbf40e4b7308c377a6",
+    "MANIFEST_witness_concurrent_oeig_ul7c_20260923T161703Z.json": "ab8a7561465359a3afbec6f5075131c8c899ebad2fe2764656d9de3896d869ce",
+    "INDEX_witness_concurrent_oeig_ul7c.json": "2d0ecde3a4abe9cb9ec3c8b09f5ae2c4b43cd75231950ba3ad398e4336b1df59",
+    "support/COVER_ACCEPT_PROVE_CONCURRENT_OEIG_LIVE_UL7C.scrubbed.json": "cc15642d76c2c17cef5fe69f36c095671851763e5576ecf870a9ae95f13281dd",
+    "support/FLOOR_PROVE_PASS.scrubbed.json": "32b511fbef22d21d6cd6584ce651343467a5e1006366a4da72dd1d1262f83fe9",
+    "support/PROVE_RECEIPT.scrubbed.json": "68674a34f7543ea10e51dd6c0900bc4db340c382295138ddafc2fa26800527a6",
+    "support/RECEIPT_AT_X1.scrubbed.json": "0a5d11f09bf906b5e167b14a2b1753cde5a28c11437725521bde6981d936ebfa",
+    "support/RECEIPT_AT_X10.scrubbed.json": "d8eb4be807738979a9487b8fb16cb966f4b10f159f905bc732d0879a4881c827",
+    "support/RECEIPT_AT_X2.scrubbed.json": "564f528b873a38f22622628aa70c027f4dc0e570e4ca22ddb742ac17a30f8316",
+    "support/RECEIPT_AT_X3.scrubbed.json": "cad525f296200f3212dd22df41f64cf36aac497b5aa0a9bb9aa0f404da2ed9e8",
+    "support/RECEIPT_AT_X4.scrubbed.json": "826a00cc9a51519cb4cd32226f370a54c88864f8d945a4c2fb213cba9ae2dc7f",
+    "support/RECEIPT_AT_X5.scrubbed.json": "1045cdc6a4a5cd37f2e88747b9a07f55455f5a3318f6a183e874f83dd4c2241e",
+    "support/RECEIPT_AT_X6.scrubbed.json": "bdee98892554104b03b4ea24d95a823b0b795e43e319a8b7039c14d1c22680f7",
+    "support/RECEIPT_AT_X7.scrubbed.json": "37b321ea71c6363f043f3af84d043976560fbb1c2dc87883b469f4f06f3ce39d",
+    "support/RECEIPT_AT_X8.scrubbed.json": "5d0cad9e5cfd2db079740bd1a5e594b63aefb6f417664bc0e5850deef5e7d8eb",
+    "support/RECEIPT_AT_X9.scrubbed.json": "e0d9c99d6684e8690ffc38a1f17b2121428240d32eb2fc9f77b2332c9dbc369b",
+    "support/SUMMARY.scrubbed.json": "ddb89876abe5114a756c5045102886cf2f32282b3db7647c5c4e01f764969b2b",
+    "happy/CONTROLS_SNAP_END.scrubbed.json": "9018e9f1264fc22d88f06870ef154055fda6fd68d43c6361279d61be006cd904",
+    "happy/CONTROLS_SNAP_MID.scrubbed.json": "9f51e2ef127bc623d7a8c479ff3879c554e89649f04d55c785002a1908fada0f",
+    "happy/CONTROLS_SNAP_START.scrubbed.json": "96f31ef704d5622ff7e821541c790ee701912bda0eb6a113cb469ac6c11a891d",
+    "happy/OEIG_HASH_END.scrubbed.json": "e0b3cc4044f699db5639f192f9653b8835d38a56d997157860e2074243350039",
+    "happy/OEIG_HASH_MID.scrubbed.json": "2f343f63927b1636df5ffaf3c96ee71f0685c87682a532f8fb884c6bc3a989af",
+    "happy/OEIG_HASH_START.scrubbed.json": "f2db67feb87672e5ce362b58c23e08111e6c8ccb96b1a705c32b6cad16673cf7",
+    "happy/SEALS_AFTER.scrubbed.json": "62d55e58b9cd77a94a19bb807bb537af89eae0a68df4993f5ee6b052b0a1f844",
+    "happy/SEALS_BEFORE.scrubbed.json": "c0fd296f223b3b65dfd6a872d625726a1632b51643157fec56bf1a7b68890dc1"
+  },
+  "support_plant_sha256": {
+    "COVER_ACCEPT_PROVE_CONCURRENT_OEIG_LIVE_UL7C.json": "d1767c8af6db5881c23f8b7b4db451ef987b82c6a1891d8003fe4e26f022e409",
+    "FLOOR_PROVE_PASS.json": "454ff9ab12a49dfc59fed722b7d3f2f581160e964c88707cefe34222795d0969",
+    "PROVE_RECEIPT.json": "f01beaec53e1302483f4ebe4a0dc75b72629411ae5cd972d143dea1133cb33ab",
+    "RECEIPT_AT_X1.json": "ba58a09eaf0b2c2036a9616a94051e47fbb4e799bde70970095542d17ad24e0a",
+    "RECEIPT_AT_X10.json": "428383423cf6ca4f37c6ab0e793e641fa34a22ab10316ce96079f72b676a82d7",
+    "RECEIPT_AT_X2.json": "a325382dd9b8b83b4196491d7c95f2303d4c69921e6996abd554ed34027b22ee",
+    "RECEIPT_AT_X3.json": "03e5523c9a13b46b04b1290183d6b68f69fa5aef8ba49b27d92a095b9184a896",
+    "RECEIPT_AT_X4.json": "83598b8564a40d681d014e8fadc984cd0b0adc07215cd3e1bb79fc538cb84a0e",
+    "RECEIPT_AT_X5.json": "739fc441ac8fa15801c060d65939cea42b7bda346ab20719da3fd1ed4660057f",
+    "RECEIPT_AT_X6.json": "3de5271c8be28c60175bdd4a92a56ff8268c8f8b22884ebacb98c5679d6b6e31",
+    "RECEIPT_AT_X7.json": "62738cbfebc56ce6cbdd0b583643149b603e75dd6edb3a1d4cd841fc01b58862",
+    "RECEIPT_AT_X8.json": "f4c677d8161469d4fe81ac866dfabacdc918505bb838612056cf518395b7ff6b",
+    "RECEIPT_AT_X9.json": "054c46fc4982739f84ad183116bc402b4791684e365e234f3d741d9e3aae58c9",
+    "SUMMARY.json": "b5a5d144ea48ff7439de951f952c73482c875eab517fd9b7939bd34742affa04"
+  },
+  "acceptance_tests": {
+    "AT-W1": {
+      "pass": true
+    },
+    "AT-W2": {
+      "pass": true
+    },
+    "AT-W3": {
+      "pass": true,
+      "hard_hits": []
+    },
+    "AT-W4": {
+      "pass": true
+    },
+    "AT-W5": {
+      "pass": true
+    },
+    "AT-W6": {
+      "pass": null,
+      "note": "Cover ACCEPT then Architect dual-bank before merge — not executed in Floor scrub"
+    },
+    "AT-W7": {
+      "pass": true,
+      "bad": []
+    }
+  },
+  "paths": {
+    "scrubbed": "scrubbed/20260923T161703Z/",
+    "public_index_stage": "public_index_stage/",
+    "public_index_target": "measurements/public_index/witness_concurrent_oeig_ul7c_20260923T161703Z/"
+  },
+  "locks": {
+    "soft_ACCEPT": false,
+    "apply_held": true,
+    "ul7c_apply_held": true,
+    "canary_held": true,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "floor_dual_bank": false
+  },
+  "intentionally_not_done": [
+    "git push",
+    "PR open (stage only)",
+    "Cover ACCEPT",
+    "Architect dual-bank",
+    "plant dual rewrite",
+    "apply",
+    "UL7C apply",
+    "canary",
+    "L7 unlock",
+    "soft_ACCEPT",
+    "promote",
+    "Floor dual_bank"
+  ]
+}

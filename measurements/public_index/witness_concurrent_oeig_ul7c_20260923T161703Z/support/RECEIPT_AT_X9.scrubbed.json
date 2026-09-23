@@ -1,0 +1,83 @@
+{
+  "schema": "aetheria_concurrent_at_x9_receipt_v1",
+  "bind": "AT_X9_APPEND_ONLY",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_append_only_seals",
+      "REDACTED_HOME",
+      "REDACTED_HOME",
+      "REDACTED_HOME",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "d93ec5c458322d2aee3d33c8fedad2af2335b335c2b7d93db7a5fc9c9b6b3297",
+    "exit_code": 0,
+    "output_hash": "fe6ec190178d60c1a591f70631131dd2a57c66f0311e2f2d2668382e253e4b77"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_append_only_seals",
+      "REDACTED_HOME",
+      "REDACTED_HOME",
+      "REDACTED_HOME",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "d93ec5c458322d2aee3d33c8fedad2af2335b335c2b7d93db7a5fc9c9b6b3297",
+    "output_hash": "fe6ec190178d60c1a591f70631131dd2a57c66f0311e2f2d2668382e253e4b77",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160056Z"
+  },
+  "detail": {
+    "seals_before": {
+      "label": "BEFORE",
+      "utc": "20260923T153720Z",
+      "oeig_apply_dual": "8d3ee2d45401d6dbe09ef0ec812d699036f6de6517714074d87fdb9a6a02b711",
+      "ul7c_prove_dual": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b",
+      "canary_dual": "44230402404a3a0775a0742f24db5c80f5bf929ddd1f8f6af9ba65d1437291cb",
+      "witness_dual": "ff0c54bbcf946f44de8094d582823656ba993b64240dc162520850b59d582821",
+      "fos": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+      "paths": {
+        "oeig_apply_dual": "REDACTED_HOME",
+        "ul7c_prove_dual": "REDACTED_HOME",
+        "canary_dual": "REDACTED_HOME",
+        "witness_dual": "REDACTED_HOME",
+        "fos": "REDACTED_HOME"
+      }
+    },
+    "seals_after": {
+      "label": "AFTER",
+      "utc": "20260923T160056Z",
+      "oeig_apply_dual": "8d3ee2d45401d6dbe09ef0ec812d699036f6de6517714074d87fdb9a6a02b711",
+      "ul7c_prove_dual": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b",
+      "canary_dual": "44230402404a3a0775a0742f24db5c80f5bf929ddd1f8f6af9ba65d1437291cb",
+      "witness_dual": "ff0c54bbcf946f44de8094d582823656ba993b64240dc162520850b59d582821",
+      "fos": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+      "paths": {
+        "oeig_apply_dual": "REDACTED_HOME",
+        "ul7c_prove_dual": "REDACTED_HOME",
+        "canary_dual": "REDACTED_HOME",
+        "witness_dual": "REDACTED_HOME",
+        "fos": "REDACTED_HOME"
+      }
+    },
+    "seals_unchanged": true,
+    "expected": {
+      "ul7c_prove_dual": "8ee1e943505d5643ccf5bc50529136b55e7ff9de9a5af47863820de22d64154b",
+      "canary_dual": "44230402404a3a0775a0742f24db5c80f5bf929ddd1f8f6af9ba65d1437291cb",
+      "witness_dual": "ff0c54bbcf946f44de8094d582823656ba993b64240dc162520850b59d582821",
+      "fos": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44"
+    }
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "054c46fc4982739f84ad183116bc402b4791684e365e234f3d741d9e3aae58c9"
+}

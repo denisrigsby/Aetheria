@@ -1,0 +1,51 @@
+{
+  "schema": "aetheria_concurrent_at_x5_receipt_v1",
+  "bind": "AT_X5_LOCKS_POST",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_locks_post",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "b9662fea49399d4a81d86bdcc1e0e8d33d4f738676ef6a6f821584c6502d4464",
+    "exit_code": 0,
+    "output_hash": "bbdf37ac05f41277809de204942ae4d8a8a520f84b0fd8dfbfd5008d2673ff6a"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_locks_post",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "b9662fea49399d4a81d86bdcc1e0e8d33d4f738676ef6a6f821584c6502d4464",
+    "output_hash": "bbdf37ac05f41277809de204942ae4d8a8a520f84b0fd8dfbfd5008d2673ff6a",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160416Z"
+  },
+  "detail": {
+    "ok_end": true,
+    "fails_end": [],
+    "ok_postkill": true,
+    "fails_postkill": [],
+    "soft_ACCEPT": false,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "FOS": "6ab9dbc798633298fca6a7e888dc119b8a6ab5dfd250a711e7b14f22d3f49b44",
+    "oeig_operational": true,
+    "oeig_mode": "fixed_external_governance",
+    "parent_still_DRAFT_HOLD": true,
+    "remediation": "locks_ok string compare fixed (!=); re-eval on same happy snaps"
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160416Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "739fc441ac8fa15801c060d65939cea42b7bda346ab20719da3fd1ed4660057f"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "aetheria_concurrent_at_x3_receipt_v1",
+  "bind": "AT_X3_UL7C_CONTINUOUS",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_ul7c_continuous",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "d2cd93be42da5b2d0c53f8a9314eb3afbef4ab4799ac185344debae0bead6cfa",
+    "exit_code": 0,
+    "output_hash": "9f36b7e6348a612065eaffe3aa2ffa0266bf9700b1f49754ab5110493d104ca3"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_ul7c_continuous",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "d2cd93be42da5b2d0c53f8a9314eb3afbef4ab4799ac185344debae0bead6cfa",
+    "output_hash": "9f36b7e6348a612065eaffe3aa2ffa0266bf9700b1f49754ab5110493d104ca3",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160056Z"
+  },
+  "detail": {
+    "in_window_ticks": [
+      1501,
+      1502,
+      1503,
+      1504,
+      1505,
+      1506
+    ],
+    "post_kill_watch_ticks_excluded": [],
+    "min_required": 6,
+    "n_in_window": 6,
+    "postkill_excluded_from_count": true,
+    "cover_lesson": ">=6 TRUE in-window LH ticks BEFORE halt; postkill EXCLUDED",
+    "wall_s_to_halt": 1395.787253856659,
+    "operator_space_max_duration_wall_s": 900,
+    "plant_lh_tick_wait_ceiling_s": 1800,
+    "note": "Continuity wait follows plant LH cadence (single clock); prior sealed UL7C used ~1476s for 6 ticks"
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "03e5523c9a13b46b04b1290183d6b68f69fa5aef8ba49b27d92a095b9184a896"
+}
