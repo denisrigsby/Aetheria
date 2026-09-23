@@ -1,7 +1,8 @@
 """Cross-process single-flight lock for one campaign role.
 
 Fail-closed: a controller that does not acquire the lock, or that observes a
-live role or a live claim, must not spawn. O_EXCL is the atomic claim.
+live role or a live claim, must not spawn. A failed acquire still checks the
+role and the claim before it reports lock_timeout. O_EXCL is the atomic claim.
 A dead holder's lock file may be reclaimed. A live holder is never stolen.
 """
 from __future__ import annotations
@@ -378,6 +379,29 @@ def _stamp_create_times(
         _write_claim(claim_path, doc)
 
 
+def _observed_block_reason(
+    claim_path: Path,
+    *,
+    role_alive: Callable[[], bool],
+    alive: Callable[[int], bool],
+    create_time_fn: Callable[[int], str | None],
+) -> str | None:
+    """Refuse reason when a role or claim already blocks another spawn.
+
+    ``role_alive`` is checked first, then ``_claim_blocks``. None means both
+    still look dead. A role-check error fails closed and does not spawn.
+    """
+    try:
+        busy = bool(role_alive())
+    except Exception:
+        return "role_check_error"
+    if busy:
+        return "role_alive"
+    if _claim_blocks(_read_claim(claim_path), alive=alive, create_time_fn=create_time_fn):
+        return "claim_held"
+    return None
+
+
 def single_flight_spawn(
     lock_path: Path,
     claim_path: Path,
@@ -393,11 +417,13 @@ def single_flight_spawn(
 
     The lock is held across the role check, the claim publish, and ``spawn``.
     Create-time reads stored on the new claim run after that hold is released.
-    On Windows those reads are CIM queries and can outlast a short waiter; they
-    must not turn a lost race into ``lock_timeout``. A live claim with no
-    create_time yet still blocks another spawn (missing create_time is treated
-    as the same process). A caller that loses the lock or sees a live role or
-    claim does not call ``spawn``.
+    On Windows those reads are CIM queries and can outlast a short waiter.
+    If the lock is not acquired, this still observes ``role_alive`` and the
+    claim before reporting ``lock_timeout``. A published admit must surface as
+    ``role_alive`` or ``claim_held``; ``lock_timeout`` is only when both still
+    look dead. A live claim with no create_time yet still blocks another spawn
+    (missing create_time is treated as the same process). A caller that loses
+    the lock or sees a live role or claim does not call ``spawn``.
     """
     alive = pid_alive_fn or pid_alive
     created = create_time_fn or process_create_time
@@ -414,15 +440,26 @@ def single_flight_spawn(
     worker: int | None = None
     with CampaignLock(lock_path, timeout_s=timeout_s) as acquired:
         if not acquired:
+            # The winner may already have published. Post-admit create-time
+            # probes do not hold this lock, but a live holder can still outlast
+            # timeout_s (Windows run 35916007830). Observe before lock_timeout.
+            visible = _observed_block_reason(
+                claim_path,
+                role_alive=role_alive,
+                alive=alive,
+                create_time_fn=created,
+            )
+            if visible is not None:
+                return {**refused, "reason": visible}
             return {**refused, "reason": "lock_timeout"}
-        try:
-            busy = bool(role_alive())
-        except Exception:
-            return {**refused, "reason": "role_check_error"}
-        if busy:
-            return {**refused, "reason": "role_alive"}
-        if _claim_blocks(_read_claim(claim_path), alive=alive, create_time_fn=created):
-            return {**refused, "reason": "claim_held"}
+        visible = _observed_block_reason(
+            claim_path,
+            role_alive=role_alive,
+            alive=alive,
+            create_time_fn=created,
+        )
+        if visible is not None:
+            return {**refused, "reason": visible}
         claim_id = f"{os.getpid()}-{time.time_ns()}"
         owner_pid = os.getpid()
         _write_claim(
