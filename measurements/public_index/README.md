@@ -75,3 +75,12 @@ Public claim: Concurrent OEIG-live + UL7C-continuous proved on one control plane
 
 - [dual_bank_prove_concurrent_oeig_ul7c.json](witness_concurrent_oeig_ul7c_20260923T161703Z/dual_bank_prove_concurrent_oeig_ul7c.json) — scrubbed `DUAL_BANK_PROVE_CONCURRENT_OEIG_LIVE_UL7C` (sha256 `9134c82ba1b3015e3a8b9b830831d4ee714c08e1f1721edbf40e4b7308c377a6`; plant dual unchanged `bbcd205ff90f78d4fe78b02df1c4510e4b276695b8b49142ee975364b9f569f7`)
 - [DUAL_BANK_WITNESS_SCRUB_CONCURRENT_OEIG_UL7C.json](witness_concurrent_oeig_ul7c_20260923T161703Z/DUAL_BANK_WITNESS_SCRUB_CONCURRENT_OEIG_UL7C.json) — Architect dual-bank stamp for this witness export only (sha256 `a17e1b9105da4864509b101ffe575d01efe2d42b89f3641e3da34412857b2b1d`)
+
+## witness_governed_runtime_nr_20260923T175546Z
+
+Operator witness pack for sealed governed-runtime NR prove (NR1-NR6). Scrub-only export. Remediates prior HOLD on pack 174809Z. soft_ACCEPT=false. Not Certified. Merge held until Cover then Architect PR ACCEPT. Canary held. Plant dual unchanged.
+
+- Pack: `measurements/public_index/witness_governed_runtime_nr_20260923T175546Z/`
+- Scrubbed dual: `c12bf86fb62e7136f99b5a77ca28d1e271e77a4ed64f1b404b6cccaa95c1853b`
+- Witness dual: `f25a7a6f94694e47caf1aaf51511f22e0194e53cbf6a6135849988225f31615b`
+- Plant dual (unchanged): `fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb`

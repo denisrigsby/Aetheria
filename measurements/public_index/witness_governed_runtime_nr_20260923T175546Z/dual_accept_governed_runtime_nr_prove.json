@@ -1,0 +1,53 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "governed_runtime_not_merely_chatbot_v1",
+  "kind": "NR_PROVE",
+  "ts": "20260923T040116Z",
+  "status": "DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "prove_only_sealed",
+  "verdict": "PROVE_PASS",
+  "happy": "nr_governed_runtime_20260923T035912Z",
+  "claim_sealed": "Operator-proven as a governed runtime independent of its chat interface.",
+  "label": "Proven (operator)",
+  "apply_authorized": false,
+  "publication_authorized": false,
+  "rsi_in_scope": false,
+  "not_certification": true,
+  "cover_stamp": "COVER_ACCEPT_NR_PROVE.json",
+  "architect_stamp": "ARCHITECT_ACCEPT_NR_PROVE.json",
+  "ci_witness": {
+    "job_id": "nr-win-ci-20260923T035908Z",
+    "artifact_sha256": "7254565e6423d8c3af401da9ab8349f003702c88893dc4d444b4b3b3979d42f9",
+    "github_hosted": false,
+    "kind": "operator_clean_windows_ci"
+  },
+  "exclusions_beside_claim": [
+    "NR6 witness is operator Slave-1 subprocess, not GitHub-hosted public CI — Proven (operator) only, not Certified.",
+    "Apply remains HOLD; prove enables nothing.",
+    "RSI / preliminary RSI out of scope on this card.",
+    "Publication blocked until Denis cut GO and remaining blockers clear."
+  ],
+  "claim_not_sealed": [
+    "Certified",
+    "publication",
+    "final_repo_cut",
+    "true RSI",
+    "preliminary RSI",
+    "apply",
+    "soft_ACCEPT",
+    "parent_promotion",
+    "GitHub-hosted public CI as the NR6 witness"
+  ],
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "fd0d96ca1a411f29e4143d036c9001670f78fc78ae0106a2618bd305cba22edb",
+  "plant_dual_status": "DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE",
+  "public_claim": "Operator-proven governed runtime (NR1-NR6): non-chat control-plane job, persistence across restart, same capability/policy via chat and non-chat, fail-closed unauthorized, receipt-backed completion, one-command repeatable Windows CI PASS - soft_ACCEPT false; Not Certified.",
+  "gate": "WITNESS_SCRUB_EXPORT_GOVERNED_RUNTIME_NR",
+  "witness_utc": "20260923T175546Z"
+}

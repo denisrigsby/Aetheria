@@ -1,0 +1,18 @@
+{
+  "schema": "aetheria_nr34_bind_summary_scrubbed_v1",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "NR3_INTERFACE_INDEPENDENCE": "PASS",
+  "NR4_AUTHORITY_ENFORCEMENT": "PASS",
+  "all_nr_binds": {
+    "NR1_NON_CHAT_EXECUTION": "PASS",
+    "NR2_PERSISTENCE_ACROSS_PROCESS": "PASS",
+    "NR3_INTERFACE_INDEPENDENCE": "PASS",
+    "NR4_AUTHORITY_ENFORCEMENT": "PASS",
+    "NR5_RECEIPT_BACKED_COMPLETION": "PASS",
+    "NR6_REPEATABILITY": "PASS"
+  },
+  "source": "PROVE_RECEIPT.binds_summary / COVER_ACCEPT_NR_PROVE.binds",
+  "soft_ACCEPT": false
+}
