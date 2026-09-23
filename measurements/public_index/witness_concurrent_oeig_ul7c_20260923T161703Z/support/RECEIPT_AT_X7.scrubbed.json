@@ -1,0 +1,53 @@
+{
+  "schema": "aetheria_concurrent_at_x7_receipt_v1",
+  "bind": "AT_X7_KILL_ISOLATION",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_kill_isolation",
+      "REDACTED_HOME",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "118b499c3f9fc4f3619c53e9ac800185b5ec3da0c1f15cd6997f59e60e104ee9",
+    "exit_code": 0,
+    "output_hash": "a98d9a3d44af7aa0247bdcdc6b3cece949505af63ce1059b1ed8a8193a1ce7f4"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_kill_isolation",
+      "REDACTED_HOME",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "118b499c3f9fc4f3619c53e9ac800185b5ec3da0c1f15cd6997f59e60e104ee9",
+    "output_hash": "a98d9a3d44af7aa0247bdcdc6b3cece949505af63ce1059b1ed8a8193a1ce7f4",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160056Z"
+  },
+  "detail": {
+    "worker_dead": true,
+    "mouth_residual": false,
+    "oeig_intact_postkill": true,
+    "oeig_hash_unchanged_postkill": true,
+    "outside_learner_path_present": true,
+    "outside_learner_doc": {
+      "learner_may_modify_prohibitions": false,
+      "learner_may_modify_external_controls": false,
+      "kill_outside_learner_authority": true,
+      "soft_ACCEPT": false,
+      "utc": "20260923T152130Z"
+    },
+    "kill_probe_dir": "REDACTED_HOME"
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "62738cbfebc56ce6cbdd0b583643149b603e75dd6edb3a1d4cd841fc01b58862"
+}

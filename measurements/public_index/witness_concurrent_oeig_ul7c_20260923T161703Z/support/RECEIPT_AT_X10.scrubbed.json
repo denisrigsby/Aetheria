@@ -1,0 +1,67 @@
+{
+  "schema": "aetheria_concurrent_at_x10_receipt_v1",
+  "bind": "AT_X10_EXCLUSIONS",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_check_exclusions",
+      "REDACTED_HOME"
+    ],
+    "input_hash": "b9662fea49399d4a81d86bdcc1e0e8d33d4f738676ef6a6f821584c6502d4464",
+    "exit_code": 0,
+    "output_hash": "e0110b62e398f308ce060d26aaf9ba799cfc0f37173db2bfd3420704186f921a"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_check_exclusions",
+      "REDACTED_HOME"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "b9662fea49399d4a81d86bdcc1e0e8d33d4f738676ef6a6f821584c6502d4464",
+    "output_hash": "e0110b62e398f308ce060d26aaf9ba799cfc0f37173db2bfd3420704186f921a",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160056Z"
+  },
+  "detail": {
+    "exclusions": [
+      "UL7C standing apply",
+      "L7 / rsi_level7",
+      "may_auto_promote",
+      "network_live",
+      "Certified",
+      "soft_ACCEPT",
+      "second master clock"
+    ],
+    "intentionally_not_claimed": [
+      "UL7C standing apply",
+      "rsi_level7",
+      "may_auto_promote",
+      "network_live",
+      "soft_ACCEPT",
+      "second master clock",
+      "Certified",
+      "parent promotion",
+      "FOS expanded",
+      "Floor dual_bank"
+    ],
+    "soft_ACCEPT": false,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "second_master_clock": false,
+    "ul7c_apply_absent": true,
+    "Certified": false,
+    "floor_dual_bank": false
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "428383423cf6ca4f37c6ab0e793e641fa34a22ab10316ce96079f72b676a82d7"
+}

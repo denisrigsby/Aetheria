@@ -1,0 +1,62 @@
+{
+  "schema": "aetheria_public_witness_export_v1",
+  "generated_utc": "20260923T161703Z",
+  "gate": "witness_scrub_export_concurrent_oeig_ul7c_v1",
+  "exact_go": "GO: WITNESS_SCRUB_EXPORT_CONCURRENT_OEIG_UL7C",
+  "export_parity": "PRIVATE_AHEAD",
+  "soft_ACCEPT": false,
+  "apply_held": true,
+  "ul7c_apply_held": true,
+  "public_equals_plant": false,
+  "not_certified": true,
+  "public_claim": "Concurrent OEIG-live + UL7C-continuous proved on one control plane, with locks frozen, soft_ACCEPT false, UL7C apply held, and authority unchanged.",
+  "source_happy": "concurrent_oeig_ul7c_20260923T153720Z",
+  "files": [
+    {
+      "file": "dual_bank_prove_concurrent_oeig_ul7c.json",
+      "plant_status": "DUAL_BANK_PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+      "plant_utc": "20260923T161118Z",
+      "happy": "concurrent_oeig_ul7c_20260923T153720Z",
+      "plant_sha256": "bbcd205ff90f78d4fe78b02df1c4510e4b276695b8b49142ee975364b9f569f7",
+      "scrubbed_sha256": "9134c82ba1b3015e3a8b9b830831d4ee714c08e1f1721edbf40e4b7308c377a6",
+      "sha256_12": "9134c82ba1b3",
+      "card": "concurrent_oeig_live_ul7c_continuous_v1"
+    }
+  ],
+  "support": [
+    "COVER_ACCEPT_PROVE_CONCURRENT_OEIG_LIVE_UL7C.scrubbed.json",
+    "FLOOR_PROVE_PASS.scrubbed.json",
+    "PROVE_RECEIPT.scrubbed.json",
+    "RECEIPT_AT_X1.scrubbed.json",
+    "RECEIPT_AT_X10.scrubbed.json",
+    "RECEIPT_AT_X2.scrubbed.json",
+    "RECEIPT_AT_X3.scrubbed.json",
+    "RECEIPT_AT_X4.scrubbed.json",
+    "RECEIPT_AT_X5.scrubbed.json",
+    "RECEIPT_AT_X6.scrubbed.json",
+    "RECEIPT_AT_X7.scrubbed.json",
+    "RECEIPT_AT_X8.scrubbed.json",
+    "RECEIPT_AT_X9.scrubbed.json",
+    "SUMMARY.scrubbed.json"
+  ],
+  "happy_seals": [
+    "CONTROLS_SNAP_END.scrubbed.json",
+    "CONTROLS_SNAP_MID.scrubbed.json",
+    "CONTROLS_SNAP_START.scrubbed.json",
+    "OEIG_HASH_END.scrubbed.json",
+    "OEIG_HASH_MID.scrubbed.json",
+    "OEIG_HASH_START.scrubbed.json",
+    "SEALS_AFTER.scrubbed.json",
+    "SEALS_BEFORE.scrubbed.json"
+  ],
+  "locks": {
+    "soft_ACCEPT": false,
+    "apply_held": true,
+    "ul7c_apply_held": true,
+    "canary_held": true,
+    "rsi_level7": false,
+    "may_auto_promote": false,
+    "network_live": false,
+    "floor_dual_bank": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "aetheria_concurrent_at_x8_receipt_v1",
+  "bind": "AT_X8_FAIL_CLOSED",
+  "result": "PASS",
+  "machine_checkable": true,
+  "implementation_bar": {
+    "command": [
+      "concurrent_fail_closed_probe",
+      "--domain",
+      "FORBIDDEN_OUTSIDE_DOMAIN_EXPAND"
+    ],
+    "input_hash": "195321a5bdcf7be6162c3dc3b225852e73f96faa1a972f03b825140f174c9b32",
+    "exit_code": 0,
+    "output_hash": "d964b32789eafee4f38b5a9502960fa8d0ae393ac5aec4579e11f91a4fa416e5"
+  },
+  "command_receipt": {
+    "runnable_checker_command": [
+      "concurrent_fail_closed_probe",
+      "--domain",
+      "FORBIDDEN_OUTSIDE_DOMAIN_EXPAND"
+    ],
+    "cwd": "REDACTED_HOME",
+    "exit_code": 0,
+    "input_hash": "195321a5bdcf7be6162c3dc3b225852e73f96faa1a972f03b825140f174c9b32",
+    "output_hash": "d964b32789eafee4f38b5a9502960fa8d0ae393ac5aec4579e11f91a4fa416e5",
+    "parsed_pass": true,
+    "soft_ACCEPT": false,
+    "utc": "20260923T160056Z"
+  },
+  "detail": {
+    "neg": {
+      "schema": "aetheria_concurrent_neg_deliberate_fail_path_v1",
+      "attempted_domain": "FORBIDDEN_OUTSIDE_DOMAIN_EXPAND",
+      "allowed_domains": [
+        "local_operator_concurrent_only"
+      ],
+      "domain_allowed": false,
+      "progression_stopped": true,
+      "fail_closed": true,
+      "missing_receipt_block": true,
+      "required_receipt": "RECEIPT_AT_X_NEXT_STEP_WITHHELD",
+      "present": false,
+      "progression_allowed": false,
+      "halt": true,
+      "soft_ACCEPT": false,
+      "utc": "20260923T160056Z"
+    }
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "utc": "20260923T160056Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "f4c677d8161469d4fe81ac866dfabacdc918505bb838612056cf518395b7ff6b"
+}

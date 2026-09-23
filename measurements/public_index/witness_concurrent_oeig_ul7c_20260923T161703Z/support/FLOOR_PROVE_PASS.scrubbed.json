@@ -1,0 +1,33 @@
+{
+  "schema": "aetheria_floor_prove_pass_v1",
+  "card": "concurrent_oeig_live_ul7c_continuous_v1",
+  "verdict": "PROVE_PASS",
+  "stamp": "FLOOR_PROVE_PASS",
+  "happy": "concurrent_oeig_ul7c_20260923T153720Z",
+  "claim_if_pass": "Concurrent OEIG-live + UL7C-continuous prove under one control plane: both receipt chains bind; locks stay frozen; authority does not expand.",
+  "claim_frozen": true,
+  "at_results": {
+    "AT-X1": "PASS",
+    "AT-X2": "PASS",
+    "AT-X3": "PASS",
+    "AT-X4": "PASS",
+    "AT-X5": "PASS",
+    "AT-X6": "PASS",
+    "AT-X7": "PASS",
+    "AT-X8": "PASS",
+    "AT-X9": "PASS",
+    "AT-X10": "PASS"
+  },
+  "soft_ACCEPT": false,
+  "ul7c_apply_authorized": false,
+  "unlock_L7_authorized": false,
+  "floor_dual_bank": false,
+  "exact_go": "GO: PROVE_CONCURRENT_OEIG_LIVE_UL7C",
+  "remediation": "locks_ok string identity bug fixed; AT-X1/X5 re-eval on banked snaps",
+  "utc": "20260923T160416Z",
+  "happy_path": "measurements/integration/concurrent_oeig_live_ul7c_continuous_v1/concurrent_oeig_ul7c_20260923T153720Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "454ff9ab12a49dfc59fed722b7d3f2f581160e964c88707cefe34222795d0969"
+}

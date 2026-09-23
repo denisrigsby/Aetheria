@@ -1,0 +1,12 @@
+{
+  "oeig_controls_hash": "198ed2a6a141b9833c321618bba434f4a88598b337e6e2c02f59fe61defaf773",
+  "in_window_ticks_so_far": [
+    1501
+  ],
+  "oeig_operational": true,
+  "utc": "20260923T154051Z",
+  "scrubbed": true,
+  "public_equals_plant": false,
+  "export_parity": "PRIVATE_AHEAD",
+  "plant_sha256_before_scrub": "7882efb1aad30d06ec823189ba62e384739909be9bd4799e69fdc6dcb396abed"
+}
