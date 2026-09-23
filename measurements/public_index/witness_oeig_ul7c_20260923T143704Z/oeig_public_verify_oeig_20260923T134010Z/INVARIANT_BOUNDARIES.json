@@ -1,0 +1,25 @@
+{
+  "schema": "aetheria_invariant_boundaries_v1",
+  "card": "lll_open_ended_learning_under_invariant_governance_v1",
+  "ts": "20260923T004904Z",
+  "soft_ACCEPT": false,
+  "permanent_prohibitions": [
+    "constitution",
+    "authorization_gates",
+    "evaluators",
+    "evidence_generation",
+    "rollback_mechanisms",
+    "kill_mechanisms",
+    "own_promotion_rules"
+  ],
+  "required_external_controls": [
+    "independent_evaluation",
+    "protected_objectives",
+    "anti_reward_hacking_tests",
+    "versioned_ancestry_immutable_receipts",
+    "shadow_deployment_before_operational",
+    "automatic_rollback",
+    "resource_time_network_tool_limits",
+    "kill_outside_learner_authority"
+  ]
+}

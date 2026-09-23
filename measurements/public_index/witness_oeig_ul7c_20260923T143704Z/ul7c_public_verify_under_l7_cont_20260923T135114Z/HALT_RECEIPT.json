@@ -1,0 +1,51 @@
+{
+  "schema": "aetheria_ul7c_halt_receipt_v1",
+  "halted": true,
+  "pid": 20004,
+  "cycles_at_halt": 3,
+  "successful_ticks_at_halt": [
+    {
+      "post_tick": 1473,
+      "ts": "2026-09-23T13:51:55.325017+00:00",
+      "elapsed_s": 177.1234278678894
+    },
+    {
+      "post_tick": 1474,
+      "ts": "2026-09-23T13:55:37.614758+00:00",
+      "elapsed_s": 175.494366645813
+    },
+    {
+      "post_tick": 1475,
+      "ts": "2026-09-23T13:59:23.360300+00:00",
+      "elapsed_s": 178.93713355064392
+    },
+    {
+      "post_tick": 1476,
+      "ts": "2026-09-23T14:03:10.220422+00:00",
+      "elapsed_s": 180.0878710746765
+    },
+    {
+      "post_tick": 1477,
+      "ts": "2026-09-23T14:06:57.422615+00:00",
+      "elapsed_s": 180.3912012577057
+    },
+    {
+      "post_tick": 1478,
+      "ts": "2026-09-23T14:10:43.124960+00:00",
+      "elapsed_s": 178.8882076740265
+    }
+  ],
+  "soft_ACCEPT": false,
+  "utc": "20260923T141047Z",
+  "successful_ticks_at_halt_count": 6,
+  "ul7c1_in_window_ticks": [
+    1473,
+    1474,
+    1475,
+    1476,
+    1477,
+    1478
+  ],
+  "ul7c1_post_kill_watch_ticks_excluded": [],
+  "ul7c1_aligned": true
+}

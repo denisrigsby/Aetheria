@@ -1,0 +1,15 @@
+{
+  "schema": "aetheria_nonclaims_v1",
+  "card": "lll_open_ended_learning_under_invariant_governance_v1",
+  "ts": "20260923T004904Z",
+  "soft_ACCEPT": false,
+  "nonclaims": [
+    "unbound_unlimited_authority",
+    "literally_unbounded_self_modification",
+    "automatic_authority_expansion",
+    "prove_or_apply_authorized",
+    "operational_open_ended_learning",
+    "soft_ACCEPT_true",
+    "public_release"
+  ]
+}

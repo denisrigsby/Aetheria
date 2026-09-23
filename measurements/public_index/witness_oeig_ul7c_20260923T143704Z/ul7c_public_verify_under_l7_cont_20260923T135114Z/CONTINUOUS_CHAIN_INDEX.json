@@ -1,0 +1,67 @@
+{
+  "schema": "aetheria_ul7c_continuous_chain_index_v1",
+  "events": [
+    {
+      "idx": 0,
+      "event": "WINDOW_START",
+      "utc": "20260923T135114Z"
+    },
+    {
+      "idx": 1,
+      "event": "RSI_CYCLE",
+      "utc": "20260923T135114Z"
+    },
+    {
+      "idx": 2,
+      "event": "RSI_CYCLE",
+      "utc": "20260923T135115Z"
+    },
+    {
+      "idx": 3,
+      "event": "RSI_CYCLE",
+      "utc": "20260923T135116Z"
+    },
+    {
+      "idx": 4,
+      "event": "LH_TICK_OK",
+      "utc": "20260923T135157Z"
+    },
+    {
+      "idx": 5,
+      "event": "LH_TICK_OK",
+      "utc": "20260923T135540Z"
+    },
+    {
+      "idx": 6,
+      "event": "LH_TICK_OK",
+      "utc": "20260923T135926Z"
+    },
+    {
+      "idx": 7,
+      "event": "LH_TICK_OK",
+      "utc": "20260923T140312Z"
+    },
+    {
+      "idx": 8,
+      "event": "LH_TICK_OK",
+      "utc": "20260923T140658Z"
+    },
+    {
+      "idx": 9,
+      "event": "LH_TICK_OK",
+      "utc": "20260923T141044Z"
+    },
+    {
+      "idx": 10,
+      "event": "KILL_ARM_SEEN",
+      "utc": "20260923T141047Z"
+    },
+    {
+      "idx": 11,
+      "event": "WINDOW_HALTED",
+      "utc": "20260923T141047Z"
+    }
+  ],
+  "continuous_live_tested": true,
+  "soft_ACCEPT": false
+}
