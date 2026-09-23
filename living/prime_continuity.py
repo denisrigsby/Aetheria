@@ -828,7 +828,7 @@ class PrimeWorkspace:
         digest = sha256_bytes(data)
         blob = self.store / "artifacts" / f"sha256_{digest}"
         if not blob.is_file():
-            tmp = blob.with_suffix(".tmp")
+            tmp = blob.with_name(blob.name + ".tmp")
             tmp.write_bytes(data)
             tmp.replace(blob)
         rec = {
