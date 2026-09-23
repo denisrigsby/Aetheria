@@ -1,0 +1,40 @@
+{
+  "schema": "aetheria_at_results_v1",
+  "card": "governed_runtime_not_merely_chatbot_v1",
+  "utc": "20260923T035912Z",
+  "rows": [
+    {
+      "at": "NR1_NON_CHAT_EXECUTION",
+      "result": "PASS",
+      "remediation": []
+    },
+    {
+      "at": "NR2_PERSISTENCE_ACROSS_PROCESS",
+      "result": "PASS",
+      "remediation": []
+    },
+    {
+      "at": "NR3_INTERFACE_INDEPENDENCE",
+      "result": "PASS",
+      "remediation": []
+    },
+    {
+      "at": "NR4_AUTHORITY_ENFORCEMENT",
+      "result": "PASS",
+      "remediation": []
+    },
+    {
+      "at": "NR5_RECEIPT_BACKED_COMPLETION",
+      "result": "PASS",
+      "remediation": []
+    },
+    {
+      "at": "NR6_REPEATABILITY",
+      "result": "PASS",
+      "remediation": []
+    }
+  ],
+  "all_pass": true,
+  "scrubbed": true,
+  "public_equals_plant": false
+}

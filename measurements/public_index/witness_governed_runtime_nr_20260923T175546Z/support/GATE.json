@@ -1,0 +1,22 @@
+{
+  "schema": "aetheria_gate_v1",
+  "card": "governed_runtime_not_merely_chatbot_v1",
+  "ts": "20260923T040116Z",
+  "status": "DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE",
+  "phase": "prove_sealed__apply_hold__publication_blocked",
+  "soft_ACCEPT": false,
+  "apply_authorized": false,
+  "verdict": "PROVE_PASS",
+  "label": "Proven (operator)",
+  "claim_sealed": "Operator-proven as a governed runtime independent of its chat interface.",
+  "happy": "measurements/integration/governed_runtime_not_merely_chatbot_v1/nr_governed_runtime_20260923T035912Z",
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "publication_blocked": true,
+  "publication_authorized": false,
+  "rsi_in_scope": false,
+  "not_certification": true,
+  "note": "Dual-bank CLOSED. Operator-proven governed runtime independent of chat. Apply HOLD. Publication blocked. Not Certified. RSI out of scope.",
+  "scrubbed": true,
+  "public_equals_plant": false
+}

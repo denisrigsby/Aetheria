@@ -1,0 +1,16 @@
+{
+  "verdict": "PROVE_PASS",
+  "binds_summary": {
+    "NR1_NON_CHAT_EXECUTION": "PASS",
+    "NR2_PERSISTENCE_ACROSS_PROCESS": "PASS",
+    "NR3_INTERFACE_INDEPENDENCE": "PASS",
+    "NR4_AUTHORITY_ENFORCEMENT": "PASS",
+    "NR5_RECEIPT_BACKED_COMPLETION": "PASS",
+    "NR6_REPEATABILITY": "PASS"
+  },
+  "happy": "REDACTED_HOME\\.grok\\bin\\measurements\\integration\\governed_runtime_not_merely_chatbot_v1\\nr_governed_runtime_20260923T035912Z",
+  "utc": "20260923T035912Z",
+  "soft_ACCEPT": false,
+  "scrubbed": true,
+  "public_equals_plant": false
+}

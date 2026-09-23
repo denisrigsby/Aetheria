@@ -1,0 +1,43 @@
+{
+  "schema": "aetheria_nr5_completion_receipt_v1",
+  "card": "governed_runtime_not_merely_chatbot_v1",
+  "capability_id": "control_plane_hash_job",
+  "inputs": {
+    "target": "measurements/lll/LLL_REGISTRY_ROW.json",
+    "via": "non_chat_python",
+    "job_kind": "control_plane_hash_job"
+  },
+  "outputs": {
+    "status": "PASS",
+    "job_sha256": "d9693b01def46a4cd6afd516e0130e6e3350f569fb1973e3e762fd8f048a6663",
+    "registry_sha256": "81e3596654d55f1e3d7b27c03519d42ab6f19131cac32838e173eb875efab9e1"
+  },
+  "policy_decision": {
+    "soft_ACCEPT": false,
+    "apply_authorized": false,
+    "prove_only": true
+  },
+  "hashes": {
+    "registry_sha256": "81e3596654d55f1e3d7b27c03519d42ab6f19131cac32838e173eb875efab9e1",
+    "completion_preimage": "d940e723dae841a6097d8c03a921f04ebf0bc354efd020f90c6cf5092588fe28",
+    "content_sha256": "d940e723dae841a6097d8c03a921f04ebf0bc354efd020f90c6cf5092588fe28"
+  },
+  "environment": {
+    "platform": "win32",
+    "python": "3.10.11",
+    "runner": "floor_prove",
+    "ci_child": false
+  },
+  "env": {
+    "platform": "win32",
+    "python": "3.10.11",
+    "runner": "floor_prove",
+    "ci_child": false
+  },
+  "commit_SHA": "854fbd63b1667fafa377976dc93f1dd8e543e6f3",
+  "utc": "20260923T035912Z",
+  "ts": "2026-09-23T03:59:12.696192+00:00",
+  "soft_ACCEPT": false,
+  "scrubbed": true,
+  "public_equals_plant": false
+}
