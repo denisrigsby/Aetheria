@@ -1,5 +1,7 @@
 # Closeout — 2026-09-22
 
+Bounded LIVE_RSI is not withheld by the 2026-09-22 cuts below. The 2026-09-23 ladder section at the end of this file is the receipt for LIVE_RSI Enabled (bounded under external governance). `soft_ACCEPT` stays false. Unrestricted RSI, `rsi_level7`, `may_auto_promote`, and `network_live` stay locked. Parent open-ended doctrine stays HOLD/DRAFT. Not Certified. `export_parity` stays **PRIVATE_AHEAD**.
+
 Evidence index for the Talk Face public cut. A row is PASS only when a scrubbed gate file is linked. Notes with no gate file stay pending.
 
 Prior index: [FINAL_STATE_BRIEF.md](../FINAL_STATE_BRIEF.md) · claim table: [CLAIMS.md](CLAIMS.md) · mouth contract: [TALK_FACE.md](TALK_FACE.md).
@@ -19,7 +21,7 @@ Proved this session on the operator plant where a scrubbed gate file is in this 
 | # | Claim | Exclusion beside the claim | Receipt |
 |---|-------|----------------------------|---------|
 | 2 | Talk Face chat text has no visible `[MODEL_REASONING]` tag. Absolute `/living/...` cites are rewritten to plant-relative form or refused. | Does not publish plant source. Copilot is not the mouth (see LOCKED). | [scrub_mouth_leak_v1.json](../measurements/public_index/scrub_mouth_leak_v1.json), [gate_talkface_visible_tag_seal_v1.json](../measurements/public_index/gate_talkface_visible_tag_seal_v1.json), [architect_accept_talkface_visible_tag_seal_v1.json](../measurements/public_index/architect_accept_talkface_visible_tag_seal_v1.json) |
-| 3 | Direct-answer contract for Talk Face. Cover ACCEPT and Architect ACCEPT. `soft_ACCEPT=false`. | No LIVE_RSI / L7 unlock. `dual_bank=false`. | [gate_direct_answer_contract_talk_face_v1.json](../measurements/public_index/gate_direct_answer_contract_talk_face_v1.json), [architect_accept_direct_answer_contract_talk_face_v1.json](../measurements/public_index/architect_accept_direct_answer_contract_talk_face_v1.json) |
+| 3 | Direct-answer contract for Talk Face. Cover ACCEPT and Architect ACCEPT. `soft_ACCEPT=false`. | This mouth receipt does not unlock L7 or LIVE_RSI. `dual_bank=false`. Bounded LIVE_RSI is the 2026-09-23 ladder section. | [gate_direct_answer_contract_talk_face_v1.json](../measurements/public_index/gate_direct_answer_contract_talk_face_v1.json), [architect_accept_direct_answer_contract_talk_face_v1.json](../measurements/public_index/architect_accept_direct_answer_contract_talk_face_v1.json) |
 
 Gate JSON in this index covers the mouth tag seal and the direct-answer contract. Rows 1, 4, and 5 have no gate file. They stay Pending.
 
@@ -40,7 +42,7 @@ Withheld. Not claimed by this cut.
 | Item | Beside the claims |
 |------|-------------------|
 | Dual-bank FULL_PROGRAM | Not banked. Receipts that record the field have `dual_bank=false`. |
-| `soft_ACCEPT` / LIVE_RSI / L7 | `soft_ACCEPT` stays false. No unlock. |
+| `soft_ACCEPT` / L7 / unrestricted RSI | `soft_ACCEPT` stays false. This Talk Face cut does not unlock L7 or LIVE_RSI. Bounded LIVE_RSI is the 2026-09-23 ladder (`DUAL_ACCEPT_APPLY_TRUE_RSI`), still not unrestricted. |
 | Copilot as plant mouth, or Copilot through Plant Truth | Not claimed. |
 | Federation / swarm / autonomy theater / self-healing / gated self-modification | Not claimed as present fact. |
 | Production-ready, enterprise, enterprise-grade, revolutionary | Not claimed by this cut. |
@@ -48,7 +50,7 @@ Withheld. Not claimed by this cut.
 
 ## Publication limits
 
-- No plant loop or RSI source.
+- No plant loop or RSI source code. Scrubbed dual receipts in [measurements/public_index/](../measurements/public_index/) are receipts, not that source.
 - No private measurement trees.
 - No credentials.
 - No spawn-wrap widen.
@@ -73,6 +75,8 @@ Packet list (gate names, not a seventh gate): [MANIFEST_f68b.json](../measuremen
 
 Proved on the operator plant (Cover ACCEPT + Architect ACCEPT). Claim only the receipt `claim_wording`. `dual_bank=true`. `soft_ACCEPT=false`.
 
+Where a row below names LIVE_RSI, that gate does not itself enable it. Those words do not withdraw the 2026-09-23 bounded LIVE_RSI receipts.
+
 | # | Claim | Exclusion beside the claim | Receipt |
 |---|-------|----------------------------|---------|
 | 1 | Stale-PID reuse refuse as defined by gate_stale_pid_reuse_v1: kill_if_verified with expected_create_time refuses create_time_mismatch (and does not terminate) when live create_time disagrees with the bound value, even if cmdline still matches the claimed role. Revision `create_time_bind_v1`. | OS PID-number reuse was not observed and is not required. Not every call site. create_time is not sole identity. PID reuse is not impossible. Pytest in this clone does not flip the gate. Tree-kill stays **Locked on non-Windows**. A wrong live PID mismatch alone does not flip the gate. No second clock, autonomy, auto-dispatch, live LoRA hot-swap, LIVE_RSI, L7, or public=plant. Job Object is not the sole stop path. Toolhelp is not retired. | [gate_stale_pid_reuse_v1_1412.json](../measurements/public_index/gate_stale_pid_reuse_v1_1412.json), [stale_pid_reuse_v1_architect_accept_15da.json](../measurements/public_index/stale_pid_reuse_v1_architect_accept_15da.json), [stale_pid_reuse_v1_cover_accept_2042.json](../measurements/public_index/stale_pid_reuse_v1_cover_accept_2042.json) |
@@ -95,7 +99,7 @@ Withheld. Not claimed by this cut.
 
 | Item | Beside the claims |
 |------|-------------------|
-| L7 / LIVE_RSI | No unlock. |
+| L7 / unrestricted or unbounded RSI | These six gates do not enable LIVE_RSI. Bounded LIVE_RSI is the 2026-09-23 ladder section only, with `rsi_level7`, `may_auto_promote`, and `network_live` false, and `soft_ACCEPT` false. |
 | `soft_ACCEPT` | Stays false on every receipt. |
 | Second clock | Not claimed. |
 | Autonomy / `autonomy_proven` / auto-dispatch | Not claimed. |
@@ -114,7 +118,71 @@ Withheld. Not claimed by this cut.
 
 ## Publication limits
 
-- No plant loop or RSI source.
+- No plant loop or RSI source code. Scrubbed dual receipts in [measurements/public_index/](../measurements/public_index/) are receipts, not that source.
+- No private measurement trees.
+- No credentials, agent IDs, or operator home paths.
+- No spawn-wrap widen.
+
+---
+
+# Closeout — 2026-09-23 learning / RSI ladder
+
+Third sealed cut. Scrubbed dual-bank receipts for the learning ladder and bounded LIVE_RSI. Same voice as [FINAL_STATE_BRIEF.md](../FINAL_STATE_BRIEF.md) and [README.md](../README.md).
+
+**Proven (operator)** means the scrubbed dual receipt in this tree. It is not a clean-room rebuild of the Windows plant. This clone does not re-run the plant. The live process tick remains on the operator plant. It is not GitHub-hosted.
+
+`soft_ACCEPT` is false on every file in this cut. `export_parity` stays **PRIVATE_AHEAD** (receipts only; public ≠ full plant). Not Certified. Parent open-ended doctrine stays **DRAFT/HOLD**. These receipts do not unlock `rsi_level7`, `may_auto_promote`, `network_live`, or unrestricted RSI. They do not dual-bank FULL_PROGRAM.
+
+Packet list (not an extra stamp): [MANIFEST_ladder_20260923.json](../measurements/public_index/MANIFEST_ladder_20260923.json).
+
+## PASS
+
+Claim only the receipt `status` and `claim_sealed`. `dual_bank=true` on the duals. `soft_ACCEPT=false`.
+
+| # | Claim | Exclusion beside the claim | Receipt |
+|---|-------|----------------------------|---------|
+| 1 | `DUAL_ACCEPT_BAP_APPLY_BOUNDED`. bounded_autonomous_promotion_applied | soft_ACCEPT false. Allowlist fixed. Not unbounded learning | [dual_accept_bap_apply_bounded.json](../measurements/public_index/dual_accept_bap_apply_bounded.json) |
+| 2 | `DUAL_ACCEPT_RPR_APPLY`. repeated_bounded_promotion_no_regression_applied | soft_ACCEPT false. Parent open-ended doctrine still DRAFT/HOLD | [dual_accept_rpr_apply.json](../measurements/public_index/dual_accept_rpr_apply.json) |
+| 3 | `DUAL_ACCEPT_ILD_APPLY`. isolated_learning_domains_applied | soft_ACCEPT false. No allowlist expansion | [dual_accept_ild_apply.json](../measurements/public_index/dual_accept_ild_apply.json) |
+| 4 | `DUAL_ACCEPT_SGE_APPLY`. sandbox_self_generated_experiments_applied | soft_ACCEPT false. Sandbox-bounded | [dual_accept_sge_apply.json](../measurements/public_index/dual_accept_sge_apply.json) |
+| 5 | `DUAL_ACCEPT_LHL_APPLY`. long_horizon_learning_across_model_replacement_applied | soft_ACCEPT false. Model replacement under seal | [dual_accept_lhl_apply.json](../measurements/public_index/dual_accept_lhl_apply.json) |
+| 6 | `DUAL_ACCEPT_BLE_APPLY`. broader_learning_externally_bounded_actions_applied | soft_ACCEPT false. Actions remain externally bounded | [dual_accept_ble_apply.json](../measurements/public_index/dual_accept_ble_apply.json) |
+| 7 | `DUAL_ACCEPT_VALIDATION_123`. validation_publication_steps_1_2_3_evidence_proved_operator | soft_ACCEPT false. Not Certified. Public ≠ full plant | [dual_accept_validation_123.json](../measurements/public_index/dual_accept_validation_123.json) |
+| 8 | `DUAL_ACCEPT_TALKFACE_APPLY_REPROVE`. talkface_prepublish_apply_and_reprove_pass_banked | soft_ACCEPT false. `publication_authorized` false. Not Certified. This stamp is not the true RSI receipt | [dual_accept_talkface_apply_reprove.json](../measurements/public_index/dual_accept_talkface_apply_reprove.json) |
+| 9 | `DUAL_ACCEPT_GOVERNED_RUNTIME_NR_PROVE`. Operator-proven as a governed runtime independent of its chat interface. | soft_ACCEPT false. `rsi_in_scope` false. Not Certified | [dual_accept_governed_runtime_nr_prove.json](../measurements/public_index/dual_accept_governed_runtime_nr_prove.json) |
+| 10 | `DUAL_ACCEPT_BSI_THREE_CYCLE`. Demonstrated three consecutive bounded self-improvement cycles under external governance. | soft_ACCEPT false. Not RSI (`rsi_in_scope` false). Prove-scoped at seal. Not Certified | [dual_accept_bsi_three_cycle.json](../measurements/public_index/dual_accept_bsi_three_cycle.json) |
+| 11 | `DUAL_ACCEPT_PRELIMINARY_RSI`. Preliminary RSI evidence under external governance. | soft_ACCEPT false. Does not satisfy true RSI. `LIVE_RSI` on this receipt is `Not Enabled`. Not Certified | [dual_accept_preliminary_rsi.json](../measurements/public_index/dual_accept_preliminary_rsi.json) |
+| 12 | `DUAL_ACCEPT_TRUE_RSI`. True RSI evidence under external governance (still not unrestricted / unbounded unless separately proved). | soft_ACCEPT false. `LIVE_RSI` on this prove receipt is `Not Enabled`. Not unrestricted / unbounded. Not Certified | [dual_accept_true_rsi.json](../measurements/public_index/dual_accept_true_rsi.json) |
+| 13 | `DUAL_ACCEPT_APPLY_TRUE_RSI`. True RSI applied under external governance; LIVE_RSI Enabled (bounded — still not unrestricted / unbounded). Running snapshot: `LIVE_RSI` true, `LIVE_RSI_mode` `bounded_under_external_governance` | soft_ACCEPT false. No `rsi_level7`. No `may_auto_promote`. No `network_live`. `unrestricted_rsi` false. `unbounded_rsi` false. Not Certified. Parent open-ended doctrine still DRAFT/HOLD. Live process tick remains operator-plant (not GitHub-hosted) | [dual_accept_apply_true_rsi.json](../measurements/public_index/dual_accept_apply_true_rsi.json), [live_rsi_controls_store.json](../measurements/public_index/live_rsi_controls_store.json) |
+| 14 | `DUAL_ACCEPT_FINAL_REPO_PUBLISH`. Final repo publish pack dual-bank sealed. Public main carries Proven (operator) claims with exclusions beside them; LIVE_RSI Enabled (bounded); soft_ACCEPT=false; Not Certified. | `export_parity` **PRIVATE_AHEAD**. Public ≠ full plant. Not unrestricted RSI | [dual_accept_final_repo_publish.json](../measurements/public_index/dual_accept_final_repo_publish.json) |
+
+[lll_registry_row.json](../measurements/public_index/lll_registry_row.json) is a scrubbed registry snapshot (`soft_ACCEPT` false, `parent_doctrine_status` `DRAFT_HOLD`). It is not an extra stamp and does not unlock L7 or unrestricted RSI.
+
+## PENDING
+
+| Item | Why it stays pending |
+|------|----------------------|
+| Re-run of this ladder inside this public clone | Plant loop and RSI source code are not in this tree. PASS above is the scrubbed receipt, not a CI re-execution. |
+| Export parity (public equals live plant) | Decision stays **PRIVATE_AHEAD**. |
+| Parent open-ended learning under invariant governance | **DRAFT/HOLD**. Not operational. These duals do not promote it. |
+
+## LOCKED
+
+Withheld. Not claimed by this cut.
+
+| Item | Beside the claims |
+|------|-------------------|
+| `soft_ACCEPT` | Stays false on every receipt. |
+| `rsi_level7` / `may_auto_promote` / `network_live` | Not Enabled. Bounded LIVE_RSI does not unlock them. |
+| Unrestricted / unbounded RSI | Not Proven. |
+| L7 | No unlock. Bounded LIVE_RSI is not L7. |
+| public = plant | Decision is `PRIVATE_AHEAD`. Not `PARITY_PASS`. |
+| Dual-bank FULL_PROGRAM | These duals do not bank it. |
+| External certification | Not Certified. |
+
+## Publication limits
+
+- No plant loop or RSI source code. The scrubbed dual receipts above are receipts, not that source.
 - No private measurement trees.
 - No credentials, agent IDs, or operator home paths.
 - No spawn-wrap widen.

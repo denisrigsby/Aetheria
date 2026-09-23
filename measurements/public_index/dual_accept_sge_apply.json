@@ -1,0 +1,31 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "lll_sandbox_self_generated_experiments_v1",
+  "ts": "20260923T021505Z",
+  "status": "DUAL_ACCEPT_SGE_APPLY",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "apply_SGE_only_sealed",
+  "claim_sealed": "sandbox_self_generated_experiments_applied",
+  "apply_scope": "SGE_ONLY",
+  "sge_operational": true,
+  "rpr_still_operational": true,
+  "ild_still_operational": true,
+  "commit_SHA": "854fbd63b1667fafa377976dc93f1dd8e543e6f3",
+  "fixed_allowlist_hash": "0776d9f29d9bbb37ba6fd4f131f652ace98dc6a6cdab63d8862e1b3ff6f11ff8",
+  "not_sealed": [
+    "apply_LHL",
+    "apply_BLE",
+    "allowlist_expansion",
+    "open_ended_parent_operational",
+    "authority_expansion_beyond_SGE_apply"
+  ],
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "lll_sandbox_self_generated_experiments_v1",
+  "plant_status": "DUAL_ACCEPT_SGE_APPLY"
+}

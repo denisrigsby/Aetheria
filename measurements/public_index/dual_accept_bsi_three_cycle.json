@@ -1,0 +1,32 @@
+{
+  "schema": "aetheria_dual_bank_v1",
+  "card": "bounded_self_improvement_one_cycle_v1",
+  "kind": "BSI_THREE_CYCLE_PROVE",
+  "ts": "20260923T040732Z",
+  "status": "DUAL_ACCEPT_BSI_THREE_CYCLE",
+  "soft_ACCEPT": false,
+  "Cover_ACCEPT": true,
+  "Architect_ACCEPT": true,
+  "Floor_ACCEPT": false,
+  "phase": "prove_only_sealed",
+  "verdict": "PROVE_PASS",
+  "happy": "bsi_three_cycles_20260923T040618Z",
+  "claim_sealed": "Demonstrated three consecutive bounded self-improvement cycles under external governance.",
+  "label": "Proven (operator)",
+  "score_chain": [
+    0.6833548548698988,
+    0.8333333333333334,
+    0.8799999999999999,
+    1.0
+  ],
+  "apply_authorized": false,
+  "publication_authorized": false,
+  "rsi_in_scope": false,
+  "not_certification": true,
+  "dual_bank": true,
+  "export_parity": "PRIVATE_AHEAD",
+  "public_equals_plant": false,
+  "note": "Scrubbed public receipt. Plant paths omitted. soft_ACCEPT=false. Claim only as status/claim_sealed.",
+  "source_card": "bounded_self_improvement_one_cycle_v1",
+  "plant_status": "DUAL_ACCEPT_BSI_THREE_CYCLE"
+}
