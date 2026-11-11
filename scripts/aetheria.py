@@ -142,6 +142,14 @@ def main(argv: list[str] | None = None) -> int:
                 reason = rest[i + 1]
         return pc.cmd_stop(reason=reason)
     if cmd == "recover":
+        # Extra tokens used to be ignored, which would spawn. Ack writing is
+        # plant_control recover-ack and is not this command.
+        if rest:
+            print(
+                "FAIL: recover takes no flags; operator ack is plant_control.py recover-ack",
+                file=sys.stderr,
+            )
+            return 2
         return pc.cmd_recover()
     if cmd in ("start", "resume"):
         try:
