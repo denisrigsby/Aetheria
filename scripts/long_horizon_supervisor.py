@@ -565,6 +565,9 @@ def main() -> int:
         tick += 1
         state["tick"] = tick
         state["status"] = "running_tick"
+        # last_ok is intentionally left as the previous tick's value. This
+        # marker is what a mid-tick crash leaves behind.
+        state["running_tick"] = True
         write_state(state)
         write_resume(state)
         log(f"=== TICK {tick} BEGIN ===")
@@ -619,6 +622,7 @@ def main() -> int:
         )
         state["history"] = hist[-50:]
         state["status"] = "idle_between_ticks" if summary.get("ok") else "degraded"
+        state["running_tick"] = False
         # P0: durable gate-A green ticks survive PID restart
         try:
             from scripts.eval_residual_gate_v2 import record_green_tick

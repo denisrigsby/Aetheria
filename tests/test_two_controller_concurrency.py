@@ -540,8 +540,10 @@ def test_start_then_recover_second_does_not_launch(tmp_path: Path, monkeypatch):
     """resume (start) and cmd_recover share single_supervisor_critical."""
     meas = _redirect(monkeypatch, tmp_path)
     _valid_snapshot(tmp_path)
+    # last_ok true matches the green snapshot, so the ack gate stays clean
+    # and this test still reaches the single-flight refusal.
     (meas / "long_horizon_state.json").write_text(
-        json.dumps({"tick": 1, "status": "idle_between_ticks"}),
+        json.dumps({"tick": 1, "status": "idle_between_ticks", "last_ok": True}),
         encoding="utf-8",
     )
     launches: list[dict] = []
@@ -591,6 +593,11 @@ def test_start_then_recover_second_does_not_launch(tmp_path: Path, monkeypatch):
 def test_recover_alone_applies_snapshot_once(tmp_path: Path, monkeypatch, capsys):
     _redirect(monkeypatch, tmp_path)
     _valid_snapshot(tmp_path)
+    # Clean segment: a missing last_ok would be dirty and require an ack.
+    (tmp_path / "measurements" / "long_horizon_state.json").write_text(
+        json.dumps({"last_ok": True, "status": "idle_between_ticks", "tick": 3}),
+        encoding="utf-8",
+    )
     launches: list[int] = []
 
     def fake_launch(**kwargs):

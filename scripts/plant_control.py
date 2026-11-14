@@ -54,6 +54,7 @@ from lh_process_identity import (  # noqa: E402
     ROLE_PROBE,
     ROLE_SUPERVISOR,
     ROLE_WATCHDOG,
+    cmdline_for_pid,
     kill_if_verified,
     list_allowlisted,
     pid_exists,
@@ -705,7 +706,7 @@ def resume(
 
 
 def cmd_recover() -> int:
-    """Dead plant only. Load campaign_snapshot_v1. Hash fail → exit 1, do not spawn."""
+    """Dead plant only. Load campaign_snapshot_v1. Hash fail or dirty-without-ack → exit 1, do not spawn."""
     print("RECOVER plant from campaign_snapshot_v1")
     snap = plant_snap()
     if snap.get("alive"):
@@ -725,8 +726,21 @@ def cmd_recover() -> int:
         return 1
     camp = rec.get("campaign") or {}
     print(f"  snapshot valid mom={camp.get('mom')} last_ok={camp.get('last_ok')}")
+    try:
+        import recovery_ack as rack
+    except Exception as e:
+        print(f"FAIL: recovery_ack import: {e}")
+        return 1
+    ok_ack, dirty, ack_why = rack.verify_ack()
+    if not ok_ack:
+        print(f"FAIL: recovery ack ({ack_why})")
+        return 1
+    if dirty:
+        print("  recovery ack matches snapshot bytes")
+    else:
+        print("  plant clean; recovery ack not required")
     print("  apply + spawn run under the supervisor single-flight lock")
-    return resume(
+    rc = resume(
         with_watchdog=True,
         cycles=None,
         interval_min=None,
@@ -734,6 +748,64 @@ def cmd_recover() -> int:
         continue_tick=True,
         recover_record=rec,
     )
+    if rc == 0 and dirty:
+        try:
+            rack.consume_ack()
+        except rack.AckRefused as e:
+            print(f"FAIL: recovery ack consume ({e})")
+            return 1
+        print("  recovery ack consumed")
+    return rc
+
+
+def _ack_blocked_by_live_identity() -> Optional[str]:
+    """Refuse while the recorded supervisor may still be the live process.
+
+    A Windows PID whose command line is a different role is not this identity.
+    A live PID whose command line cannot be read is not proof of death.
+    """
+    snap = plant_snap()
+    pid = snap.get("pid")
+    if not pid or not snap.get("pid_exists"):
+        return None
+    if snap.get("identity_ok"):
+        return "recorded supervisor identity is live"
+    cmd = cmdline_for_pid(pid)
+    if sys.platform != "win32" or not cmd:
+        return "recorded pid is live and supervisor identity cannot be disproved"
+    return None
+
+
+def cmd_recover_ack() -> int:
+    """Operator-only ack writer. Does not spawn. Not a prime_ctl verb."""
+    print("RECOVER-ACK operator writer (does not spawn)")
+    blocked = _ack_blocked_by_live_identity()
+    if blocked:
+        print(f"FAIL: {blocked}")
+        print(f"  pid={plant_snap().get('pid')}")
+        return 1
+    try:
+        import campaign_snapshot as csnap
+    except Exception as e:
+        print(f"FAIL: campaign_snapshot import: {e}")
+        return 1
+    rec, why = csnap.load_snapshot()
+    if rec is None:
+        print(f"FAIL: snapshot {why}")
+        print("  path: measurements/campaign_snapshot_v1.json")
+        return 1
+    try:
+        import recovery_ack as rack
+
+        rack.write_ack()
+    except rack.AckRefused as e:
+        print(f"FAIL: {e}")
+        return 1
+    except Exception as e:
+        print(f"FAIL: recovery ack ({type(e).__name__})")
+        return 1
+    print("OK recovery ack written (plant not spawned)")
+    return 0
 
 
 def main(argv=None) -> int:
@@ -779,6 +851,10 @@ def main(argv=None) -> int:
         "recover",
         help="Dead plant only: load campaign_snapshot_v1 then spawn. Hash fail = no spawn.",
     )
+    sub.add_parser(
+        "recover-ack",
+        help="Operator only: write recovery_ack_v1 after a dead identity and a valid snapshot. Does not spawn.",
+    )
 
     args = ap.parse_args(argv)
 
@@ -816,6 +892,8 @@ def main(argv=None) -> int:
         )
     if args.cmd == "recover":
         return cmd_recover()
+    if args.cmd == "recover-ack":
+        return cmd_recover_ack()
     return 2
 
 
